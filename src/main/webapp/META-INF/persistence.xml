@@ -1,0 +1,24 @@
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+             version="2.1">
+    <persistence-unit name="customPU" transaction-type="JTA">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <jta-data-source>java:/OmsDB</jta-data-source>
+        <jar-file>lib/bakery.persistence-common-order-${platform.version}.jar</jar-file>
+        <class>com.intershop.oms.ps.services.configuration.CustomConfigurationDO</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <validation-mode>AUTO</validation-mode>
+        <properties>
+            <property name="javax.persistence.schema-generation.scripts.action" value="none"/>
+            <property name="hibernate.show_sql" value="false" />
+            <property name="hibernate.format_sql" value="false" />
+            <property name="hibernate.cache.use_second_level_cache" value="false" />
+            <property name="hibernate.default_schema" value="oms"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL9Dialect" />
+            <property name="jboss.entity.manager.factory.jndi.name" value="java:/customizationEMF" />
+            <property name="hibernate.jpa.compliance.global_id_generators" value="false"/>
+            <property name="hibernate.id.optimizer.pooled.preferred" value="hilo"/>
+        </properties>
+    </persistence-unit>
+</persistence>

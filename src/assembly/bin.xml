@@ -1,0 +1,102 @@
+<assembly
+	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.3"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.3 http://maven.apache.org/xsd/assembly-1.1.3.xsd">
+	<id>iom-blueprint-project_full_assembly</id>
+	<formats>
+		<format>tgz</format>
+	</formats>
+	<includeBaseDirectory>false</includeBaseDirectory>
+	<!--
+
+	//	WARNING
+	//	Please make a distinction between binary and text files when using the lineEnding switch.
+	//	The plugin will also filter binary data and may break binaries, images etc.
+
+	 -->
+	<fileSets>
+		<fileSet>
+			<directory>${basedir}/target</directory>
+			<outputDirectory>customization/artifacts</outputDirectory>
+			<includes>
+				<include>*.war</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>src/deployment</directory>
+			<outputDirectory>customization</outputDirectory>
+			<includes>
+				<include>deployment.*.properties</include>
+			</includes>
+			<filtered>true</filtered>
+			<lineEnding>unix</lineEnding>
+		</fileSet>
+		<fileSet>
+			<directory>src/etc</directory>
+			<outputDirectory>etc</outputDirectory>
+			<includes>
+				<include>**/*</include>
+			</includes>
+			<filtered>false</filtered>
+			<lineEnding>unix</lineEnding>
+		</fileSet>
+        <fileSet>
+            <directory>src/test-data</directory>
+            <outputDirectory>test-data</outputDirectory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+            <filtered>false</filtered>
+            <lineEnding>unix</lineEnding>
+        </fileSet>
+        <!-- velocity - text data only -->
+        <fileSet>
+            <directory>src/mail-templates</directory>
+            <outputDirectory>templates</outputDirectory>
+            <lineEnding>unix</lineEnding>
+            <includes>
+                <include>**/*.vm</include>
+                <include>**/*.css</include>
+            </includes>
+        </fileSet>
+        <!-- xslt - text data (*.xslt) -->
+        <fileSet>
+            <directory>src/xsl-templates</directory>
+            <outputDirectory>xslt</outputDirectory>
+            <includes>
+                <include>**/*.xslt</include>
+                <include>**/*.xml</include>
+            </includes>
+            <lineEnding>unix</lineEnding>
+        </fileSet>
+        <!-- xslt - binary data (*.png, *.ttf) -->
+        <fileSet>
+            <directory>src/xslt</directory>
+            <outputDirectory>xslt</outputDirectory>
+            <includes>
+                <include>**/*.png</include>
+                <include>**/*.ttf</include>
+                <include>**/*.pdf</include>
+            </includes>
+        </fileSet>
+        <!-- sql - text data (all but *.sh) -->
+        <fileSet>
+            <directory>target/sql-config</directory>
+            <filtered>false</filtered>
+            <outputDirectory>sql-config</outputDirectory>
+            <includes>
+                <include>**/*.sql</include>
+            </includes>
+            <lineEnding>unix</lineEnding>
+        </fileSet>
+        <!-- custom files -->
+        <!-- if you need different permissions, split the private-keys directory iom-blueprint-project from the rest -->
+        <fileSet>
+            <directory>src/project-files</directory>
+            <outputDirectory>project-files</outputDirectory>
+            <lineEnding>unix</lineEnding>
+            <fileMode>0600</fileMode>
+        </fileSet>
+	</fileSets>
+
+</assembly>

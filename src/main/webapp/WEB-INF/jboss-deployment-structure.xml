@@ -1,0 +1,27 @@
+<jboss-deployment-structure
+	xmlns="urn:jboss:deployment-structure:1.2">
+	<ear-subdeployments-isolated>false</ear-subdeployments-isolated>
+	<deployment>
+		<dependencies>
+			<module
+				name="deployment.bakery.base-app-${platform.version}.ear"
+				export="true" meta-inf="import" />
+			<module
+				name="deployment.bakery.base-app-${platform.version}.ear.bakery.util-util-${platform.version}.jar"
+				export="true" />
+			<module
+				name="deployment.bakery.base-app-${platform.version}.ear.oms.utils-${platform.version}.jar"
+				export="true" />
+
+<!-- 
+			<module
+				name="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider"
+				export="true" />
+ -->
+
+		</dependencies>
+		<exclusions>
+            <module name="org.jboss.resteasy.resteasy-json-binding-provider" />
+        </exclusions>
+	</deployment>
+</jboss-deployment-structure>

@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.intershop.oms.blueprint</groupId>
+    <artifactId>iom-blueprint-project</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>war</packaging>
+    <name>IOM iom-blueprint-project APPLICATION</name>
+    <description>IOM iom-blueprint-project APPLICATION</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <platform.version>3.7.0.0</platform.version>
+        <intershop.docker.repo>intershophub/</intershop.docker.repo>
+        <image.base.name>iom-blueprint-project</image.base.name>
+        <image.version.suffix></image.version.suffix>
+        <image.version>${project.version}${image.version.suffix}</image.version>
+        <image.docker.opts.app>--docker-opts="--no-cache"</image.docker.opts.app>
+        <image.docker.opts.config>--docker-opts="--no-cache"</image.docker.opts.config>
+        <!-- bom doesn't expose resteasy-undertow version, it is required 
+            for testing -->
+        <org.jboss.resteasy.version>3.13.2.Final</org.jboss.resteasy.version>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
+        <wildfly.version>24.0.1.Final</wildfly.version>
+        <org.junit.version>5.7.2</org.junit.version>
+        <org.mockito.version>3.11.2</org.mockito.version>
+        <org.apache.commons-lang.version>3.12.0</org.apache.commons-lang.version>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>order-iom-releases</id>
+            <url>https://pkgs.dev.azure.com/intershop-com/Products/_packaging/order-iom-releases/maven/v1</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.wildfly.bom</groupId>
+                <artifactId>wildfly-jakartaee8-with-tools</artifactId>
+                <scope>import</scope>
+                <type>pom</type>
+                <version>${wildfly.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- spec / wildfly provided -->
+        <dependency>
+            <groupId>org.wildfly</groupId>
+            <artifactId>wildfly-spec-api</artifactId>
+            <version>${wildfly.version}</version>
+            <type>pom</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jackson2-provider</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+
+        <!-- external libs -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${org.apache.commons-lang.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <!-- 0.9.12 is broken -->
+            <version>0.9.11</version>
+        </dependency>
+
+        <!-- IOM Platform -->
+        <dependency>
+            <groupId>bakery.persistence</groupId>
+            <artifactId>bakery.persistence-common</artifactId>
+            <scope>provided</scope>
+            <version>${platform.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>bakery.persistence</groupId>
+            <artifactId>bakery.persistence-common-order</artifactId>
+            <scope>compile</scope>
+            <version>${platform.version}</version>
+            <!-- required as a module BUT we only need the data objects - 
+                exclude transitive dependencies -->
+            <exclusions>
+                <exclusion>
+                    <artifactId>*</artifactId>
+                    <groupId>*</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>bakery.logic</groupId>
+            <artifactId>bakery.logic-common</artifactId>
+            <scope>provided</scope>
+            <version>${platform.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>bakery.security</groupId>
+            <artifactId>bakery.security-common</artifactId>
+            <scope>provided</scope>
+            <version>${platform.version}</version>
+        </dependency>
+
+        <!-- TEST dependencies -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${org.junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${org.junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${org.mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- wildfly bom overrides bytebuddy version which is required by 
+            mockito -->
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <version>1.11.3</version><!--$NO-MVN-MAN-VER$ -->
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.32</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <finalName>iom-blueprint-project</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.3.2</version>
+                <configuration>
+                    <webResources>
+                        <webResource>
+                            <directory>${basedir}/src/main/webapp/WEB-INF</directory>
+                            <targetPath>WEB-INF</targetPath>
+                            <filtering>true</filtering>
+                        </webResource>
+                        <webResource>
+                            <directory>${basedir}/src/main/webapp/META-INF</directory>
+                            <targetPath>WEB-INF/classes/META-INF</targetPath>
+                            <filtering>true</filtering>
+                        </webResource>
+                    </webResources>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <verbose>false</verbose>
+                    <debug>true</debug>
+                    <optimize>true</optimize>
+                    <showDeprecation>true</showDeprecation>
+                    <showWarnings>true</showWarnings>
+                    <meminitial>256</meminitial>
+                    <maxmem>2048</maxmem>
+                    <release>11</release>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/assembly/bin.xml</descriptor>
+                    </descriptors>
+                    <appendAssemblyId>false</appendAssemblyId>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.github.vdubus</groupId>
+                <artifactId>velocity-maven-plugin</artifactId>
+                <version>1.1.3</version>
+                <executions>
+                    <execution>
+                        <id>Generate source velocity</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>velocity</goal>
+                        </goals>
+                        <configuration>
+                            <templateFiles>
+                                <directory>src/sql-config</directory>
+                                <includes>
+                                    <include>**/*.sql</include>
+                                    <include>**/.gitkeep</include>
+                                </includes>
+                            </templateFiles>
+                            <outputDirectory>${project.build.directory}/sql-config</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.6.0</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>docker</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>3.2.0</version>
+                        <executions>
+                            <execution>
+                                <id>unpack</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>com.intershop.oms</groupId>
+                                            <artifactId>caas2docker</artifactId>
+                                            <version>${platform.version}</version>
+                                            <type>zip</type>
+                                            <outputDirectory>${project.build.directory}/c2d</outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.0.0</version>
+                        <executions>
+                            <execution>
+                                <id>prepare directory</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>mkdir</executable>
+                                    <arguments>
+                                        <argument>-p</argument>
+                                        <argument>c2d/caas-dl</argument>
+                                    </arguments>
+                                    <workingDirectory>${project.build.directory}</workingDirectory>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>unpack assembly</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>tar</executable>
+                                    <arguments>
+                                        <argument>-zxf</argument>
+                                        <argument>${project.artifactId}.tgz</argument>
+                                        <argument>-C</argument>
+                                        <argument>c2d/caas-dl/</argument>
+                                    </arguments>
+                                    <environmentVariables>
+                                        <CAAS_PROJECT_DIR>${project.build.directory}/c2d/caas-dl/</CAAS_PROJECT_DIR>
+                                    </environmentVariables>
+                                    <workingDirectory>${project.build.directory}</workingDirectory>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>Build App Image</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>bash</executable>
+                                    <!-- NOTE: We're using commandlineArgs 
+                                        in order to allow property expansion at runtime. When using <arguments> instead 
+                                        you can't expand multiple CLI switches from a single property. -->
+                                    <commandlineArgs>${project.build.directory}/c2d/caas2docker/app/build.sh
+                                        ${image.docker.opts.app}</commandlineArgs>
+                                    <environmentVariables>
+                                        <IMAGE_APP_VERSION>${image.version}</IMAGE_APP_VERSION>
+                                        <IMAGE_APP_TAG>${image.version}</IMAGE_APP_TAG>
+                                        <IOM_APP_IMAGE_NAME>iom-app</IOM_APP_IMAGE_NAME>
+                                    </environmentVariables>
+                                    <workingDirectory>${basedir}</workingDirectory>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>Build Config Image</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>bash</executable>
+                                    <commandlineArgs>${project.build.directory}/c2d/caas2docker/config/build.sh
+                                        ${image.docker.opts.config}</commandlineArgs>
+                                    <environmentVariables>
+                                        <IMAGE_CONFIG_VERSION>${image.version}</IMAGE_CONFIG_VERSION>
+                                        <IMAGE_CONFIG_TAG>${image.version}</IMAGE_CONFIG_TAG>
+                                        <IOM_CONFIG_IMAGE_NAME>iom-config</IOM_CONFIG_IMAGE_NAME>
+                                    </environmentVariables>
+                                    <workingDirectory>${basedir}</workingDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <environmentVariables>
+                                <IMAGE_BASE_NAME>${image.base.name}</IMAGE_BASE_NAME>
+                                <IOM_VERSION>${platform.version}</IOM_VERSION>
+                                <PROJECT_VERSION>${project.version}</PROJECT_VERSION>
+                                <IOM_REPO_NAME>${intershop.docker.repo}</IOM_REPO_NAME>
+                                <CAAS_PROJECT_DIR>${project.build.directory}/c2d/caas-dl/</CAAS_PROJECT_DIR>
+                            </environmentVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

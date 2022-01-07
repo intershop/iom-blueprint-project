@@ -1,0 +1,93 @@
+#set($do = '$$')
+DO $do
+DECLARE
+#set($vars_shop_supplier = '
+-- internal
+shop_int int8 = 1;
+supplier_int int8 = 1;
+
+-- parent shops
+shop_example_parent int8 = 10010;
+
+-- actual shops
+shop_example_de int8 = 10011;
+shop_example_fr int8 = 10012;
+
+-- all non-abstract shops
+shops_all int8[] = ARRAY[shop_example_de, shop_example_fr];
+
+-- all abstract shops
+shops_parent_all int8[] = ARRAY[shop_example_parent];
+
+-- Supplier
+supplier_erp int8 = 20010;
+
+-- all suppliers
+suppliers_all int8[] = array(select id from oms."SupplierDO" where id > 1);
+
+-- payment provider
+--pp_paypal int8 = 100;
+
+
+
+')
+
+#set($vars_shop2supplier = '
+-- naming convention: s2s_[shop_prefix]_[shop_country]_[supplier_shortcut]
+
+-- belux
+s2s_example_de_int int8 = (select s2s_id(shop_example_de, supplier_int));
+s2s_example_fr_int int8 = (select s2s_id(shop_example_fr, supplier_int));
+')
+
+#set($vars_country_codes = '
+-- country codes
+cc_de int = 8;
+cc_fr int = 9;
+
+
+')
+
+#set($vars_config_types = '
+
+-- erp export
+config_erp varchar = ''erpService'';
+av_erp_endpoint varchar = ''erpEndpointUrl'';
+av_erp_username varchar = ''erpUsername'';
+av_erp_password varchar = ''erpPassword'';
+
+
+
+')
+
+#set($vars_execution_beans = '
+eb_erp int = 1000;
+
+')
+
+#set($vars_decision_beans = '
+db_mail int = 1000;
+')
+
+#set($vars_payment_methods = '
+-- payment provider
+pp_dummy int8 = 10000;
+-- payment methods
+pm_invoice int = 5;
+pm_total_zero int = 100;
+')
+
+#set($vars_jobs = '
+--jobs
+job_example int = 1000;
+')
+
+#set($vars_carriers ='
+-- carrier
+carrier_dhl int8 = (SELECT id FROM oms."CarrierDO" WHERE name = ''DHL'');
+carrier_ups int8 = 10000;
+
+carriers_eu int8[] = ARRAY[carrier_dhl, carrier_ups];
+
+carriers_all int8[] = carriers_eu;
+')

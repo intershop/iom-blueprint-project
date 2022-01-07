@@ -1,0 +1,23 @@
+# add logger com.intershop.oms.demoapp
+if (outcome != success) of /subsystem=logging/logger=com.intershop.oms.demoapp:read-resource
+/subsystem=logging/logger=com.intershop.oms.demoapp:add()
+end-if
+if (result != ["CUSTOMIZATION"]) of /subsystem=logging/logger=com.intershop.oms.demoapp:read-attribute(name=handlers)
+/subsystem=logging/logger=com.intershop.oms.demoapp:add-handler(name=CUSTOMIZATION)
+end-if
+
+# add logger com.intershop.oms.ps
+if (outcome != success) of /subsystem=logging/logger=com.intershop.oms.ps:read-resource
+/subsystem=logging/logger=com.intershop.oms.ps:add()
+end-if
+if (result != ["CUSTOMIZATION"]) of /subsystem=logging/logger=com.intershop.oms.ps:read-attribute(name=handlers)
+/subsystem=logging/logger=com.intershop.oms.ps:add-handler(name=CUSTOMIZATION)
+end-if
+
+# add logger com.intershop.oms.musgrave
+if (outcome != success) of /subsystem=logging/logger=com.intershop.oms.blueprint:read-resource
+/subsystem=logging/logger=com.intershop.oms.blueprint:add()
+end-if
+if (result != ["CUSTOMIZATION"]) of /subsystem=logging/logger=com.intershop.oms.blueprint:read-attribute(name=handlers)
+/subsystem=logging/logger=com.intershop.oms.blueprint:add-handler(name=CUSTOMIZATION)
+end-if
