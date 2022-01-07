@@ -1,0 +1,45 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: ${EnvId}-postgres-storage
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: ${EnvId}-postgres-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ${EnvId}-postgres-storage
+  local:
+    path: ${MOUNTPOINT} # MOUNTPOINT is not a configuration variable. It will be determined and set on the fly.
+  # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#node-affinity
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      # consider that there is only one node (master) in the cluster
+      - matchExpressions:
+        - key: node-role.kubernetes.io/master
+          operator: Exists
+      # - matchExpressions:
+      #   - key: kubernetes.io/hostname
+      #     operator: In
+      #     values:
+      #     - docker-desktop
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: postgres-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: ${EnvId}-postgres-storage
+  resources:
+    requests:
+      storage: 1Gi

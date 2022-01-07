@@ -1,0 +1,40 @@
+################################################################################
+#
+# IMPORTANT INFORMATION
+#
+# This file is not intended to make any changes on it.
+#
+# This file is generated from a template. With each update of devenv-4-iom it
+# has to be updated. During this process the file is recreated using the
+# information found in config.properties. Any changes you had made before to
+# this file, will be lost.
+################################################################################
+
+# web app
+is.oms.app.host       = ${HostIom}
+is.oms.app.http.port  = ${PORT_IOM_SERVICE}
+is.oms.app.https.port = 443
+
+# db
+is.oms.db.hostlist = ${PgHostExtern}:${PgPortExtern}
+is.oms.db.name = ${OMS_DB_NAME}
+is.oms.db.user = ${OMS_DB_USER}${PGUSER_CONNECTION_SUFFIX}
+is.oms.db.pass = ${OMS_DB_PASS}
+is.oms.db.serverTimezone = UTC
+
+# ws user
+is.oms.ws.user = test_ws_user_neu
+is.oms.ws.pass = !InterShop00!
+is.oms.ws.role = TC_ShopServiceClient
+
+# standalone application or not
+is.oms.app.standalone = true
+
+# Shared secret for JWT creation / validation
+# JWTs will be generated with HMAC algorithm (HS256)
+# To secure the JWT https://tools.ietf.org/html/rfc7518#section-3.2 says that a
+# key of the same size as the hash output or larger must be used with the JWS
+# HMAC SHA-2 algorithms (i.e, 256 bits for "HS256")
+is.oms.jwt.secret = length_must_be_at_least_32_chars
+
+is.oms.customisation.excludes = 

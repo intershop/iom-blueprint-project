@@ -1,0 +1,376 @@
+DEVENV4IOM_VERSION=1.3.0.0-SNAPSHOT
+
+################################################################################
+# Defaults
+#
+# The following section defines useful defaults for all variables that could be
+# used with the template_engine.sh script.
+################################################################################
+
+# used for calculation of automatic port forwarding
+INDEX="${INDEX:-0}"
+PORT_OFFSET="${PORT_OFFSET:-10}"
+
+# environment specific configuration defaults to 'ci'
+# TODO remove if-block after deprecation period
+if [ -z "$PROJECT_ENV_NAME" -a ! -z "$CAAS_ENV_NAME" ]; then
+    PROJECT_ENV_NAME="$CAAS_ENV_NAME"
+fi
+PROJECT_ENV_NAME="${PROJECT_ENV_NAME:-ci}"
+
+# import of test-data
+# TODO remove if-blocks after deprecation period
+if [ -z "$PROJECT_IMPORT_TEST_DATA" -a ! -z "$CAAS_IMPORT_TEST_DATA" ]; then
+    PROJECT_IMPORT_TEST_DATA="$CAAS_IMPORT_TEST_DATA"
+fi
+if [ -z "$PROJECT_IMPORT_TEST_DATA_TIMEOUT" -a ! -z "$CAAS_IMPORT_TEST_DATA_TIMEOUT" ]; then
+    PROJECT_IMPORT_TEST_DATA_TIMEOUT="$CAAS_IMPORT_TEST_DATA_TIMEOUT"
+fi
+PROJECT_IMPORT_TEST_DATA="${PROJECT_IMPORT_TEST_DATA:-true}"
+PROJECT_IMPORT_TEST_DATA_TIMEOUT="${PROJECT_IMPORT_TEST_DATA_TIMEOUT:-300}"
+
+# check for 'false' only, to enable health-checks in any other case
+PERFORM_HEALTH_CHECKS="${PERFORM_HEALTH_CHECKS:-true}"
+if [ "$PERFORM_HEALTH_CHECKS" = "false" ]; then
+    HealthCheckYml_='#'
+else
+    HealthCheckYml_=''
+fi
+
+JBOSS_JAVA_OPTS="${JBOSS_JAVA_OPTS:--Xms1024M -Xmx2048M}"
+JBOSS_XA_POOLSIZE_MIN="${JBOSS_XA_POOLSIZE_MIN:-10}"
+JBOSS_XA_POOLSIZE_MAX="${JBOSS_XA_POOLSIZE_MAX:-50}"
+
+# pull policy defaults to Always, which makes it easy for developers get always
+# the newest image
+IMAGE_PULL_POLICY="${IMAGE_PULL_POLICY:-Always}"
+IMAGE_PULL_SECRET="${IMAGE_PULL_SECRET}"
+
+# initialize POSTGRES_ARGS
+if [ ${#POSTGRES_ARGS[@]} -eq 0 ]; then
+   POSTGRES_ARGS=( "-N" "500" "-c" "max_prepared_transactions=100" "-c" "log_line_prefix='%a %m %u %i [%p] %c '" "-c" "log_min_duration_statement=500" )
+fi
+# build a string from POSTGRES_ARGS, that can be used as yaml array
+PostgresArgsYml=$(COUNTER=0; \
+                  while [ $COUNTER -lt ${#POSTGRES_ARGS[@]} ]; do \
+                      echo -n "\"${POSTGRES_ARGS[$COUNTER]}\""; \
+                      COUNTER=$(expr $COUNTER + 1); \
+                      if [ $COUNTER -lt ${#POSTGRES_ARGS[@]} ]; then \
+                          echo -n ','; \
+                      fi \
+                  done)
+# build a string from POSTGRES_ARGS, that can be used as shell array
+PostgresArgsShell=$(COUNTER=0; \
+                    while [ $COUNTER -lt ${#POSTGRES_ARGS[@]} ]; do \
+                        echo -n "\"${POSTGRES_ARGS[$COUNTER]}\" "; \
+                        COUNTER=$(expr $COUNTER + 1); \
+                    done)
+
+# Add volumes / mounts if the user wants to keep databse data or not.
+KEEP_DATABASE_DATA="${KEEP_DATABASE_DATA:-true}"
+if [ "$KEEP_DATABASE_DATA" = true ] ; then
+    KeepDatabaseYml=''
+    KeepDatabaseSh=''
+else
+    KeepDatabaseYml='#'
+    KeepDatabaseSh='#'
+fi
+
+# remove trailing slash
+if echo "$MOUNT_PREFIX" | grep -q '/$'; then
+    MOUNT_PREFIX="$(echo "$MOUNT_PREFIX" | sed 's|/*$||g')"
+else
+    MOUNT_PREFIX="${MOUNT_PREFIX}"
+fi
+
+# directory containing custom built artifacts
+# has to be empty on default, in order to become able to make the distinction
+# whether the user wants to deploy custom built artifacts or not.
+CUSTOM_APPS_DIR="${CUSTOM_APPS_DIR}"
+# define variable containing the according absolute path
+CustomAppsDirAbs=
+if [ ! -z "$CUSTOM_APPS_DIR" ]; then
+    if echo "$CUSTOM_APPS_DIR" | grep -q '^/'; then
+        CustomAppsDirAbs="$(realpath "$CUSTOM_APPS_DIR")"
+    else
+        CustomAppsDirAbs="$(realpath "$PROJECT_DIR/$CUSTOM_APPS_DIR")"
+    fi
+fi
+# create yaml code depending on CUSTOM_APPS_DIR
+if [ ! -z "$CUSTOM_APPS_DIR" ]; then
+    AppsDirYml_____=''
+else
+    AppsDirYml_____='#'
+fi        
+
+# directory containing custom mail templates
+# has to be empty on default, in order to become able to make the distinction
+# whether the user wants to test custom templates or not.
+CUSTOM_TEMPLATES_DIR="${CUSTOM_TEMPLATES_DIR}"
+# define variable containing the according absolute path
+CustomTemplatesDirAbs=
+if [ ! -z "$CUSTOM_TEMPLATES_DIR" ]; then
+    if echo "$CUSTOM_TEMPLATES_DIR" | grep -q '^/'; then
+        CustomTemplatesDirAbs="$(realpath "$CUSTOM_TEMPLATES_DIR")"
+    else
+        CustomTemplatesDirAbs="$(realpath "$PROJECT_DIR/$CUSTOM_TEMPLATES_DIR")"
+    fi
+fi
+# create yaml code depending on CUSTOM_TEMPLATES_DIR
+if [ ! -z "$CUSTOM_TEMPLATES_DIR" ]; then
+    TemplatesDirYml=''
+else
+    TemplatesDirYml='#'
+fi
+
+# directory containing custom dump(s)
+# variable has to be empty on default, in order to become able to make the
+# distinction whether the user wants to use custom dumps or not.
+CUSTOM_DUMPS_DIR="${CUSTOM_DUMPS_DIR}"
+# define variable containing the according absolute path
+CustomDumpsDirAbs=
+if [ ! -z "$CUSTOM_DUMPS_DIR" ]; then
+    if echo "$CUSTOM_DUMPS_DIR" | grep -q '^/'; then
+        CustomDumpsDirAbs="$(realpath "$CUSTOM_DUMPS_DIR")"
+    else
+        CustomDumpsDirAbs="$(realpath "$PROJECT_DIR/$CUSTOM_DUMPS_DIR")"
+    fi
+fi
+# create yaml code depending on CUSTOM_DUMPS_DIR
+if [ ! -z "$CUSTOM_DUMPS_DIR" ]; then
+    DumpsDirYml____=''
+else
+    DumpsDirYml____='#'
+fi
+
+# directory containing custom xsl templates
+# has to be empty on default, in order to become able to make the distinction
+# whether the user wants to test custom xsl templates or not.
+CUSTOM_XSLT_DIR="${CUSTOM_XSLT_DIR}"
+# define variable containing the according absolute path
+CustomXsltDirAbs=
+if [ ! -z "$CUSTOM_XSLT_DIR" ]; then
+    if echo "$CUSTOM_XSLT_DIR" | grep -q '^/'; then
+        CustomXsltDirAbs="$(realpath "$CUSTOM_XSLT_DIR")"
+    else
+        CustomXsltDirAbs="$(realpath "$PROJECT_DIR/$CUSTOM_XSLT_DIR")"
+    fi
+fi
+# create yaml code depending on CUSTOM_XSLT_DIR
+if [ ! -z "$CUSTOM_XSLT_DIR" ]; then
+    XsltDirYml_____=''
+else
+    XsltDirYml_____='#'
+fi
+
+# directory containing custom dbmigrate scripts
+# has to be empty on default, in order to become able to make the distinction
+# whether the user wants to use custom dbmigrate scripts or not.
+CUSTOM_DBMIGRATE_DIR="${CUSTOM_DBMIGRATE_DIR}"
+# define variable containing the according absolute path
+CustomDbmigrateDirAbs=
+if [ ! -z "$CUSTOM_DBMIGRATE_DIR" ]; then
+    if echo "$CUSTOM_DBMIGRATE_DIR" | grep -q '^/'; then
+        CustomDbmigrateDirAbs="$(realpath "$CUSTOM_DBMIGRATE_DIR")"
+    else
+        CustomDbmigrateDirAbs="$(realpath "$PROJECT_DIR/$CUSTOM_DBMIGRATE_DIR")"
+    fi
+fi
+# create yaml code depending on CUSTOM_DBMIGRATE_DIR
+if [ ! -z "$CUSTOM_DBMIGRATE_DIR" ]; then
+    DbmigrateDirYml=''
+else
+    DbmigrateDirYml='#'
+fi
+
+# directory containing custom sql-config
+# has to be empty on default, in order to become able to make the distinction
+# whether the user wants to use custom sql-config or not.
+CUSTOM_SQLCONF_DIR="${CUSTOM_SQLCONF_DIR}"
+# define variable containing the according absolute path
+CustomSqlconfDirAbs=
+if [ ! -z "$CUSTOM_SQLCONF_DIR" ]; then
+    if echo "$CUSTOM_SQLCONF_DIR" | grep -q '^/'; then
+        CustomSqlconfDirAbs="$(realpath "$CUSTOM_SQLCONF_DIR")"
+    else
+        CustomSqlconfDirAbs="$(realpath "$PROJECT_DIR/$CUSTOM_SQLCONF_DIR")"
+    fi
+fi
+# create yaml code depending on CUSTOM_SQLCONF_DIR
+if [ ! -z "$CUSTOM_SQLCONF_DIR" ]; then
+    SqlconfDirYml__=''
+else
+    SqlconfDirYml__='#'
+fi
+
+# directory containing custom json-config
+# has to be empty on default, in order to become able to make the distinction
+# whether the user wants to use custom json-config or not.
+CUSTOM_JSONCONF_DIR="${CUSTOM_JSONCONF_DIR}"
+# define variable containing the according absolute path
+CustomJsonconfDirAbs=
+if [ ! -z "$CUSTOM_JSONCONF_DIR" ]; then
+    if echo "$CUSTOM_JSONCONF_DIR" | grep -q '^/'; then
+        CustomJsonconfDirAbs="$(realpath "$CUSTOM_JSONCONF_DIR")"
+    else
+        CustomJsonconfDirAbs="$(realpath "$PROJECT_DIR/$CUSTOM_JSONCONF_DIR")"
+    fi
+fi
+# create yaml code depending on CUSTOM_JSONCONF_DIR
+if [ ! -z "$CUSTOM_JSONCONF_DIR" ]; then
+    JsonconfDirYml_=''
+else
+    JsonconfDirYml_='#'
+fi
+
+# directory to be used as share
+# has to be empty on default, in order to become able to make the distinction
+# whether the user wants to use a custom share or not.
+CUSTOM_SHARE_DIR="${CUSTOM_SHARE_DIR}"
+# define variable containing the according absolute path
+CustomShareDirAbs=
+if [ ! -z "$CUSTOM_SHARE_DIR" ]; then
+    if echo "$CUSTOM_SHARE_DIR" | grep -q '^/'; then
+        CustomShareDirAbs="$CUSTOM_SHARE_DIR"
+    else
+        CustomShareDirAbs="$PROJECT_DIR/$CUSTOM_SHARE_DIR"
+    fi
+fi
+# realpath can only be used, if the according directory exists.
+# hence, create the shared directory, if it does not exist
+if [ ! -z "$CustomShareDirAbs" -a ! -d "$CustomShareDirAbs" ]; then
+    mkdir -p "$CustomShareDirAbs" > /dev/null || exit 1
+fi
+# finally use realpath to remove dots from path
+if [ ! -z "$CustomShareDirAbs" ]; then
+    CustomShareDirAbs="$(realpath "$CustomShareDirAbs")"
+fi
+# create yaml code depending on CUSTOM_SHARE_DIR
+if [ ! -z "$CUSTOM_SHARE_DIR" ]; then
+    ShareDirYml____=''
+else
+    ShareDirYml____='#'
+fi
+
+# used as identifier for an IOM environment e.g. as Kubernetes namespace name 
+EnvId=$(echo $ID | sed "s/[^A-Za-z0-9]*//g" | tr "[:upper:]" "[:lower:]")
+
+# development host
+HOST_IOM="${HOST_IOM}"
+if [ -z "$HOST_IOM" ]; then
+    HostIom="$(hostname)"
+else
+    HostIom="$HOST_IOM"
+fi
+
+
+# paths
+PROJECT_PATH="${PROJECT_PATH:-$(realpath $(dirname $(dirname $0)))}"
+
+# port numbers of servers
+PORT_IOM="8080"
+PORT_DEBUG="8787"
+PORT_DB="5432"
+PORT_WILDFLY="9990"
+PORT_MAILHOG_UI="8025"
+PORT_MAILHOG_SMTP="1025"
+
+# port number of according service
+# normally these ports are available inside the kubernetes cluster only,
+# but except for Docker-Desktop. This has two implications:
+# - services can directly connected from host machine
+# - ports of services must be different for different installations
+PORT_IOM_SERVICE=$(($PORT_IOM + ($INDEX * $PORT_OFFSET)))
+PORT_DEBUG_SERVICE=$(($PORT_DEBUG + ($INDEX * $PORT_OFFSET)))
+PORT_DB_SERVICE=$(($PORT_DB + ($INDEX * $PORT_OFFSET)))
+PORT_WILDFLY_SERVICE=$(($PORT_WILDFLY + ($INDEX * $PORT_OFFSET)))
+PORT_MAILHOG_UI_SERVICE=$(($PORT_MAILHOG_UI + ($INDEX * $PORT_OFFSET)))
+PORT_MAILHOG_SMTP_SERVICE=$(($PORT_MAILHOG_SMTP + ($INDEX * $PORT_OFFSET)))
+
+PUBLIC_NODEPORT_BASE=32000
+
+# public node port
+# when not running on Docker-Desktop, the exposed node ports have to
+# be used to access the services from outside the cluster. Access via Ingress is
+# not an alternative, as ports of Ingress-controller (80,443) cannot be changed.
+# When running with ICM on a single machine, this can easily lead to conflicts.
+PORT_IOM_PUBLIC=$(($PUBLIC_NODEPORT_BASE + 0 + ($INDEX * $PORT_OFFSET)))
+PORT_DEBUG_PUBLIC=$(($PUBLIC_NODEPORT_BASE + 1 + ($INDEX * $PORT_OFFSET)))
+PORT_DB_PUBLIC=$(($PUBLIC_NODEPORT_BASE + 2 + ($INDEX * $PORT_OFFSET)))
+PORT_WILDFLY_PUBLIC=$(($PUBLIC_NODEPORT_BASE + 3 + ($INDEX * $PORT_OFFSET)))
+PORT_MAILHOG_UI_PUBLIC=$(($PUBLIC_NODEPORT_BASE + 4 + ($INDEX * $PORT_OFFSET)))
+PORT_MAILHOG_SMTP_PUBLIC=$(($PUBLIC_NODEPORT_BASE + 5 + ($INDEX * $PORT_OFFSET)))
+
+# external database connection. Variables are empty, if postgres should be
+# managed internally. (with one exception: if set to 'postgres-service', it's
+# treated like beeing empty too.
+PGPORT=${PGPORT}
+PGHOST=${PGHOST}
+if [ "$PGHOST" = "postgres-service" ]; then
+    PGHOST=
+fi
+PGUSER_CONNECTION_SUFFIX="${PGUSER_CONNECTION_SUFFIX}"
+
+# define variables to access database externally and internally. 
+# externally means from outside of Kubernetes
+# internally means from inside of Kubernetes
+if [ ! -z "$PGHOST" ]; then
+    PgHostExtern=$PGHOST
+    PgPortExtern=$PGPORT
+    
+    PgHostIntern=$PGHOST
+    PgPortIntern=$PGPORT
+else
+    PgHostExtern=$HostIom
+    PgPortExtern=$PORT_DB_SERVICE
+    
+    PgHostIntern="postgres-service"
+    PgPortIntern=$PORT_DB_SERVICE
+fi
+
+# administrative access to database
+# will be used by dbaccount-image, when creating the oms database
+PGUSER="${PGUSER:-postgres}"
+PGPASSWORD="${PGPASSWORD:-postgres}"
+PGDATABASE="${PGDATABASE:-postgres}"
+# default values could NOT be copied directly from Dockerfile!
+# had to change UTF-8 to utf8, otherwise following message was written:
+#  ERROR:  new collation (en_US.UTF-8) is incompatible with the collation of the template database (en_US.utf8)
+#  HINT:  Use the same collation as in the template database, or use template0 as template.
+OMS_DB_OPTIONS="${OMS_DB_OPTIONS:-ENCODING='UTF8' LC_COLLATE='en_US.utf8' LC_CTYPE='en_US.utf8' CONNECTION LIMIT=-1}"
+OMS_DB_SEARCHPATH="${OMS_DB_SEARCHPATH:-customer, oms, omt, product, admin, bizconf, testcases}"
+
+# iom database
+OMS_DB_USER="${OMS_DB_USER:-oms_user}"
+OMS_DB_PASS="${OMS_DB_PASS:-oms_pw}"
+OMS_DB_NAME="${OMS_DB_NAME:-oms_db}"
+
+TIMEZONE="${TIMEZONE:-Europe/Berlin}"
+
+# images
+DOCKER_DB_IMAGE="${DOCKER_DB_IMAGE:-postgres:12}"
+MAILHOG_IMAGE="${MAILHOG_IMAGE:-mailhog/mailhog}"
+IOM_DBACCOUNT_IMAGE="${IOM_DBACCOUNT_IMAGE:-docker.intershop.de/intershophub/iom-dbaccount:1.3.0.0}"
+IOM_CONFIG_IMAGE="${IOM_CONFIG_IMAGE:-docker.intershop.de/intershophub/iom-config:3.6.0.0}"
+IOM_APP_IMAGE="${IOM_APP_IMAGE:-docker.intershop.de/intershophub/iom-app:3.6.0.0}"
+
+# this variable is used to pass information to the apply-sql-job.
+# A file or directory can be passed. It's necessary to split SQL_SRC into directory-
+# and file-part, as these variables are required inside the job-template.
+SQL_SRC="${SQL_SRC}"
+if [ -d "$SQL_SRC" ]; then
+    sqlDir="$SQL_SRC"
+else
+    sqlFile=$(basename "$SQL_SRC")
+    sqlDir=$(dirname "$SQL_SRC")
+fi
+
+OMS_LOGLEVEL_CONSOLE=${OMS_LOGLEVEL_CONSOLE:-WARN}
+OMS_LOGLEVEL_IOM=${OMS_LOGLEVEL_IOM:-WARN}
+OMS_LOGLEVEL_HIBERNATE=${OMS_LOGLEVEL_HIBERNATE:-WARN}
+OMS_LOGLEVEL_QUARTZ=${OMS_LOGLEVEL_QUARTZ:-WARN}
+OMS_LOGLEVEL_ACTIVEMQ=${OMS_LOGLEVEL_ACTIVEMQ:-WARN}
+OMS_LOGLEVEL_CUSTOMIZATION=${OMS_LOGLEVEL_CUSTOMIZATION:-WARN}
+OMS_LOGLEVEL_SCRIPTS=${OMS_LOGLEVEL_SCRIPTS:-INFO}
+OMS_LOGLEVEL_DEVENV=${OMS_LOGLEVEL_DEVENV:-INFO}
+OMS_LOG_REST_IDS=${OMS_LOG_REST_IDS}

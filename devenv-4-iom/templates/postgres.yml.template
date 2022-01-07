@@ -1,0 +1,40 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: postgres
+  labels:
+    app: postgres
+spec:
+  volumes:
+${KeepDatabaseYml}  - name: db-data
+${KeepDatabaseYml}    persistentVolumeClaim:
+${KeepDatabaseYml}      claimName: postgres-pvc
+  containers:
+  - name: postgres
+    image: ${DOCKER_DB_IMAGE}
+    args: [ ${PostgresArgsYml} ]
+    imagePullPolicy: Always
+    env:
+    - name: POSTGRES_DB
+      value: ${PGDATABASE}
+    - name: POSTGRES_USER
+      value: ${PGUSER}
+    - name: POSTGRES_PASSWORD
+      value: ${PGPASSWORD}
+    volumeMounts:
+${KeepDatabaseYml}    - name: db-data
+${KeepDatabaseYml}      mountPath: /var/lib/postgresql/data
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: postgres-service
+spec:
+  selector:
+    app: postgres
+  ports:
+    - port: ${PORT_DB_SERVICE}
+      targetPort: ${PORT_DB}
+      name: postgres
+  type: LoadBalancer
+  

@@ -1,0 +1,30 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: mailhog
+  labels:
+    app: mailhog
+spec:
+  containers:
+  - name: mailhog
+    image: ${MAILHOG_IMAGE}
+    imagePullPolicy: Always
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: mailhog-service
+spec:
+  selector:
+    app: mailhog
+  ports:
+    - port: ${PORT_MAILHOG_UI_SERVICE}
+      targetPort: ${PORT_MAILHOG_UI}
+      nodePort: ${PORT_MAILHOG_UI_PUBLIC}
+      name: ui
+    - port: ${PORT_MAILHOG_SMTP_SERVICE}
+      targetPort: ${PORT_MAILHOG_SMTP}
+      nodePort: ${PORT_MAILHOG_SMTP_PUBLIC}
+      name: soap
+  type: LoadBalancer
+  
