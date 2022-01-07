@@ -1,0 +1,43 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: sqlconfig-job
+spec:
+  ttlSecondsAfterFinished: 100
+  template:
+    spec:
+      containers:
+      - name: sqlconfig
+        image: ${IOM_CONFIG_IMAGE}
+        imagePullPolicy: ${IMAGE_PULL_POLICY}
+        env:
+          - name: TENANT
+            value: Intershop
+          - name: ENVIRONMENT
+            value: '${ID}'
+          - name: OMS_DB_HOST
+            value: '${PgHostIntern}'
+          - name: OMS_DB_PORT
+            value: '${PgPortIntern}'
+          - name: OMS_DB_NAME
+            value: '${OMS_DB_NAME}'
+          - name: OMS_DB_USER
+            value: '${OMS_DB_USER}'
+          - name: OMS_DB_PASS
+            value: '${OMS_DB_PASS}'
+          - name: OMS_DB_USER_CONNECTION_SUFFIX
+            value: '${PGUSER_CONNECTION_SUFFIX}'
+          - name: OMS_LOGLEVEL_SCRIPTS
+            value: '${OMS_LOGLEVEL_SCRIPTS}'
+          - name: CAAS_ENV_NAME
+            value: '${PROJECT_ENV_NAME}'
+        command: [ '/opt/apply_sql_config.sh', '--dir=/opt/caas-config/sql-config' ]
+        volumeMounts:
+${SqlconfDirYml__}        - name: sqlconf
+${SqlconfDirYml__}          mountPath: /opt/caas-config/sql-config
+      restartPolicy: Never
+      volumes:
+${SqlconfDirYml__}      - name: sqlconf
+${SqlconfDirYml__}        hostPath:
+${SqlconfDirYml__}          path: "${MOUNT_PREFIX}${CustomSqlconfDirAbs}"
+  backoffLimit: 0

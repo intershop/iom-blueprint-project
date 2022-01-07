@@ -1,0 +1,45 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: dbmigrate-job
+spec:
+  ttlSecondsAfterFinished: 100
+  template:
+    spec:
+      imagePullSecrets:
+      - name: ${IMAGE_PULL_SECRET}
+      containers:
+      - name: dbmigrate
+        image: ${IOM_CONFIG_IMAGE}
+        imagePullPolicy: ${IMAGE_PULL_POLICY}
+        env:
+          - name: TENANT
+            value: Intershop
+          - name: ENVIRONMENT
+            value: '${ID}'
+          - name: OMS_DB_HOST
+            value: '${PgHostIntern}'
+          - name: OMS_DB_PORT
+            value: '${PgPortIntern}'
+          - name: OMS_DB_NAME
+            value: '${OMS_DB_NAME}'
+          - name: OMS_DB_USER
+            value: '${OMS_DB_USER}'
+          - name: OMS_DB_PASS
+            value: '${OMS_DB_PASS}'
+          - name: OMS_DB_USER_CONNECTION_SUFFIX
+            value: '${PGUSER_CONNECTION_SUFFIX}'
+          - name: OMS_LOGLEVEL_SCRIPTS
+            value: '${OMS_LOGLEVEL_SCRIPTS}'
+          - name: CAAS_ENV_NAME
+            value: '${PROJECT_ENV_NAME}'
+        command: [ '/opt/dbmigrate-kubernetes.sh', '--dir=/tmp/dbmigrate-volume' ]
+        volumeMounts:
+${DbmigrateDirYml}        - name: dbmigrate-volume
+${DbmigrateDirYml}          mountPath: /tmp/dbmigrate-volume
+      restartPolicy: Never
+      volumes:
+${DbmigrateDirYml}      - name: dbmigrate-volume
+${DbmigrateDirYml}        hostPath:
+${DbmigrateDirYml}          path: "${MOUNT_PREFIX}${CustomDbmigrateDirAbs}"
+  backoffLimit: 0
