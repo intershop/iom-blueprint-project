@@ -1,4 +1,4 @@
-DEVENV4IOM_VERSION=1.3.0.0-SNAPSHOT
+DEVENV4IOM_VERSION=2.0.0-SNAPSHOT
 
 ################################################################################
 # Defaults
@@ -351,8 +351,26 @@ TIMEZONE="${TIMEZONE:-Europe/Berlin}"
 DOCKER_DB_IMAGE="${DOCKER_DB_IMAGE:-postgres:12}"
 MAILHOG_IMAGE="${MAILHOG_IMAGE:-mailhog/mailhog}"
 IOM_DBACCOUNT_IMAGE="${IOM_DBACCOUNT_IMAGE:-docker.intershop.de/intershophub/iom-dbaccount:1.3.0.0}"
-IOM_CONFIG_IMAGE="${IOM_CONFIG_IMAGE:-docker.intershop.de/intershophub/iom-config:3.6.0.0}"
-IOM_APP_IMAGE="${IOM_APP_IMAGE:-docker.intershop.de/intershophub/iom-app:3.6.0.0}"
+IOM_CONFIG_IMAGE="${IOM_CONFIG_IMAGE}"
+IOM_APP_IMAGE="${IOM_APP_IMAGE}"
+IOM_IMAGE="${IOM_IMAGE}"
+
+# job image differs, depending on IOM version (single/double image distribution)
+# iom template differs, depending on IOM version (singe/double image distribution)
+# directory structure has changed, for files/directories that were moved into the app image
+if [ -z "$IOM_IMAGE" ]; then
+    IomJobImage="$IOM_CONFIG_IMAGE"
+    IomTemplate="iom.yml.template"
+    ConfigBinDir=/opt
+    ConfigBaseDir=/opt
+    IsIomSingleDist='false'
+else
+    IomJobImage="$IOM_IMAGE"
+    IomTemplate="iom-single.yml.template"
+    ConfigBinDir=/opt/oms/bin
+    ConfigBaseDir=/opt/oms
+    IsIomSingleDist='true'
+fi
 
 # this variable is used to pass information to the apply-sql-job.
 # A file or directory can be passed. It's necessary to split SQL_SRC into directory-

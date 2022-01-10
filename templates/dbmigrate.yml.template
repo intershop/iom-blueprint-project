@@ -10,7 +10,7 @@ spec:
       - name: ${IMAGE_PULL_SECRET}
       containers:
       - name: dbmigrate
-        image: ${IOM_CONFIG_IMAGE}
+        image: ${IomJobImage}
         imagePullPolicy: ${IMAGE_PULL_POLICY}
         env:
           - name: TENANT
@@ -33,7 +33,7 @@ spec:
             value: '${OMS_LOGLEVEL_SCRIPTS}'
           - name: CAAS_ENV_NAME
             value: '${PROJECT_ENV_NAME}'
-        command: [ '/opt/dbmigrate-kubernetes.sh', '--dir=/tmp/dbmigrate-volume' ]
+        command: [ '${ConfigBinDir}/dbmigrate-kubernetes.sh', '--dir=/tmp/dbmigrate-volume' ]
         volumeMounts:
 ${DbmigrateDirYml}        - name: dbmigrate-volume
 ${DbmigrateDirYml}          mountPath: /tmp/dbmigrate-volume

@@ -75,7 +75,6 @@ COMMANDS
     info|i*            get information about Kubernetes resources
     create|c*          create Kubernetes/Docker resources
     delete|de*         delete Kubernetes/Docker resources
-    wait|w*            wait for Kubernetes resources to get ready
     apply|a*           apply customization
     dump|du*           create or load dump
     log|l*             simple access to log messages
@@ -375,8 +374,9 @@ $(msg_config_file 4)
 
 CONFIG
     IOM_DBACCOUNT_IMAGE - defines the dbaccount image to be used
-    IOM_CONFIG_IMAGE - defines the config image to be used
-    IOM_APP_IMAGE - defines the IOM application image to be used
+    IOM_CONFIG_IMAGE - defines the config image to be used (IOM < v.4)
+    IOM_APP_IMAGE - defines the IOM application image to be used (IOM < v.4)
+    IOM_IMAGE - defined the IOM image to be used (IOM >= v.4)
     IMAGE_PULL_POLICY - defines when to pull images from origin
     IMAGE_PULL_SECRET - name of the secret to be used when pulling images from 
       origin.
@@ -387,7 +387,7 @@ SEE
 
 BACKGROUND
     "$DEVENV_DIR/bin/template_engine.sh" \\
-        --template="$DEVENV_DIR/templates/iom.yml.template" \\
+        --template="$DEVENV_DIR/templates/$IomTemplate" \\
         --config="$CONFIG_FILES" \\
         --project-dir="$PROJECT_DIR" |
       kubectl apply --namespace $EnvId -f -
@@ -599,7 +599,7 @@ SEE
 
 BACKGROUND
     "$DEVENV_DIR/bin/template_engine.sh" \\
-        --template="$DEVENV_DIR/templates/iom.yml.template" \\
+        --template="$DEVENV_DIR/templates/$IomTemplate" \\
         --config="$CONFIG_FILES" \\
         --project-dir="$PROJECT_DIR" |
       kubectl delete --namespace $EnvId -f -
@@ -632,92 +632,6 @@ SEE
     $ME [CONFIG-FILE] delete postgres
     $ME [CONFIG-FILE] delete namespace
     $ME [CONFIG-FILE] delete storage
-EOF
-}
-
-#-------------------------------------------------------------------------------
-help-wait() {
-    ME=$(basename "$0")
-    cat <<EOF
-wait for Kubernetes resource to get ready
-
-SYNOPSIS
-    $ME [CONFIG-FILE] wait RESOURCE
-
-CONFIG-FILE
-$(msg_config_file 4)
-
-RESOURCE
-    mailserver|m*      wait for mail server
-    postgres|p*        wait for postgres server
-    iom|i*             wait for iom server
-
-Run '$ME [CONFIG-FILE] wait RESOURCE --help|-h' for more information
-EOF
-}
-
-#-------------------------------------------------------------------------------
-help-wait-mailserver() {
-    ME=$(basename "$1")
-    cat <<EOF
-wait for mailserver to get ready
-
-SYNOPSIS
-    $ME [CONFIG-FILE] wait mailserver [TIMEOUT]
-
-ARGUMENTS
-    TIMEOUT in seconds. Defaults to 60.
-
-OVERVIEW
-    Waits for the mail server pod to get ready. The "wait mailserver" command
-    is intended to be used in scripts, which are relying on the availability of
-    the mail server.
-
-CONFIG-FILE
-$(msg_config_file 4)
-EOF
-}
-
-#-------------------------------------------------------------------------------
-help-wait-postgres() {
-    ME=$(basename "$1")
-    cat <<EOF
-wait for Postgres to get ready
-
-SYNOPSIS
-    $ME [CONFIG-FILE] wait postgres [TIMEOUT]
-
-ARGUMENTS
-    TIMEOUT in seconds. Defaults to 60.
-
-OVERVIEW
-    Waits for the Postgres pod to get ready. The "wait postgres" command
-    is intended to be used in scripts, which rely on the availability of
-    the postgres server.
-
-CONFIG-FILE
-$(msg_config_file 4)
-EOF
-}
-
-#-------------------------------------------------------------------------------
-help-wait-iom() {
-    ME=$(basename "$1")
-    cat <<EOF
-wait for IOM to get ready
-
-SYNOPSIS
-    $ME [CONFIG-FILE] wait iom [TIMEOUT]
-
-ARGUMENTS
-    TIMEOUT in seconds. Defaults to 60.
-
-OVERVIEW
-    Waits for the IOM pod to get ready. The "wait iom" command is intended to be
-    used in scripts, which rely on the availability of the IOM server.
-
-CONFIG-FILE
-$(msg_config_file 4)
 EOF
 }
 
@@ -898,10 +812,10 @@ ARGUMENTS
     TIMEOUT in seconds. Defaults to 60.
 
 OVERVIEW
-    The docker-image defined by IOM_CONFIG_IMAGE contains all the necessary
-    tools to apply SQL scripts to the IOM database. Devenv4iom enables you to
-    use these tools as easily as possible. Therefore it provides a Kubernetes
-    job (apply-sql-job), that applies SQL file(s) to the IOM database.
+    The docker-image defined by IOM_CONFIG_IMAGE/IOM_IMAGE contains all the 
+    necessary tools to apply SQL scripts to the IOM database. Devenv4iom enables 
+    you to use these tools as easily as possible. Therefore it provides a 
+    Kubernetes job (apply-sql-job), that applies SQL file(s) to the IOM database.
 
     There are two different modes that can be used.
 
@@ -1046,7 +960,8 @@ CONFIG
     CUSTOM_JSONCONF_DIR - directory where your custom JSON confguration is
       located.
 $(msg_custom_dir JSONCONF 6)
-    IOM_CONFIG_IMAGE - defines the image to be used when executing the job.
+    IOM_CONFIG_IMAGE - defines the image to be used when executing the job (IOM < v.4).
+    IOM_IMAGE - defines the image to be used when executing the job (IOM >= v.4).
     IMAGE_PULL_POLICY - defines when to pull the image from origin.
     OMS_LOGLEVEL_SCRIPTS - controls verbosity of script applying JSON
       configuration.
@@ -1096,11 +1011,11 @@ OVERVIEW
     is controlled by the names of sub-directories within migrations and the
     naming of the migration scripts itself (numerically sorted, smallest first).
 
-    The IOM_CONFIG_IMAGE contains a shell script, that applies the migration
-    scripts which are delivered along with the Docker image. The developer task
-    "apply dbmigrate" enables you to use this dbmigrate script along with the
-    migration scripts located at CUSTOM_DBMIGRATE_DIR. Hence, if you want to
-    roll out custom dbmigrate scripts, you have to:
+    The IOM_CONFIG_IMAGE/IOM_IMAGE contains a shell script, that applies the 
+    migration scripts which are delivered along with the Docker image. The 
+    developer task "apply dbmigrate" enables you to use this dbmigrate script 
+    along with the migration scripts located at CUSTOM_DBMIGRATE_DIR. Hence, if 
+    you want to roll out custom dbmigrate scripts, you have to:
     - Set the variable CUSTOM_DBMIGRATE_DIR in your configuration file and make
       sure, that the directory is shared in Docker Desktop.
     You can and should have an eye on the logs created by the migration process.
@@ -1117,7 +1032,8 @@ CONFIG
       located. This directory needs two sub-directories: stored_procedures,
       migrations.
 $(msg_custom_dir DBMIGRATE 6)
-    IOM_CONFIG_IMAGE - defines the image to be used when executing the job.
+    IOM_CONFIG_IMAGE - defines the image to be used when executing the job (IOM < v.4).
+    IOM_IMAGE - defines the image to be used when executing the job (IOM >= v.4).
     IMAGE_PULL_POLICY - defines when to pull the image from origin.
     OMS_LOGLEVEL_SCRIPTS - controls the verbosity of the script doing
       the db-migration.
@@ -1199,7 +1115,8 @@ CONFIG
     CUSTOM_DUMPS_DIR - directory where custom dumps will be stored. If this
       variable is empty, no dumps will be created.
 $(msg_custom_dir DUMPS 6)
-    IOM_CONFIG_IMAGE - defines the image to be used when executing the job.
+    IOM_CONFIG_IMAGE - defines the image to be used when executing the job (IOM < v.4).
+    IOM_IMAGE - defined the image to be used when executing the job (IOM >= v.4).
     IMAGE_PULL_POLICY - defines when to pull the image from origin.
     OMS_LOGLEVEL_SCRIPTS - controls verbosity of the script creating the dump.
     ID - the namespace used is derived from ID.
@@ -1317,12 +1234,16 @@ help-get-config() {
 writes configuration to stdout
 
 SYNOPSIS
-    $ME [CONFIG-FILE] get config [-r]
+    $ME [CONFIG-FILE] get config [--skip-config|--skip-user-config]
 
 ARGUMENTS
-    -r - optional. If set, $ME ignores any existing configuration. This way it
-      is possible to create a clean configuration with all values reseted to
-      factory defaults.
+    --skip-config|--skip-user-config - optional. If --skip-config is set, 
+      $ME ignores any existing configuration. In case of 
+      --skip-user-config, only the user specific configuration will be ignored. 
+      Using this options, it is possible to create clean configurations for 
+      different use cases. --skip-config is intended to be used, when creating 
+      new configurations or to reset configurations to factory defaults. 
+      --skip-user-config helps to maintain project specific configurations.
 
 OVERVIEW
     Devenv4iom provides a template for configuration files. With every new
@@ -1431,10 +1352,21 @@ CONFIG-FILE
 $(msg_config_file 4)
 
 WHAT
-    dbaccount|d*       get message logs of dbaccount init-container
-    config|c*          get message logs of iom-config init-container
+    dbaccount|d*       get logs of dbaccount init-container
+EOF
+    if [ "$IsIomSingleDist" = 'true' ]; then
+        cat <<EOF
+    iom|i*             get message logs of iom container
+    access|ac*         get access logs of iom container 
+EOF
+    else
+        cat <<EOF
+    config|c*          get logs of iom-config init-container
     app|ap*            get message logs of iom-app container
     access|ac*         get access logs of iom-app container
+EOF
+    fi
+    cat <<EOF
 
 Run '$ME [CONFIG-FILE] log WHAT --help|-h' for more information on command
 EOF
@@ -1444,7 +1376,7 @@ EOF
 help-log-dbaccount() {
     ME=$(basename "$0")
     cat <<EOF
-get messages of dbaccount init-container
+get logs of dbaccount init-container
 
 SYNOPSIS
     $ME [CONFIG-FILE] log dbaccount [LEVEL] [-f]
@@ -1518,12 +1450,20 @@ EOF
 
 #-------------------------------------------------------------------------------
 help-log-app() {
+    help-log-iom backwardCompatible
+}
+help-log-iom() {
+    SCOPE=iom
+    if [ "$1" = 'backwardCompatible' ]; then
+        SCOPE=app
+    fi
+    
     ME=$(basename "$0")
     cat <<EOF
-get messages of iom application-container
+get messages of iom container
 
 SYNOPSIS
-    $ME [CONFIG-FILE] log app [LEVEL] [-f]
+    $ME [CONFIG-FILE] log $SCOPE [LEVEL] [-f]
 
 ARGUMENTS
     LEVEL - optional. If set, it has to be one of
@@ -1535,8 +1475,8 @@ ARGUMENTS
 
 OVERVIEW
     Requires 'jq' to be installed!
-    Writes messages of the IOM application container and filters them according
-    the specified log level.
+    Writes messages of the IOM container and filters them according the 
+    specified log level.
     The Wildfly application server still writes some messages that are not in
     JSON format. Those messages can only be seen when accessing the output of
     the container directly.
@@ -1550,7 +1490,7 @@ $(msg_config_file 4)
 
 CONFIG
     OMS_LOGLEVEL_SCRIPTS - controls what type of messages are written by
-      scripts. Messages that are not written in the container cannot be seen.
+      scripts.
     OMS_LOGLEVEL_CONSOLE
     OMS_LOGLEVEL_IOM
     OMS_LOGLEVEL_HIBERNATE
@@ -1558,8 +1498,7 @@ CONFIG
     OMS_LOGLEVEL_ACTIVEMQ
     OMS_LOGLEVEL_CUSTOMIZATION - all these variables control what type of
       messages are written by Wildfly application server and the IOM
-      applications. Messages that are not written in the container cannot be
-      seen.
+      applications.
 
 SEE
     $ME [CONFIG-FILE] info iom
@@ -1739,27 +1678,6 @@ kube_pod_wait() (
         PHASE=$(kubectl get pods --namespace $EnvId -l app=$APP_NAME -o jsonpath='{.items[0].status.phase}' 2> /dev/null)
     done
     [ "$PHASE" = 'Running' ]
-)
-
-#-------------------------------------------------------------------------------
-# wait for initContainer to be terminated
-# $1: app name (iom)
-# $2: name of init-container (e.g. dbaccount, config)
-# $3: timeout [s]
-# ->  true - if init-container is terminated before timeout
-#     false - else
-#-------------------------------------------------------------------------------
-kube_init_wait() (
-    APP_NAME=$1
-    INIT_NAME=$2
-    TIMEOUT=$3
-    TERMINATED=$(kubectl get pods --namespace $EnvId -l app=$APP_NAME -o jsonpath='{.items[*].status.initContainerStatuses[?(@.name=="'$INIT_NAME'")].state.terminated}' 2> /dev/null)
-    START_TIME=$(date '+%s')
-    while [ -z "$TERMINATED" -a \( $(date '+%s') -lt $(expr "$START_TIME" + "$TIMEOUT") \) ]; do
-        sleep 5
-        TERMINATED=$(kubectl get pods --namespace $EnvId -l app=$APP_NAME -o jsonpath='{.items[*].status.initContainerStatuses[?(@.name=="'$INIT_NAME'")].state.terminated}' 2> /dev/null)
-    done
-    [ ! -z "$TERMINATED" ]
 )
 
 #-------------------------------------------------------------------------------
@@ -1947,6 +1865,7 @@ Docker:
 IOM_DBACCOUNT_IMAGE:        $IOM_DBACCOUNT_IMAGE
 IOM_CONFIG_IMAGE:           $IOM_CONFIG_IMAGE
 IOM_APP_IMAGE:              $IOM_APP_IMAGE
+IOM_IMAGE:                  $IOM_IMAGE
 IMAGE_PULL_POLICY:          $IMAGE_PULL_POLICY
 --------------------------------------------------------------------------------
 EOF
@@ -1961,8 +1880,8 @@ $(kubectl get pods --namespace=$EnvId -l app=iom)
 Usefull commands:
 =================
 
-Login into Pod:             kubectl exec --namespace $EnvId $POD -it -- bash
-jboss-cli:                  kubectl exec --namespace $EnvId $POD -it -- /opt/jboss/wildfly/bin/jboss-cli.sh -c
+Login into Pod:             kubectl exec --namespace $EnvId $POD -c iom -it -- bash
+jboss-cli:                  kubectl exec --namespace $EnvId $POD -c iom -it -- /opt/jboss/wildfly/bin/jboss-cli.sh -c
 
 Currently used yaml:        kubectl get pod -l app=iom -o yaml --namespace=$EnvId
 Describe iom pod:           kubectl describe --namespace $EnvId pod $POD
@@ -1971,8 +1890,14 @@ Describe iom service        kubectl describe --namespace $EnvId service iom-serv
 
 Get dbaccount logs:         kubectl logs $POD --namespace $EnvId -c dbaccount
 Follow dbaccount logs:      kubectl logs --tail=1 -f $POD --namespace $EnvId -c dbaccount
+EOF
+            if [ "$IsIomSingleDist" = 'false' ]; then
+                cat <<EOF
 Get config logs:            kubectl logs $POD --namespace $EnvId -c config
 Follow config logs:         kubectl logs --tail=1 -f $POD --namespace $EnvId -c config
+EOF
+            fi
+            cat <<EOF
 Get iom logs:               kubectl logs $POD --namespace $EnvId -c iom
 Follow iom logs:            kubectl logs --tail=1 -f $POD --namespace $EnvId -c iom
 --------------------------------------------------------------------------------
@@ -2350,7 +2275,7 @@ create-iom() {
         fi
         if [ "$SUCCESS" = 'true' ]; then
             "$DEVENV_DIR/bin/template_engine.sh" \
-                --template="$DEVENV_DIR/templates/iom.yml.template" \
+                --template="$DEVENV_DIR/templates/$IomTemplate" \
                 --config="$CONFIG_FILES" \
                 --project-dir="$PROJECT_DIR" | kubectl apply --namespace $EnvId -f - 2> "$TMP_ERR" > "$TMP_OUT"
             if [ $? -ne 0 ]; then
@@ -2517,7 +2442,7 @@ delete-iom() {
         SUCCESS=false
     elif kube_resource_exists pods iom || kube_resource_exists services iom-service; then
         "$DEVENV_DIR/bin/template_engine.sh" \
-            --template="$DEVENV_DIR/templates/iom.yml.template" \
+            --template="$DEVENV_DIR/templates/$IomTemplate" \
             --config="$CONFIG_FILES" \
             --project-dir="$PROJECT_DIR" | kubectl delete --namespace $EnvId -f - 2> "$TMP_ERR" > "$TMP_OUT"
         if [ $? -ne 0 ]; then
@@ -2541,91 +2466,6 @@ delete-cluster() {
     delete-postgres &&
     delete-mailserver &&
     delete-namespace
-}
-
-################################################################################
-# functions, implementing the wait handler
-################################################################################
-
-#-------------------------------------------------------------------------------
-# wait for mailserver
-# $1: timeout [s] (optional)
-# ->  true|false indicating success
-#-------------------------------------------------------------------------------
-wait-mailserver() {
-    if [ -z "$CONFIG_FILES" ]; then
-        log_msg ERROR "wait-mailserver: no config-file given!" < /dev/null
-        false
-    else
-        # check and set timeout
-        TIMEOUT=60
-        if [ ! -z "$1" ] && ! ( echo "$1" | grep -q '^[0-9]*$'); then
-            log_msg WARN "wait-mailserver: invalid value passed for timeout ($1). Default value will be used" < /dev/null
-        elif [ ! -z "$1" ]; then
-            TIMEOUT=$1
-        fi
-        kube_pod_wait mailhog $TIMEOUT
-        if [ $? -ne 0 ]; then
-            log_msg ERROR "wait-mailserver: timeout of $TIMEOUT s reached." < /dev/null
-            false
-        else
-            true
-        fi
-    fi
-}
-
-#-------------------------------------------------------------------------------
-# wait for postgres
-# $1: timeout [s] (optional)
-# ->  true|false indicating success
-#-------------------------------------------------------------------------------
-wait-postgres() {
-    if [ -z "$CONFIG_FILES" ]; then
-        log_msg ERROR "wait-postgres: no config-file given!" < /dev/null
-        false
-    else
-        # check and set timeout
-        TIMEOUT=60
-        if [ ! -z "$1" ] && ! ( echo "$1" | grep -q '^[0-9]*$'); then
-            log_msg WARN "wait-postgres: invalid value passed for timeout ($1). Default value will be used" < /dev/null
-        elif [ ! -z "$1" ]; then
-            TIMEOUT=$1
-        fi
-        kube_pod_wait postgres $TIMEOUT
-        if [ $? -ne 0 ]; then
-            log_msg ERROR "wait-postgres: timeout of $TIMEOUT s reached." < /dev/null
-            false
-        else
-            true
-        fi
-    fi
-}
-
-#-------------------------------------------------------------------------------
-# wait for iom
-# $1: timeout [s] (optional)
-# ->  true|false indicating success
-#-------------------------------------------------------------------------------
-wait-iom() {
-    if [ -z "$CONFIG_FILES" ]; then
-        log_msg ERROR "wait-iom: no config-file given!" < /dev/null
-        false
-    else
-        # check and set timeout
-        TIMEOUT=60
-        if [ ! -z "$1" ] && ! ( echo "$1" | grep -q '^[0-9]*$'); then
-            log_msg WARN "wait-iom: invalid value passed for timeout ($1). Default value will be used" < /dev/null
-        elif [ ! -z "$1" ]; then
-            TIMEOUT=$1
-        fi
-        kube_pod_wait iom $TIMEOUT
-        if [ $? -ne 0 ]; then
-            log_msg ERROR "wait-iom: timeout of $TIMEOUT s reached." < /dev/null
-            false
-        else
-            true
-        fi
-    fi
 }
 
 ################################################################################
@@ -3031,7 +2871,7 @@ apply-dbmigrate() {
                 log_msg INFO "apply-dbmigrate: job successfully started" < "$TMP_OUT"
 
                 # wait for job to finish
-                kube_job_wait dbmigrate_job $TIMEOUT
+                kube_job_wait dbmigrate-job $TIMEOUT
                 KUBE_JOB_STATUS=$?
                 if [ "$KUBE_JOB_STATUS" = '1' ]; then
                     log_msg ERROR "apply-dbmigrate: timeout of $TIMEOUT seconds reached" < /dev/null
@@ -3225,18 +3065,21 @@ dump-create() {
 
 #-------------------------------------------------------------------------------
 # get configuration
-# $1: [-r] if set, any existing configuration will be ignored
+# $1: [--skip-config|--skip-user-config] if set, whole configuration or user
+#     specific configuration will be ignored
 # ->  true|false indicating success
 #-------------------------------------------------------------------------------
 get-config() {
     SUCCESS=true
 
     # handle optional parameter
-    if [ ! -z "$1" -a "$1" != '-r' ]; then
+    if [ ! -z "$1" -a "$1" = '--skip-config' ]; then
+        CONFIG_FILES=
+    elif [ ! -z "$1" -a "$1" = '--skip-user-config' ]; then
+        CONFIG_FILES="$CONFIG_FILE_PROJECT"
+    elif [ ! -z "$1" ]; then
         log_msg ERROR "get-config: unknown parameter '$1'." < /dev/null
         SUCCESS=false
-    elif [ ! -z "$1" -a "$1" = '-r' ]; then
-        CONFIG_FILES=
     fi
 
     if [ "$SUCCESS" = 'true' ]; then
@@ -3483,65 +3326,68 @@ log-config() (
     LEVEL=WARN
     LEVELS=(FATAL ERROR WARN INFO DEBUG TRACE)
 
-    # decide how to interpret arguments
-    if [ "$1" = '-f' -a ! -z "$2" ]; then
-        FOLLOW=true
-        LEVEL="$2"
-    elif [ "$1" = '-f' ]; then
-        FOLLOW=true
-    elif [ "$2" = '-f' ]; then
-        FOLLOW=true
-        LEVEL="$1"
-    elif [ ! -z "$1" ]; then
-        LEVEL="$1"
-    fi
-
-    if [ -z "$CONFIG_FILES" ]; then
-        log_msg ERROR "log-config: no config-file given!" < /dev/null
-        SUCCESS=false
-    # check value of LEVEL
-    elif is_in_array "$(echo "$LEVEL" | tr '[a-z]' '[A-Z]')" ${LEVELS[@]}; then
-        LEVEL=$(echo "$LEVEL" | tr '[a-z]' '[A-Z]')
-        JQ="$(jq_get)"
-        if [ -z "$JQ" ]; then
-            log_msg ERROR "log-config: jq not found" < /dev/null
-        else
-            if [ "$FOLLOW" = 'true' ]; then
-                FOLLOW_FLAG='--tail=1 -f'
-            else
-                FOLLOW_FLAG=''
-            fi
-
-            # avoid formatting if output is written to pipe. This makes it much easier,
-            # to process the results
-            if [ -t 1 ]; then
-                COMPACT_FLAG=''
-            else
-                COMPACT_FLAG='--compact-output'
-            fi
-
-            POD="$(kube_get_pod iom)"
-            if [ ! -z "$POD" ]; then
-                # make sure to get info about failed kubectl call
-                set -o pipefail
-                kubectl logs $FOLLOW_FLAG $POD --namespace $EnvId -c config 2> "$TMP_ERR" |
-                    $JQ -R 'fromjson? | select(type == "object")' |
-                    $JQ $COMPACT_FLAG "select((.logType != \"access\") and ( $(level_filter $LEVEL ${LEVELS[@]}) ))"
-                RESULT=$?
-                set +o pipefail
-                if [ $RESULT -ne 0 ]; then
-                    log_msg ERROR "log-config: error getting logs" < "$TMP_ERR"
-                else
-                    SUCCESS=true
-                fi
-            else
-                log_msg ERROR "log-config: no pod available" < /dev/null
-            fi
+    if [ "$IsIomSingleDist" = 'false' ]; then
+    
+        # decide how to interpret arguments
+        if [ "$1" = '-f' -a ! -z "$2" ]; then
+            FOLLOW=true
+            LEVEL="$2"
+        elif [ "$1" = '-f' ]; then
+            FOLLOW=true
+        elif [ "$2" = '-f' ]; then
+            FOLLOW=true
+            LEVEL="$1"
+        elif [ ! -z "$1" ]; then
+            LEVEL="$1"
         fi
-    else
-        log_msg ERROR "log-config: '$LEVEL' is not a valid log-level." < /dev/null
+        
+        if [ -z "$CONFIG_FILES" ]; then
+            log_msg ERROR "log-config: no config-file given!" < /dev/null
+            SUCCESS=false
+            # check value of LEVEL
+        elif is_in_array "$(echo "$LEVEL" | tr '[a-z]' '[A-Z]')" ${LEVELS[@]}; then
+            LEVEL=$(echo "$LEVEL" | tr '[a-z]' '[A-Z]')
+            JQ="$(jq_get)"
+            if [ -z "$JQ" ]; then
+                log_msg ERROR "log-config: jq not found" < /dev/null
+            else
+                if [ "$FOLLOW" = 'true' ]; then
+                    FOLLOW_FLAG='--tail=1 -f'
+                else
+                    FOLLOW_FLAG=''
+                fi
+                
+                # avoid formatting if output is written to pipe. This makes it much easier,
+                # to process the results
+                if [ -t 1 ]; then
+                    COMPACT_FLAG=''
+                else
+                    COMPACT_FLAG='--compact-output'
+                fi
+                
+                POD="$(kube_get_pod iom)"
+                if [ ! -z "$POD" ]; then
+                    # make sure to get info about failed kubectl call
+                    set -o pipefail
+                    kubectl logs $FOLLOW_FLAG $POD --namespace $EnvId -c config 2> "$TMP_ERR" |
+                        $JQ -R 'fromjson? | select(type == "object")' |
+                        $JQ $COMPACT_FLAG "select((.logType != \"access\") and ( $(level_filter $LEVEL ${LEVELS[@]}) ))"
+                    RESULT=$?
+                    set +o pipefail
+                    if [ $RESULT -ne 0 ]; then
+                        log_msg ERROR "log-config: error getting logs" < "$TMP_ERR"
+                    else
+                        SUCCESS=true
+                    fi
+                else
+                    log_msg ERROR "log-config: no pod available" < /dev/null
+                fi
+            fi
+        else
+            log_msg ERROR "log-config: '$LEVEL' is not a valid log-level." < /dev/null
+        fi
+        rm -f "$TMP_ERR"
     fi
-    rm -f "$TMP_ERR"
     [ "$SUCCESS" = 'true' ]
 )
 
@@ -3551,7 +3397,10 @@ log-config() (
 # $1|2: [-f] if set, messages are printed in follow mode
 # -> true|false indicating success
 #-------------------------------------------------------------------------------
-log-app() (
+log-app() {
+    log-iom "$1" "$2"
+}
+log-iom() (
     SUCCESS=false
     FOLLOW=false
     LEVEL=WARN
@@ -3571,14 +3420,14 @@ log-app() (
     fi
 
     if [ -z "$CONFIG_FILES" ]; then
-        log_msg ERROR "log-app: no config-file given!" < /dev/null
+        log_msg ERROR "log-iom: no config-file given!" < /dev/null
         SUCCESS=false
     # check value of LEVEL
     elif is_in_array "$(echo "$LEVEL" | tr '[a-z]' '[A-Z]')" ${LEVELS[@]}; then
         LEVEL=$(echo "$LEVEL" | tr '[a-z]' '[A-Z]')
         JQ="$(jq_get)"
         if [ -z "$JQ" ]; then
-            log_msg ERROR "log-app: jq not found" < /dev/null
+            log_msg ERROR "log-iom: jq not found" < /dev/null
         else
             if [ "$FOLLOW" = 'true' ]; then
                 FOLLOW_FLAG='--tail=1 -f'
@@ -3604,16 +3453,16 @@ log-app() (
                 RESULT=$?
                 set +o pipefail
                 if [ $RESULT -ne 0 ]; then
-                    log_msg ERROR "log-app: error getting logs" < "$TMP_ERR"
+                    log_msg ERROR "log-iom: error getting logs" < "$TMP_ERR"
                 else
                     SUCCESS=true
                 fi
             else
-                log_msg ERROR "log-app: no pod available" < /dev/null
+                log_msg ERROR "log-iom: no pod available" < /dev/null
             fi
         fi
     else
-        log_msg ERROR "log-app: '$LEVEL' is not a valid log-level." < /dev/null
+        log_msg ERROR "log-iom: '$LEVEL' is not a valid log-level." < /dev/null
     fi
     rm -r "$TMP_ERR"
     [ "$SUCCESS" = 'true' ]
@@ -3740,10 +3589,11 @@ if [ ! -z "$1" -a -f "$1" ]; then
 fi
 
 # lookup default user config
-if [ -z "$CONFIG_FILE_USER" -a -f "$CONFIG_FILE_USER_PREDEFINED" ]; then
+if [ -z "$CONFIG_FILE_USER" -a -s "$CONFIG_FILE_USER_PREDEFINED" ]; then
     # try to read config
-    if ! ( det -e; . "$CONFIG_FILE_USER_PREDEFINED" ) 2> /dev/null; then
-        log_msg ERROR "error reading config file '$CONFIG_FILE_USER_PREDEFINED'" < /dev/null
+    if ! ( set -e; . "$CONFIG_FILE_USER_PREDEFINED" ) 2> "$TMP_ERR"; then
+        log_msg ERROR "error reading config file '$CONFIG_FILE_USER_PREDEFINED'" < "$TMP_ERR"
+        rm -f "$TMP_ERR"
         exit 1
     else
         CONFIG_FILE_USER="$CONFIG_FILE_USER_PREDEFINED"
@@ -3757,8 +3607,9 @@ fi
 # this code is executed!
 if [ ! -z "$CONFIG_FILE_USER" -a -s "$(dirname "$CONFIG_FILE_USER")/$CONFIG_FILE_PROJECT_PREDEFINED" ]; then
     # try to read config
-    if ! ( set -e; . "$(dirname "$CONFIG_FILE_USER")/$CONFIG_FILE_PROJECT_PREDEFINED" ) 2> /dev/null; then
-        log_msg ERROR "error reading config file '$(dirname "$CONFIG_FILE_USER")/$CONFIG_FILE_PROJECT_PREDEFINED'" < /dev/null
+    if ! ( set -e; . "$(dirname "$CONFIG_FILE_USER")/$CONFIG_FILE_PROJECT_PREDEFINED" ) 2> "$TMP_ERR"; then
+        log_msg ERROR "error reading config file '$(dirname "$CONFIG_FILE_USER")/$CONFIG_FILE_PROJECT_PREDEFINED'" < "$TMP_ERR"
+        rm -f "$TMP_ERR"
         exit 1
     else
         CONFIG_FILE_PROJECT="$(realpath "$(dirname "$CONFIG_FILE_USER")")/$CONFIG_FILE_PROJECT_PREDEFINED"
@@ -3841,9 +3692,6 @@ case $1 in
         ;;
     de*)
         LEVEL0=delete
-        ;;
-    w*)
-        LEVEL0=wait
         ;;
     a*)
         LEVEL0=apply
@@ -3975,30 +3823,6 @@ elif [ "$LEVEL0" = "delete" ]; then
             exit 1
             ;;
     esac
-elif [ "$LEVEL0" = "wait" ]; then
-    case $1 in
-        m*)
-            LEVEL1=mailserver
-            ;;
-        p*)
-            LEVEL1=postgres
-            ;;
-        i*)
-            LEVEL1=iom
-            ;;
-        --help)
-            help-wait
-            exit 0
-            ;;
-        -h)
-            help-wait
-            exit 0
-            ;;
-        *)
-            syntax_error wait
-            exit 1
-            ;;
-    esac
 elif [ "$LEVEL0" = "apply" ]; then
     case $1 in
         de*)
@@ -4091,6 +3915,9 @@ elif [ "$LEVEL0" = 'log' ]; then
         c*)
             LEVEL1=config
             ;;
+        i*)
+            LEVEL1=iom
+            ;;
         ap*)
             LEVEL1=app
             ;;
@@ -4158,7 +3985,6 @@ elif [    \( "$LEVEL0" = 'apply' -a "$LEVEL1" = 'sql-config'  \) -o \
           \( "$LEVEL0" = 'apply' -a "$LEVEL1" = 'dbmigrate'   \) -o \
           \( "$LEVEL0" = 'apply' -a "$LEVEL1" = 'deployment'  \) -o \
           \( "$LEVEL0" = 'get'   -a "$LEVEL1" = 'config'      \) -o \
-          \( "$LEVEL0" = 'wait'                               \) -o \
           \( "$LEVEL0" = 'dump'  -a "$LEVEL1" = 'create'      \) ]; then
     if [ ! -z "$ARG2" ]; then
         syntax_error $LEVEL0 $LEVEL1

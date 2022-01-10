@@ -10,7 +10,7 @@ spec:
       - name: ${IMAGE_PULL_SECRET}
       containers:
       - name: jsonconfig
-        image: ${IOM_CONFIG_IMAGE}
+        image: ${IomJobImage}
         imagePullPolicy: ${IMAGE_PULL_POLICY}
         env:
           - name: TENANT
@@ -33,10 +33,10 @@ spec:
             value: '${OMS_LOGLEVEL_SCRIPTS}'
           - name: CAAS_ENV_NAME
             value: '${PROJECT_ENV_NAME}'
-        command: [ '/opt/apply_json_config.sh', '--dir=/opt/caas-config/json-config' ]
+        command: [ '${ConfigBinDir}/apply_json_config.sh', '--dir=${ConfigBaseDir}/caas-config/json-config' ]
         volumeMounts:
 ${JsonconfDirYml_}        - name: jsonconf
-${JsonconfDirYml_}          mountPath: /opt/caas-config/json-config
+${JsonconfDirYml_}          mountPath: ${ConfigBaseDir}/caas-config/json-config
       restartPolicy: Never
       volumes:
 ${JsonconfDirYml_}      - name: jsonconf

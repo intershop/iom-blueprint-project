@@ -57,17 +57,29 @@ IOM_DBACCOUNT_IMAGE=${IOM_DBACCOUNT_IMAGE}
 
 # iom config image (name:tag)
 # examples:
-# local image:                      iom-config:3.6.0.0
-# locally built project image:      prj-iom-config:3.6.0.0-1.2.0.0-SNAPSHOT
-# IOM release from ISH registry:    docker.intershop.de/intershophub/iom-config:3.6.0.0
+# local image:                      iom-config:3.7.0.0
+# locally built project image:      prj-iom-config:3.7.0.0-1.2.0.0-SNAPSHOT
+# IOM release from ISH registry:    docker.intershop.de/intershophub/iom-config:3.7.0.0
 IOM_CONFIG_IMAGE=${IOM_CONFIG_IMAGE}
 
 # iom app image (name:tag)
 # examples:
-# local image:                      iom-app:3.6.0.0
-# locally built project image:      prj-iom-app:3.6.0.0-1.2.0.0-SNAPSHOT
-# IOM release from ISH registry:    docker.intershop.de/intershophub/iom-app:3.6.0.0
+# local image:                      iom-app:3.7.0.0
+# locally built project image:      prj-iom-app:3.7.0.0-1.2.0.0-SNAPSHOT
+# IOM release from ISH registry:    docker.intershop.de/intershophub/iom-app:3.7.0.0
 IOM_APP_IMAGE=${IOM_APP_IMAGE}
+
+# iom image (name:tag)
+# beginning with IOM 4 the distribution model of IOM was changed from two to one
+# docker image. devenv-4-iom can be used with both types of IOM, double and
+# single image distribution.
+# If IOM_IMAGE is set, the properties IOM_CONFIG_IMAGE and IOM_APP_IMAGE will
+# be ignored.
+# examples:
+# local image:                      iom:4.0.0.0
+# locally built project image:      prj-iom:4.0.0.0-1.2.0.0-SNAPSHOT
+# IOM release from ISH registry:    docker.intershop.de/intershophub/iom:4.0.0.0
+IOM_IMAGE=${IOM_IMAGE}
 
 ################################################################################
 # Database Configuration
@@ -177,6 +189,8 @@ OMS_LOG_REST_IDS=${OMS_LOG_REST_IDS}
 # Depending on the current version of Windows subsystem for Linux it might be
 # necessary to define a MOUNT_PREFIX, that is used when mounting file-systems
 # to Docker containers.
+# In case of WSL2 (and only in this particular case), MOUNT_PREFIX has to be
+# set to /run/desktop/mnt/host. In any other case, it must remain empty.
 
 MOUNT_PREFIX="${MOUNT_PREFIX}"
 
