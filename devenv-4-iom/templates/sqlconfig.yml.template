@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: sqlconfig
-        image: ${IOM_CONFIG_IMAGE}
+        image: ${IomJobImage}
         imagePullPolicy: ${IMAGE_PULL_POLICY}
         env:
           - name: TENANT
@@ -31,10 +31,10 @@ spec:
             value: '${OMS_LOGLEVEL_SCRIPTS}'
           - name: CAAS_ENV_NAME
             value: '${PROJECT_ENV_NAME}'
-        command: [ '/opt/apply_sql_config.sh', '--dir=/opt/caas-config/sql-config' ]
+        command: [ '${ConfigBinDir}/apply_sql_config.sh', '--dir=${ConfigBaseDir}/caas-config/sql-config' ]
         volumeMounts:
 ${SqlconfDirYml__}        - name: sqlconf
-${SqlconfDirYml__}          mountPath: /opt/caas-config/sql-config
+${SqlconfDirYml__}          mountPath: ${ConfigBaseDir}/caas-config/sql-config
       restartPolicy: Never
       volumes:
 ${SqlconfDirYml__}      - name: sqlconf

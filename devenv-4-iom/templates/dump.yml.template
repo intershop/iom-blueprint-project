@@ -9,8 +9,8 @@ spec:
       imagePullSecrets:
       - name: ${IMAGE_PULL_SECRET}
       containers:
-      - name: dbmigrate
-        image: ${IOM_CONFIG_IMAGE}
+      - name: dump
+        image: ${IomJobImage}
         imagePullPolicy: ${IMAGE_PULL_POLICY}
         env:
           - name: TENANT
@@ -33,10 +33,10 @@ spec:
             value: '${OMS_LOGLEVEL_SCRIPTS}'
           - name: CAAS_ENV_NAME
             value: '${PROJECT_ENV_NAME}'
-        command: [ '/opt/create_dump.sh' ]
+        command: [ '${ConfigBinDir}/create_dump.sh' ]
         volumeMounts:
 ${DumpsDirYml____}        - name: dumps
-${DumpsDirYml____}          mountPath: /opt/dumps
+${DumpsDirYml____}          mountPath: ${ConfigBaseDir}/dumps
       restartPolicy: Never
       volumes:
 ${DumpsDirYml____}      - name: dumps

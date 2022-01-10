@@ -1,0 +1,211 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: iom
+  labels:
+    app: iom
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: iom
+  template:
+    metadata:
+      labels:
+        app: iom
+    spec:
+      volumes:
+${AppsDirYml_____}      - name: application-dev
+${AppsDirYml_____}        hostPath:
+${AppsDirYml_____}          path: "${MOUNT_PREFIX}${CustomAppsDirAbs}"
+${TemplatesDirYml}      - name: templates-dev
+${TemplatesDirYml}        hostPath:
+${TemplatesDirYml}          path: "${MOUNT_PREFIX}${CustomTemplatesDirAbs}"
+${XsltDirYml_____}      - name: xslt-dev
+${XsltDirYml_____}        hostPath:
+${XsltDirYml_____}          path: "${MOUNT_PREFIX}${CustomXsltDirAbs}"
+${ShareDirYml____}      - name: share-dev
+${ShareDirYml____}        hostPath:
+${ShareDirYml____}          path: "${MOUNT_PREFIX}${CustomShareDirAbs}"
+${DbmigrateDirYml}      - name: dbmigrate-sps
+${DbmigrateDirYml}        hostPath:
+${DbmigrateDirYml}          path: "${MOUNT_PREFIX}${CustomDbmigrateDirAbs}/stored_procedures"
+${DbmigrateDirYml}      - name: dbmigrate-scripts
+${DbmigrateDirYml}        hostPath:
+${DbmigrateDirYml}          path: "${MOUNT_PREFIX}${CustomDbmigrateDirAbs}/migrations"
+${SqlconfDirYml__}      - name: sqlconf
+${SqlconfDirYml__}        hostPath:
+${SqlconfDirYml__}          path: "${MOUNT_PREFIX}${CustomSqlconfDirAbs}"
+${JsonconfDirYml_}      - name: jsonconf
+${JsonconfDirYml_}        hostPath:
+${JsonconfDirYml_}          path: "${MOUNT_PREFIX}${CustomJsonconfDirAbs}"
+${DumpsDirYml____}      - name: dumps
+${DumpsDirYml____}        hostPath:
+${DumpsDirYml____}          path: "${MOUNT_PREFIX}${CustomDumpsDirAbs}"
+      imagePullSecrets:
+      - name: ${IMAGE_PULL_SECRET}
+      containers:
+      - name: iom
+        image: ${IOM_IMAGE}
+        #
+        # For testing purposes, e.g. installing additional packages using yum,
+        # it is necessary to run the container as user root. If you need this to do,
+        # just uncomment the following statement.
+        # 
+        # securityContext:
+        #   runAsUser: 0
+        #
+        imagePullPolicy: ${IMAGE_PULL_POLICY}
+${HealthCheckYml_}        readinessProbe:
+${HealthCheckYml_}          httpGet:
+${HealthCheckYml_}            path: /monitoring/services/health/status
+${HealthCheckYml_}            port: ${PORT_IOM}
+${HealthCheckYml_}          failureThreshold: 1
+${HealthCheckYml_}          periodSeconds: 10
+${HealthCheckYml_}          initialDelaySeconds: 60
+${HealthCheckYml_}          timeoutSeconds: 8
+${HealthCheckYml_}          successThreshold: 1
+        volumeMounts:
+${AppsDirYml_____}        - name: application-dev
+${AppsDirYml_____}          mountPath: /opt/oms/application-dev
+${TemplatesDirYml}        - name: templates-dev
+${TemplatesDirYml}          mountPath: /opt/oms/templates-dev
+${XsltDirYml_____}        - name: xslt-dev
+${XsltDirYml_____}          mountPath: /opt/oms/xslt-dev
+${ShareDirYml____}        - name: share-dev
+${ShareDirYml____}          mountPath: /var/opt/share
+${DbmigrateDirYml}        - name: dbmigrate-sps
+${DbmigrateDirYml}          mountPath: /opt/oms/stored_procedures
+${DbmigrateDirYml}        - name: dbmigrate-scripts
+${DbmigrateDirYml}          mountPath: /opt/oms/migrations
+${SqlconfDirYml__}        - name: sqlconf
+${SqlconfDirYml__}          mountPath: /opt/oms/caas-config/sql-config
+${JsonconfDirYml_}        - name: jsonconf
+${JsonconfDirYml_}          mountPath: /opt/oms/caas-config/json-config
+${DumpsDirYml____}        - name: dumps
+${DumpsDirYml____}          mountPath: /opt/oms/dumps
+        env:
+          - name: TENANT
+            value: Intershop
+          - name: ENVIRONMENT
+            value: '${ID}'
+          - name: OMS_DB_HOST
+            value: ${PgHostIntern}
+          - name: OMS_DB_PORT
+            value: '${PgPortIntern}'
+          - name: OMS_DB_HOSTLIST
+            value: ${PgHostIntern}:${PgPortIntern}
+          - name: OMS_DB_NAME
+            value: '${OMS_DB_NAME}'
+          - name: OMS_DB_USER
+            value: '${OMS_DB_USER}'
+          - name: OMS_DB_PASS
+            value: '${OMS_DB_PASS}'
+          - name: OMS_DB_USER_CONNECTION_SUFFIX
+            value: '${PGUSER_CONNECTION_SUFFIX}'
+          - name: OMS_DB_SQLHASH
+            value: 'false'
+          - name: OMS_SHAREDFS_HEALTHCHECK
+            value: disabled
+          - name: OMS_LOGLEVEL_CONSOLE
+            value: '${OMS_LOGLEVEL_CONSOLE}'
+          - name: OMS_LOGLEVEL_IOM
+            value: '${OMS_LOGLEVEL_IOM}'
+          - name: OMS_LOGLEVEL_HIBERNATE
+            value: '${OMS_LOGLEVEL_HIBERNATE}'
+          - name: OMS_LOGLEVEL_QUARTZ
+            value: '${OMS_LOGLEVEL_QUARTZ}'
+          - name: OMS_LOGLEVEL_ACTIVEMQ
+            value: '${OMS_LOGLEVEL_ACTIVEMQ}'
+          - name: OMS_LOGLEVEL_CUSTOMIZATION
+            value: '${OMS_LOGLEVEL_CUSTOMIZATION}'
+          - name: OMS_LOGLEVEL_SCRIPTS
+            value: '${OMS_LOGLEVEL_SCRIPTS}'
+          - name: OMS_LOG_REST_IDS
+            value: '${OMS_LOG_REST_IDS}'
+          - name: CAAS_ENV_NAME
+            value: '${PROJECT_ENV_NAME}'
+          - name: CAAS_IMPORT_TEST_DATA
+            value: '${PROJECT_IMPORT_TEST_DATA}'
+          - name: CAAS_IMPORT_TEST_DATA_TIMEOUT
+            value: '${PROJECT_IMPORT_TEST_DATA_TIMEOUT}'
+          - name: JBOSS_OPTS
+            value: "--debug *:8787"
+          - name: JBOSS_JAVA_OPTS
+            value: '${JBOSS_JAVA_OPTS}'
+          - name: JBOSS_XA_POOLSIZE_MIN
+            value: '${JBOSS_XA_POOLSIZE_MIN}'
+          - name: JBOSS_XA_POOLSIZE_MAX
+            value: '${JBOSS_XA_POOLSIZE_MAX}'
+          - name: OMS_WILDFLY_READY_TIMEOUT
+            value: '180'
+          - name: OMS_PUBLIC_URL
+            value: 'http://${HostIom}:${PORT_IOM_SERVICE}'
+          - name: OMS_EXEC_BACKEND_APPS
+            value: 'true'
+          - name: OMS_SHARE
+            value: '${OmsShareDir}'
+          - name: OMS_SMTP_HOST
+            value: 'mailhog-service'
+          - name: OMS_SMTP_PORT
+            value: '${PORT_MAILHOG_SMTP_SERVICE}'
+        lifecycle:
+          postStart:
+            exec:
+              command: ["/bin/bash", "-c", "apply-templates > /dev/null 2>&1; apply-xslt > /dev/null 2>&1; /opt/jboss/wildfly/bin/add-user.sh -u admin -p admin"]
+      initContainers:
+        - name: dbaccount
+          imagePullPolicy: ${IMAGE_PULL_POLICY}
+          image: ${IOM_DBACCOUNT_IMAGE}
+          volumeMounts:
+          env:
+            - name: TENANT
+              value: Intershop
+            - name: ENVIRONMENT
+              value: '${ID}'
+            - name: PGHOST
+              value: ${PgHostIntern}
+            - name: PGPORT
+              value: '${PgPortIntern}'
+            - name: PGDATABASE
+              value: '${PGDATABASE}'
+            - name: PGUSER
+              value: '${PGUSER}'
+            - name: PGPASSWORD
+              value: '${PGPASSWORD}'
+            - name: PGUSER_CONNECTION_SUFFIX
+              value: '${PGUSER_CONNECTION_SUFFIX}'
+            - name: OMS_DB_USER
+              value: '${OMS_DB_USER}'
+            - name: OMS_DB_PASS
+              value: '${OMS_DB_PASS}'
+            - name: OMS_DB_NAME
+              value: '${OMS_DB_NAME}'
+            - name: OMS_DB_OPTIONS
+              value: "${OMS_DB_OPTIONS}"
+            - name: OMS_DB_SEARCHPATH
+              value: "${OMS_DB_SEARCHPATH}"
+            - name: OMS_LOGLEVEL_SCRIPTS
+              value: '${OMS_LOGLEVEL_SCRIPTS}'
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: iom-service
+spec:
+  selector:
+    app: iom
+  ports:
+    - name: http
+      port: ${PORT_IOM_SERVICE}
+      targetPort: ${PORT_IOM}
+      nodePort: ${PORT_IOM_PUBLIC}
+    - name: admin
+      port: ${PORT_WILDFLY_SERVICE}
+      targetPort: ${PORT_WILDFLY}
+      nodePort: ${PORT_WILDFLY_PUBLIC}
+    - name: debug
+      port: ${PORT_DEBUG_SERVICE}
+      targetPort: ${PORT_DEBUG}
+      nodePort: ${PORT_DEBUG_PUBLIC}
+  type: LoadBalancer
