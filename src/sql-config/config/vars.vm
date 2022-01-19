@@ -7,17 +7,17 @@ shop_int int8 = 1;
 supplier_int int8 = 1;
 
 -- parent shops
-shop_example_parent int8 = 10010;
+shop_intronics_parent int8 = 10000;
 
 -- actual shops
-shop_example_de int8 = 10011;
-shop_example_fr int8 = 10012;
+shop_intronics_b2c int8 = 10010;
+shop_intronics_b2b int8 = 10020;
 
 -- all non-abstract shops
-shops_all int8[] = ARRAY[shop_example_de, shop_example_fr];
+shops_all int8[] = ARRAY[shop_intronics_b2c, shop_intronics_b2b];
 
 -- all abstract shops
-shops_parent_all int8[] = ARRAY[shop_example_parent];
+shops_parent_all int8[] = ARRAY[shop_intronics_parent];
 
 -- Supplier
 supplier_erp int8 = 20010;
@@ -42,9 +42,9 @@ s2s_example_fr_int int8 = (select s2s_id(shop_example_fr, supplier_int));
 
 #set($vars_country_codes = '
 -- country codes
-cc_de int = 8;
-cc_fr int = 9;
-
+cc_de int = 2;
+cc_fr int = 7;
+cc_us int = 29; 
 
 ')
 
