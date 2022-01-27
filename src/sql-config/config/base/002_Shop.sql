@@ -10,32 +10,6 @@ $vars_country_codes
 -- end variables block with 
 BEGIN
 
--- inTRONICS parent Shop	
-PERFORM create_or_update_shop(
-            -- "id", "active", "availabilityTolerance", "isB2B"
-            shop_intronics_parent, TRUE, 0, FALSE,
-            -- "countryDefRef", "mapArticleId", "name"
-            cc_us, TRUE, 'inTRONICS parent',
-            -- "orderOptimizeDefRef", "overwriteSelectedSupplierAllowed", "parentRef", "parentOrganization"
-            2, false, null, 'inSPIRED',
-            -- "returnCharge", "returnDeadline", "shopName", "shopOrderSequenceName"
-            0, 16, 'inTRONICS parent', NULL,
-            -- "singleArticleInfo", "shopAddressRef", "shopOrderValidationRef"
-            TRUE, 10000, (SELECT id FROM oms."ShopOrderValidationDO" WHERE name= 'B2C Invoicing Rules Set'),
-            -- "hasSupplierPrefix", "hasInformShopReturn", "internalShopName"
-            FALSE, FALSE, 'inTRONICS parent',
-            -- "shopUsesOMT", "shopCustomerSequenceName", "preferredSupplierOnly"
-            FALSE, NULL, FALSE,
-            -- "orderProcessingDelay", "shopOrderSequenceNumberFormatString"
-            '5m', NULL,
-            -- "orderTokenValidityDuration"
-            NULL, 
-            -- "amountDaysForPaymentReminderMailOfPrepaidOrders", "amountDaysForAutoCancellationOfPrepaidOrders", "isReservationWithDOSE"
-            NULL, NULL, TRUE,
-            -- "shopRMANumberSequenceName", "shopRMANumberSequenceFormatString"
-            NULL, NULL
-);
-
 -- inTRONICS b2c Shop
 PERFORM create_or_update_shop(
             -- "id", "active", "availabilityTolerance", "isB2B"
@@ -43,7 +17,7 @@ PERFORM create_or_update_shop(
             -- "countryDefRef", "mapArticleId", "name"
             cc_us, TRUE, 'inTRONICS',
             -- "orderOptimizeDefRef", "overwriteSelectedSupplierAllowed", "parentRef", "parentOrganization"
-            2, false, shop_intronics_parent, 'inSPIRED',
+            2, false, null, 'inSPIRED',
             -- "returnCharge", "returnDeadline", "shopName", "shopOrderSequenceName"
             0, 16, 'inTRONICS', NULL,
             -- "singleArticleInfo", "shopAddressRef", "shopOrderValidationRef"
@@ -53,7 +27,7 @@ PERFORM create_or_update_shop(
             -- "shopUsesOMT", "shopCustomerSequenceName", "preferredSupplierOnly"
             FALSE, NULL, FALSE,
             -- "orderProcessingDelay", "shopOrderSequenceNumberFormatString"
-            '5m', NULL,
+            '0m', NULL,
             -- "orderTokenValidityDuration"
             NULL, 
             -- "amountDaysForPaymentReminderMailOfPrepaidOrders", "amountDaysForAutoCancellationOfPrepaidOrders", "isReservationWithDOSE"
@@ -69,7 +43,7 @@ PERFORM create_or_update_shop(
             -- "countryDefRef", "mapArticleId", "name"
             cc_us, TRUE, 'inTRONICS Business',
             -- "orderOptimizeDefRef", "overwriteSelectedSupplierAllowed", "parentRef", "parentOrganization"
-            2, false, shop_intronics_parent, 'inSPIRED',
+            2, false, null, 'inSPIRED',
             -- "returnCharge", "returnDeadline", "shopName", "shopOrderSequenceName"
             0, 16, 'inTRONICS Business', NULL,
             -- "singleArticleInfo", "shopAddressRef", "shopOrderValidationRef"
@@ -79,7 +53,7 @@ PERFORM create_or_update_shop(
             -- "shopUsesOMT", "shopCustomerSequenceName", "preferredSupplierOnly"
             FALSE, NULL, FALSE,
             -- "orderProcessingDelay", "shopOrderSequenceNumberFormatString"
-            '5m', NULL,
+            '0m', NULL,
             -- "orderTokenValidityDuration"
             NULL, 
             -- "amountDaysForPaymentReminderMailOfPrepaidOrders", "amountDaysForAutoCancellationOfPrepaidOrders", "isReservationWithDOSE"

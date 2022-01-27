@@ -7,7 +7,7 @@ shop_int int8 = 1;
 supplier_int int8 = 1;
 
 -- parent shops
-shop_intronics_parent int8 = 10000;
+
 
 -- actual shops
 shop_intronics_b2c int8 = 10010;
@@ -17,27 +17,23 @@ shop_intronics_b2b int8 = 10020;
 shops_all int8[] = ARRAY[shop_intronics_b2c, shop_intronics_b2b];
 
 -- all abstract shops
-shops_parent_all int8[] = ARRAY[shop_intronics_parent];
+shops_parent_all int8[] = ARRAY[]::int8[];
 
 -- Supplier
-supplier_erp int8 = 20010;
+supplier_wh_texas int8 = 20010;
+supplier_wh_arizona int8 = 20020;
+supplier_wh_losangeles int8 = 20030;
+supplier_wh_detroit int8 = 20040;
+supplier_retailer_losangeles int8 = 20050;
 
 -- all suppliers
-suppliers_all int8[] = array(select id from oms."SupplierDO" where id > 1);
+suppliers_all int8[] = ARRAY[supplier_wh_texas, supplier_wh_arizona, supplier_wh_losangeles, supplier_wh_detroit, supplier_retailer_losangeles];
 
 -- payment provider
 --pp_paypal int8 = 100;
 
 
 
-')
-
-#set($vars_shop2supplier = '
--- naming convention: s2s_[shop_prefix]_[shop_country]_[supplier_shortcut]
-
--- belux
-s2s_example_de_int int8 = (select s2s_id(shop_example_de, supplier_int));
-s2s_example_fr_int int8 = (select s2s_id(shop_example_fr, supplier_int));
 ')
 
 #set($vars_country_codes = '
@@ -84,10 +80,10 @@ job_example int = 1000;
 
 #set($vars_carriers ='
 -- carrier
-carrier_dhl int8 = (SELECT id FROM oms."CarrierDO" WHERE name = ''DHL'');
-carrier_ups int8 = 10000;
+carrier_dhl int8 = 11;
+--carrier_dpd int8 = 12;
+--carrier_ups int8 = 15;
+--carrier_hermes int8 = 25;
 
-carriers_eu int8[] = ARRAY[carrier_dhl, carrier_ups];
-
-carriers_all int8[] = carriers_eu;
+carriers_all int8[] = ARRAY[carrier_dhl];
 ')
