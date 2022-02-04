@@ -21,7 +21,7 @@ PERFORM create_or_update_shop(
             -- "returnCharge", "returnDeadline", "shopName", "shopOrderSequenceName"
             0, 16, 'inTRONICS', NULL,
             -- "singleArticleInfo", "shopAddressRef", "shopOrderValidationRef"
-            TRUE, 10000, (SELECT id FROM oms."ShopOrderValidationDO" WHERE name= 'B2C Invoicing Rules Set'),
+            TRUE, 10000, null,
             -- "hasSupplierPrefix", "hasInformShopReturn", "internalShopName"
             FALSE, FALSE, 'inTRONICS',
             -- "shopUsesOMT", "shopCustomerSequenceName", "preferredSupplierOnly"
@@ -47,7 +47,7 @@ PERFORM create_or_update_shop(
             -- "returnCharge", "returnDeadline", "shopName", "shopOrderSequenceName"
             0, 16, 'inTRONICS Business', NULL,
             -- "singleArticleInfo", "shopAddressRef", "shopOrderValidationRef"
-            TRUE, 10000, (SELECT id FROM oms."ShopOrderValidationDO" WHERE name= 'B2B Invoicing Rules Set'),
+            TRUE, 10000, null,
             -- "hasSupplierPrefix", "hasInformShopReturn", "internalShopName"
             FALSE, FALSE, 'inTRONICS Business',
             -- "shopUsesOMT", "shopCustomerSequenceName", "preferredSupplierOnly"
