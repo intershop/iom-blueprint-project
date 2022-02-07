@@ -5,7 +5,7 @@ better would be something like add_s2s_config_parameter(...)
 */
 
 -- DROP FUNCTION oms.add_config_parameter(bigint, character varying, character varying, character varying);
-CREATE OR REPLACE FUNCTION C(
+CREATE OR REPLACE FUNCTION add_s2s_config_parameter(
 	 p_shop2supplierref bigint,
 	 p_configtype       varchar,
 	 p_key              varchar,
@@ -18,7 +18,7 @@ BEGIN
 	INSERT INTO oms."CustomConfigurationDO" ("id", "shop2SupplierRef", "configType")
 	SELECT nextval('oms."CustomConfigurationDO_id_seq"'), p_shop2supplierref, p_configtype
 	WHERE NOT EXISTS (select 1 FROM oms."CustomConfigurationDO"  
-					      where "shop2SupplierRef" = p_shop2supplierref and "configType" = p_configtype) ;
+					      where "shop2SupplierRef" = p_shop2supplierref and "configType" = p_configtype);
 
 	IF p_key IS NOT NULL THEN
 		INSERT INTO oms."CustomConfigurationDO_AV" ("customConfigurationRef", key, value)
@@ -29,4 +29,4 @@ BEGIN
 END;
 
 $$
-  LANGUAGE plpgsql VOLATILE;
+LANGUAGE plpgsql VOLATILE;

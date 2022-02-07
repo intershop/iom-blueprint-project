@@ -10,7 +10,9 @@ BEGIN
             CONSTRAINT "CustomConfigurationDO_pk" PRIMARY KEY (id),
             CONSTRAINT "Shop2SupplierDO_fk" FOREIGN KEY ("shop2SupplierRef") 
             	REFERENCES oms."Shop2SupplierDO" (id) 
-            	ON UPDATE NO ACTION ON DELETE NO ACTION
+            	ON UPDATE NO ACTION ON DELETE NO ACTION,
+            CONSTRAINT "CustomConfigurationDO_uk" UNIQUE  ("shop2SupplierRef","configType")
+           	
         );
         CREATE SEQUENCE oms."CustomConfigurationDO_id_seq";
     END IF;
