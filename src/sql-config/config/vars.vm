@@ -67,10 +67,23 @@ db_mail int = 1000;
 
 #set($vars_payment_methods = '
 -- payment provider
-pp_dummy int8 = 10000;
+pp_blueprint int8 = 10000;
+
 -- payment methods
+pm_no_payment int = 1;
+pm_cash_in_advance int = 2;
+pm_creditcard int = 3;
+pm_cash_on_delivery int = 4;
 pm_invoice int = 5;
+pm_directdebit int = 7;
+pm_paypal int = 10;
+pm_fastpay int = 24;
+pm_refund int = 40;
 pm_total_zero int = 100;
+--pm_apple_pay = 10000;
+
+--payment decider bean
+db_payment_action int8 = 70;
 ')
 
 #set($vars_jobs = '
