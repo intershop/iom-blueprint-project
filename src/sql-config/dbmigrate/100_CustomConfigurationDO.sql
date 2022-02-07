@@ -5,7 +5,7 @@ BEGIN
         CREATE TABLE oms."CustomConfigurationDO"
         (
             id bigint,
-            "shop2SupplierRef" bigint,
+            "shop2SupplierRef" bigint NOT NULL,
             "configType" character varying(255) NOT NULL,
             CONSTRAINT "CustomConfigurationDO_pk" PRIMARY KEY (id),
             CONSTRAINT "Shop2SupplierDO_fk" FOREIGN KEY ("shop2SupplierRef") 
