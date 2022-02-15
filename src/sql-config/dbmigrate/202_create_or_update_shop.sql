@@ -37,7 +37,7 @@
     $BODY$
 BEGIN
 
-	IF coalesce(p_parentRef, p_parentorganization) is null THEN
+	IF coalesce(p_parentRef::text, p_parentorganization) is null THEN
 		raise exception 'function oms.create_or_update_shop called with neither a parent shop nor a parent organization';
 	END IF;
 
