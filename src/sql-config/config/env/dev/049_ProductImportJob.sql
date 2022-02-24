@@ -75,7 +75,7 @@ BEGIN
             and "receivingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "shopRef" = shop_intronics_b2c)
             and "sendingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "supplierRef" = supplier_wh_texas));
     --PERFORM upsert_eb_value(1330, 'sftp://user:pass@localhost:21', communicationPartner); --FTP_JOB_PULL_FTP_ACCOUNT
-    PERFORM upsert_eb_value(1331, 'directoryOnFTP/', communicationPartner); --FTP_JOB_PULL_DIRECTORY
+    PERFORM upsert_eb_value(1331, 'localdirectory/', communicationPartner); --FTP_JOB_PULL_DIRECTORY
     PERFORM upsert_eb_value(1332, 'importarticle/in/', communicationPartner); --FTP_JOB_PUSH_DIRECTORY
     PERFORM upsert_eb_value(1333, fileNameRegex, communicationPartner); --FTP_JOB_PULL_FILENAME_REGEX
     --PERFORM upsert_eb_value(1338, 'project-files/private-keys/rsa-key-sftp', communicationPartner);
