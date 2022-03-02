@@ -71,6 +71,26 @@ PERFORM create_or_update_shop2supplier(
 	carrier_dhl, FALSE, NULL
 );
 
+-- shop_intronics_b2c -> internal supplier
+PERFORM create_or_update_shop2supplier(
+	-- active, shopref, supplierref
+	TRUE, shop_intronics_b2c, supplier_int,
+	-- shopsuppliername, suppliershopname
+	NULL, NULL,
+	-- returnCarrier, create article mapping, shop article no prefix
+	NULL, TRUE, ''
+);
+
+-- shop_intronics_b2b -> internal supplier
+PERFORM create_or_update_shop2supplier(
+	-- active, shopref, supplierref
+	TRUE, shop_intronics_b2b, supplier_int,
+	-- shopsuppliername, suppliershopname
+	NULL, NULL,
+	-- returnCarrier, create article mapping, shop article no prefix
+	NULL, TRUE, ''
+);
+
 -- enable cash on delivery (COD) for all suppliers (except internal)
 UPDATE oms."Shop2SupplierDO"
 	SET "supplierSupportsCOD" = TRUE
