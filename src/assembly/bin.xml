@@ -46,6 +46,9 @@
             <includes>
                 <include>**/*</include>
             </includes>
+            <excludes>
+            	<exclude>env/dev/productdata.zip</exclude>
+            </excludes>
             <filtered>false</filtered>
             <lineEnding>unix</lineEnding>
         </fileSet>
