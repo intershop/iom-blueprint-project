@@ -47,8 +47,8 @@ BEGIN
 	
 	-- Role webservices
 	IF NOT EXISTS (SELECT NULL FROM oms."RoleDO" WHERE "name" = 'webservices') THEN
-		INSERT INTO "RoleDO" (id,description,"name","version","isSystem") VALUES
-		 (nextval('"RoleDO_id_seq"'),'','webservices',0,false);
+		INSERT INTO "RoleDO" (id,description,"name","version") VALUES
+		 (nextval('"RoleDO_id_seq"'),'','webservices',0);
 	END IF;
 	roleref = (SELECT id FROM "RoleDO" WHERE "name" = 'webservices');
 	
@@ -93,8 +93,8 @@ BEGIN
 	
 	-- Role callcenter_agent
 	IF NOT EXISTS (SELECT NULL FROM oms."RoleDO" WHERE "name" = 'callcenter_agent') THEN
-		INSERT INTO "RoleDO" (id,description,"name","version","isSystem") VALUES
-		 (nextval('"RoleDO_id_seq"'),'','callcenter_agent',0,false);
+		INSERT INTO "RoleDO" (id,description,"name","version") VALUES
+		 (nextval('"RoleDO_id_seq"'),'','callcenter_agent',0);
 	END IF;
 	roleref = (SELECT id FROM "RoleDO" WHERE "name" = 'callcenter_agent');
 	

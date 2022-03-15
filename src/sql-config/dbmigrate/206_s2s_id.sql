@@ -1,3 +1,5 @@
+SET client_min_messages='warning';
+
 -- Function: oms.s2s_id(bigint, bigint)
 
 -- a possible previous version with a different signature must be dropped first (cannot use REPLACE)
