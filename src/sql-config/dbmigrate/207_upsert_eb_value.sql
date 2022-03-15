@@ -38,3 +38,6 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
+
+  comment  on function upsert_eb_value(bigint,text, bigint) is 'Add an entry or update the parameterValue in ExecutionBeanValueDO';
+  

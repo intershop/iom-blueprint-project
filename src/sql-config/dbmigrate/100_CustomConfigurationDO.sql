@@ -15,6 +15,7 @@ BEGIN
            	
         );
         CREATE SEQUENCE oms."CustomConfigurationDO_id_seq";
+        PERFORM   admin.set_table_comment ('oms', 'CustomConfigurationDO','Contains custom property types for the Shop2SuppliersDO relations');
     END IF;
 
     IF false = admin.is_table('oms', 'CustomConfigurationDO_AV') THEN
@@ -28,6 +29,8 @@ BEGIN
               REFERENCES oms."CustomConfigurationDO" (id) 
               ON UPDATE NO ACTION ON DELETE NO ACTION
         );
+        PERFORM   admin.set_table_comment ('oms', 'CustomConfigurationDO_AV','Contains custom property values for the Shop2SuppliersDO relations');
+
     END IF;
 
 END;
