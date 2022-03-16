@@ -23,8 +23,7 @@ BEGIN
 			--select 10,           FALSE,           union all 
 			select 11,          	FALSE          	union all 
 			select 13,          	TRUE           	union all 
-			select 10000,       	TRUE           	union all -- custom rule syncrounous
-			select 10001,			FALSE           		  -- custom rule asyncrounous
+			select 10000,       	TRUE           	-- custom rule syncrounous
 			)
 		LOOP
 	

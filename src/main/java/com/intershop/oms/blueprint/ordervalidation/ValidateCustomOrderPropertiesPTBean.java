@@ -18,16 +18,16 @@ import bakery.util.exception.TechnicalException;
 import bakery.util.exception.ValidationException;
 
 /**
- * Validation fails if custom order level property is given as group|key|value = order|validation|fail-syncrounously
+ * Validation fails if custom order level property is given as group|key|value = order|validation|fail
  */
 @Stateless
-public class ValidateCustomOrderPropertiesASyncrPTBean implements ValidateOrderPT
+public class ValidateCustomOrderPropertiesPTBean implements ValidateOrderPT
 {
-    private Logger log = LoggerFactory.getLogger(ValidateCustomOrderPropertiesASyncrPTBean.class);
+    private Logger log = LoggerFactory.getLogger(ValidateCustomOrderPropertiesPTBean.class);
 
     private static final String GROUP   = "order";
     private static final String KEY     = "validation";
-    private static final String VALUE   = "fail-asyncrounously-autocancel";
+    private static final String VALUE   = "fail";
 
     @Override
     public ProcessContainer execute(ProcessContainer container) throws ValidationException, NoObjectException, DatabaseException, ModifiedObjectException

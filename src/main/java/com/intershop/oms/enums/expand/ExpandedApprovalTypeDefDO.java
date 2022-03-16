@@ -12,11 +12,12 @@ import bakery.util.StringUtils;
 @PersistedEnumerationTable(ApprovalTypeDefDO.class)
 public enum ExpandedApprovalTypeDefDO implements EnumInterface
 {
-
     /**
-     * Minimum ID for custom entries: 10000
+     * Start with 10000 to avoid conflict with ApprovalTypeDefDO.
+     * The name must be unique across both classes.
+     * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
-    EXAMPLE(-10010, "")
+    PAYMENT_METHOD(Integer.valueOf(10000), "") // use a decision bean instead of jndi
     ;
 
     private Integer id;
@@ -24,10 +25,8 @@ public enum ExpandedApprovalTypeDefDO implements EnumInterface
 
     private ExpandedApprovalTypeDefDO(Integer id, String jndiName)
     {
-
         this.id = id;
         this.jndiName = jndiName;
-
     }
 
     @Override
