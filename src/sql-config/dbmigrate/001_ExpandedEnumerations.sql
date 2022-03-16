@@ -1,12 +1,22 @@
 DO $$
 BEGIN
 
---examples
+	INSERT INTO oms."OrderValidationRuleDefDO"(id, name, rank, mandatory, description) VALUES
+		(10000, 'ValidateCustomOrderPropertiesPTBean', 1000, false, 'Validation fails if custom order level property group|key|value = order|validation|fail-syncrounously is given.')
+	ON CONFLICT (id) DO NOTHING;
+
+	INSERT INTO oms."DecisionBeanDefDO"(id, description) values
+		(10000, 'COD_PAYMENT_DECISION_BEAN')
+	ON CONFLICT (id) DO NOTHING;
+
+	INSERT INTO oms."DecisionBeanDefDO"(id, description) values
+		(10001, 'MAX_ORDER_VALUE_DECISION_BEAN')
+	ON CONFLICT (id) DO NOTHING;
+
+
+--further examples
 
 /*
-	INSERT INTO oms."DecisionBeanDefDO"(id, description) values
-		(10000, 'Example')
-	ON CONFLICT (id) DO NOTHING;
 
 	INSERT INTO oms."DocumentMapperDefDO"(id,name) values
 		(1000, 'Example')
@@ -35,9 +45,6 @@ BEGIN
 		(1000, 'Example', false, 'Example', 30)
 	ON CONFLICT (id) DO NOTHING;
 
-	INSERT INTO oms."OrderValidationRuleDefDO"(id, name, rank, mandatory, description) VALUES
-		(10000, 'ValidateMandatoryPropertiesPTBean', 999, false, 'ValidateMandatoryPropertiesPTBean')
-	ON CONFLICT (id) DO NOTHING;
 
 	INSERT INTO oms."TransformerBeanDefDO"(id, name) VALUES
 		(1000, 'Example')
