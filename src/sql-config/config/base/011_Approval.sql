@@ -1,10 +1,52 @@
 SET client_min_messages=error;
-#parse("src/sql-config/config/vars.vm")
+DO $$
+DECLARE
+
+--see CountryDefDO for the ids
+
+
+
+
+
+
 -- import global variables
-$vars_shop_supplier
+
+-- internal
+shop_int int8 = 1;
+supplier_int int8 = 1;
+
+-- parent shops
+
+
+-- actual shops
+shop_intronics_b2c int8 = 10010;
+shop_intronics_b2b int8 = 10020;
+
+-- all non-abstract shops
+shops_all int8[] = ARRAY[shop_intronics_b2c, shop_intronics_b2b];
+
+-- all abstract shops
+shops_parent_all int8[] = ARRAY[]::int8[];
+
+-- Supplier
+supplier_wh_texas int8 = 20010;
+supplier_wh_arizona int8 = 20020;
+supplier_wh_losangeles int8 = 20030;
+supplier_wh_detroit int8 = 20040;
+supplier_retailer_losangeles int8 = 20050;
+
+-- all suppliers
+suppliers_all int8[] = ARRAY[supplier_wh_texas, supplier_wh_arizona, supplier_wh_losangeles, supplier_wh_detroit, supplier_retailer_losangeles];
+
+-- payment provider
+--pp_paypal int8 = 100;
+
+
+
+
 
 -- PAUSE velocity parser
-#[[
+
 -- local variables go here
 shopId int8;
 -- end variables block with 
@@ -81,6 +123,6 @@ BEGIN
 
 END;
 -- RESUME velocity parser
-]]#
+
 -- dollar quoting
-$do;
+$$;
