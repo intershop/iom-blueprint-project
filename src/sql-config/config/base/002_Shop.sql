@@ -27,7 +27,7 @@ PERFORM create_or_update_shop(
             -- "shopUsesOMT", "shopCustomerSequenceName", "preferredSupplierOnly"
             FALSE, NULL, FALSE,
             -- "orderProcessingDelay", "shopOrderSequenceNumberFormatString"
-            '0m', NULL,
+            NULL, NULL,
             -- "orderTokenValidityDuration"
             NULL, 
             -- "amountDaysForPaymentReminderMailOfPrepaidOrders", "amountDaysForAutoCancellationOfPrepaidOrders", "isReservationWithDOSE"
@@ -39,7 +39,7 @@ PERFORM create_or_update_shop(
 -- inTRONICS b2b Shop
 PERFORM create_or_update_shop(
             -- "id", "active", "availabilityTolerance", "isB2B"
-            shop_intronics_b2b, TRUE, 0, FALSE,
+            shop_intronics_b2b, TRUE, 0, TRUE,
             -- "countryDefRef", "mapArticleId", "name"
             cc_us, TRUE, 'inTRONICS Business',
             -- "orderOptimizeDefRef", "overwriteSelectedSupplierAllowed", "parentRef", "parentOrganization"
@@ -53,7 +53,7 @@ PERFORM create_or_update_shop(
             -- "shopUsesOMT", "shopCustomerSequenceName", "preferredSupplierOnly"
             FALSE, NULL, FALSE,
             -- "orderProcessingDelay", "shopOrderSequenceNumberFormatString"
-            '0m', NULL,
+            NULL, NULL,
             -- "orderTokenValidityDuration"
             NULL, 
             -- "amountDaysForPaymentReminderMailOfPrepaidOrders", "amountDaysForAutoCancellationOfPrepaidOrders", "isReservationWithDOSE"
