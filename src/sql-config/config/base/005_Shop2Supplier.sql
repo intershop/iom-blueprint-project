@@ -81,6 +81,9 @@ PERFORM create_or_update_shop2supplier(
 	NULL, TRUE, ''
 );
 
+
+/* all shops must be mapped to the internal supplier */
+
 -- shop_intronics_b2b -> internal supplier
 PERFORM create_or_update_shop2supplier(
 	-- active, shopref, supplierref
