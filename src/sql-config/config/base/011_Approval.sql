@@ -19,8 +19,8 @@ BEGIN
     	/* approval_type: 10000=custom type, 3=general type
     	   decisionBean: 10000=COD_PAYMENT_DECISION_BEAN, 10001=MAX_ORDER_VALUE_DECISION_BEAN */
     	FOR rec in 
-    		select 10000 as approval_type, 'Cash on delivery approval' as apr_name, 10000 as bean_ref   union all
-    		select 3                     , 'Order value approval',                  10001
+    		select 10000 as approval_type, 'Cash on delivery approval' as apr_name, 20000 as bean_ref   union all
+    		select 3                     , 'Order value approval',                  20001
     	LOOP
     	
 			IF NOT EXISTS ( select * FROM "Shop2Supplier2ApprovalTypeDefDO"
