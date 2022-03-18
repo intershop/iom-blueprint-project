@@ -9,8 +9,11 @@ import bakery.util.DeploymentConfig;
 public enum ExpandedProcessTaskDefDO implements EnumInterface
 {
     /**
-     * PLEASE START AFTER EXAMPLE WITH ID 1000 and go up THATS IMPORTANT !!!
+     * Start with 10000 to avoid conflict with ProcessTaskDefDO.
+     * The name must be unique across both classes.
+     * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
+    
     EXAMPLE_PT(-999, "CheckSendDebitorPT", "java:global/example-app/SkipSendDebitorPTBean")
     ;
 
@@ -20,7 +23,6 @@ public enum ExpandedProcessTaskDefDO implements EnumInterface
 
     private ExpandedProcessTaskDefDO(Integer id, String name, String jndiName)
     {
-
         this.id = id;
         this.name = name;
         this.jndiName = String.format(jndiName, DeploymentConfig.APP_VERSION);
@@ -46,9 +48,7 @@ public enum ExpandedProcessTaskDefDO implements EnumInterface
     }
 
     /**
-     * get list of expanded enums
-     *
-     * @return
+     * @return list of expanded enums
      */
     public final EnumSet<ExpandedProcessTaskDefDO> getExpandedEnums()
     {
@@ -56,12 +56,11 @@ public enum ExpandedProcessTaskDefDO implements EnumInterface
     }
 
     /**
-     * get list of all enums
-     *
-     * @return
+     * @return list of all enums
      */
     public final EnumSet<ProcessTaskDefDO> getAllEnums()
     {
         return EnumSet.allOf(ProcessTaskDefDO.class);
     }
+    
 }

@@ -13,11 +13,13 @@ import bakery.persistence.expand.OrderValidationRuleDefDOEnumInterface;
 @PersistedEnumerationTable( OrderValidationRuleDefDO.class )
 public enum ExpandedOrderValidationRuleDefDO implements OrderValidationRuleDefDOEnumInterface
 {
+    
     /**
-     * Minimum ID for custom entries: 10000 length, restriction for name: 50
+     * Start with 10000 to avoid conflict with OrderValidationRuleDefDO.
      * The name must be unique across both classes.
-     * Values with negative id are meant as syntax example and are ignored (won't get persisted within the db).
+     * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
+
     CUSTOM_PROPERTY_VALIDATION (Integer.valueOf(10000), "ValidateCustomOrderPropertiesPTBean", "java:global/iom-blueprint-project/ValidateCustomOrderPropertiesPTBean!bakery.logic.service.order.task.ValidateOrderPT", 1000, false, "Validation fails if custom order level property group|key|value = order|validation|fail-syncrounously is given.")
     ;
     
@@ -75,7 +77,7 @@ public enum ExpandedOrderValidationRuleDefDO implements OrderValidationRuleDefDO
     }
 
     /**
-     * Priority the rule should be checked.
+     * Sorted priority the rule should be check in.
      */
     @Override
     @Column(name = "rank", nullable = false)
@@ -84,11 +86,6 @@ public enum ExpandedOrderValidationRuleDefDO implements OrderValidationRuleDefDO
         return this.rank;
     }
 
-    /**
-     * Priority the rule should be checked.
-     * 
-     * @param rank
-     */
     public void setRank(int rank)
     {
         this.rank = rank;

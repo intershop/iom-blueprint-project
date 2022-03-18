@@ -27,38 +27,25 @@ public final class ExpandEnumerations
     // increase this when adding new DefDOs
     public static final int DEFDO_COUNT = 20;
 
-    private static ExpandedArticleExportConfigBeanDefDO[] enumValuesExpandedArticleExportConfigBeanDefDO = ExpandedArticleExportConfigBeanDefDO
-                    .values();
+    private static ExpandedArticleExportConfigBeanDefDO[] enumValuesExpandedArticleExportConfigBeanDefDO = ExpandedArticleExportConfigBeanDefDO.values();
     private static ExpandedDecisionBeanDefDO[] enumValuesExpandedDecisionBeanDefDO = ExpandedDecisionBeanDefDO.values();
     private static ExpandedDocumentMapperDefDO[] enumValuesExpandedDocumentMapperDefDO = ExpandedDocumentMapperDefDO.values();
-    private static ExpandedExecutionBeanDefDO[] enumValuesExpandedExecutionBeanDefDO = ExpandedExecutionBeanDefDO
-                    .values();
-    private static ExpandedIdentCodeGenerationBeanDefDO[] enumValuesExpandedIdentCodeGenerationBeanDefDO = ExpandedIdentCodeGenerationBeanDefDO
-                    .values();
-    private static ExpandedImportConfigurationBeanDefDO[] enumValuesExpandedImportConfigurationBeanDefDO = ExpandedImportConfigurationBeanDefDO
-                    .values();
-    private static ExpandedOrderExportConfigBeanDefDO[] enumValuesExpandedOrderExportConfigBeanDefDO = ExpandedOrderExportConfigBeanDefDO
-                    .values();
-    private static ExpandedSalesPriceCalculatorBeanDefDO[] enumValuesExpandedSalesPriceCalculatorBeanDefDO = ExpandedSalesPriceCalculatorBeanDefDO
-                    .values();
-    private static ExpandedTransformerBeanDefDO[] enumValuesExpandedTransformerBeanDefDO = ExpandedTransformerBeanDefDO
-                    .values();
-    private static ExpandedExecutionBeanKeyDefDO[] enumValuesExpandedExecutionBeanKeyDefDO = ExpandedExecutionBeanKeyDefDO
-                    .values();
+    private static ExpandedExecutionBeanDefDO[] enumValuesExpandedExecutionBeanDefDO = ExpandedExecutionBeanDefDO.values();
+    private static ExpandedIdentCodeGenerationBeanDefDO[] enumValuesExpandedIdentCodeGenerationBeanDefDO = ExpandedIdentCodeGenerationBeanDefDO.values();
+    private static ExpandedImportConfigurationBeanDefDO[] enumValuesExpandedImportConfigurationBeanDefDO = ExpandedImportConfigurationBeanDefDO.values();
+    private static ExpandedOrderExportConfigBeanDefDO[] enumValuesExpandedOrderExportConfigBeanDefDO = ExpandedOrderExportConfigBeanDefDO.values();
+    private static ExpandedSalesPriceCalculatorBeanDefDO[] enumValuesExpandedSalesPriceCalculatorBeanDefDO = ExpandedSalesPriceCalculatorBeanDefDO.values();
+    private static ExpandedTransformerBeanDefDO[] enumValuesExpandedTransformerBeanDefDO = ExpandedTransformerBeanDefDO.values();
+    private static ExpandedExecutionBeanKeyDefDO[] enumValuesExpandedExecutionBeanKeyDefDO = ExpandedExecutionBeanKeyDefDO.values();
     private static ExpandedApprovalTypeDefDO[] enumValuesExpandedApprovalTypeDefDO = ExpandedApprovalTypeDefDO.values();
-    private static ExpandedOrderValidationRuleDefDO[] enumValuesExpandedOrderValidationRuleDefDO = ExpandedOrderValidationRuleDefDO
-                    .values();
+    private static ExpandedOrderValidationRuleDefDO[] enumValuesExpandedOrderValidationRuleDefDO = ExpandedOrderValidationRuleDefDO.values();
     private static ExpandedJobDefDO[] enumValuesExpandedJobDefDO = ExpandedJobDefDO.values();
-    private static ExpandedOrderSupplierEvaluationRuleDefDO[] enumValuesExpandedOrderSupplierEvaluationRuleDefDO = ExpandedOrderSupplierEvaluationRuleDefDO
-                    .values();
-    private static ExpandedNumberRangeFormatterDefDO[] enumValuesExpandedNumberRangeFormatterDefDO = ExpandedNumberRangeFormatterDefDO
-                    .values();
+    private static ExpandedOrderSupplierEvaluationRuleDefDO[] enumValuesExpandedOrderSupplierEvaluationRuleDefDO = ExpandedOrderSupplierEvaluationRuleDefDO.values();
+    private static ExpandedNumberRangeFormatterDefDO[] enumValuesExpandedNumberRangeFormatterDefDO = ExpandedNumberRangeFormatterDefDO.values();
     private static ExpandedPaymentDefDO[] enumValuesExpandedPaymentDefDO = ExpandedPaymentDefDO.values();
     private static ExpandedMessageTypeDefDO[] enumValuesExpandedMessageTypeDefDO = ExpandedMessageTypeDefDO.values();
-    private static ExpandedTransmissionTypeDefDO[] enumValuesExpandedTransmissionTypeDefDO = ExpandedTransmissionTypeDefDO
-                    .values();
+    private static ExpandedTransmissionTypeDefDO[] enumValuesExpandedTransmissionTypeDefDO = ExpandedTransmissionTypeDefDO.values();
     private static ExpandedProcessTaskDefDO[] enumValuesExpandedProcessTaskDefDO = ExpandedProcessTaskDefDO.values();
-    
     private static ExpandedEventDefDO[] enumValuesExpandedEventDefDO = ExpandedEventDefDO.values();
 
     private ExpandEnumerations()

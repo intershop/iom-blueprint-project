@@ -12,13 +12,22 @@ import bakery.util.StringUtils;
 @PersistedEnumerationTable(DecisionBeanDefDO.class)
 public enum ExpandedDecisionBeanDefDO implements EnumInterface
 {
+    
     /**
      * Start with 10000 to avoid conflict with DecisionBeanDefDO.
      * The name must be unique across both classes.
      * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
-    COD_PAYMENT_DECISION_BEAN(Integer.valueOf(10000), "java:global/iom-blueprint-project/CashOnDeliveryApprovalDecisionBean"),
-    MAX_ORDER_VALUE_DECISION_BEAN(Integer.valueOf(10001), "java:global/iom-blueprint-project/OrderValueApprovalDecisionBean")
+    
+    // general 1xxxx
+    GENERAL_DECISION_BEAN(Integer.valueOf(-10000), "java:global/iom-blueprint-project/TBD"),
+    
+    // order approval 2xxxx
+    COD_PAYMENT_DECISION_BEAN(Integer.valueOf(20000), "java:global/iom-blueprint-project/CashOnDeliveryApprovalDecisionBean"),
+    MAX_ORDER_VALUE_DECISION_BEAN(Integer.valueOf(20001), "java:global/iom-blueprint-project/OrderValueApprovalDecisionBean"),
+    
+    // rma approval 3xxxx
+    RMA_DECISION_BEAN(Integer.valueOf(-30000), "java:global/iom-blueprint-project/TBD"),
     ;
 
     private Integer id;

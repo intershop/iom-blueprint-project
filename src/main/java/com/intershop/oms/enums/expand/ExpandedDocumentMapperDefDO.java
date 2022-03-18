@@ -19,10 +19,12 @@ import bakery.util.ejb.EJBHelper;
 @PersistedEnumerationTable(DocumentMapperDefDO.class)
 public enum ExpandedDocumentMapperDefDO implements DocumentMapperDefDOEnumInterface
 {
-    // start with 1000 to avoid conflicts with DocumentMapperDefDO
-    // the name must be unique across both classes
-    // values with negative id are meant as syntax example and are ignored
-    // (won't get persisted within the DB)
+    
+    /**
+     * Start with 10000 to avoid conflict with DocumentMapperDefDO.
+     * The name must be unique across both classes.
+     * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
+     */
     EXAMPLE(-999, "java:global/example-app/ExampleReturnSlipMapperBean", "example document mapper discription")
     ;
 
@@ -38,9 +40,6 @@ public enum ExpandedDocumentMapperDefDO implements DocumentMapperDefDOEnumInterf
         this.description = description;
     }
 
-    /**
-     * @return Id of the document mapper
-     */
     @Override
     @Id
     public Integer getId()
@@ -48,9 +47,6 @@ public enum ExpandedDocumentMapperDefDO implements DocumentMapperDefDOEnumInterf
         return this.id;
     }
 
-    /**
-     * @param the Id of the document mapper
-     */
     protected void setId(Integer id)
     {
         this.id = id;
@@ -62,10 +58,7 @@ public enum ExpandedDocumentMapperDefDO implements DocumentMapperDefDOEnumInterf
     {
         return this.description;
     }
-
-    /**
-     * @return the name of the document mapper
-     */
+    
     @Override
     @Column(name = "\"name\"", length = 50, nullable = false)
     public String getName()
@@ -83,8 +76,7 @@ public enum ExpandedDocumentMapperDefDO implements DocumentMapperDefDOEnumInterf
     @Transient
     public <T> T getDocumentMapper(Class<T> type)
     {
-        return new EJBHelper().getExpectedBean(String.format(this.jndiName, bakery.util.DeploymentConfig.APP_VERSION),
-                        type);
+        return new EJBHelper().getExpectedBean(String.format(this.jndiName, bakery.util.DeploymentConfig.APP_VERSION), type);
     }
 
 }

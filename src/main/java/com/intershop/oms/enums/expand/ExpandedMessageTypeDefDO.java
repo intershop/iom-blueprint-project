@@ -9,11 +9,12 @@ public enum ExpandedMessageTypeDefDO implements MessageTypeDefDOEnumInterface
 {
 
     /**
-     * Minimum ID for custom entries: 1000
+     * Start with 10000 to avoid conflict with MessageTypeDefDO.
+     * The name must be unique across both classes.
+     * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
     EXAMPLE_SEND_CUSTOMER_MAIL_ORDER( -9999, "Send customer mail - order" )
     ;
-
 
     private Integer id;
     private String description;
