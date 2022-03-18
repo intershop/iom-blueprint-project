@@ -1,16 +1,31 @@
 DO $$
 BEGIN
 
+	--ORDER VALIDATION RULES
 	INSERT INTO oms."OrderValidationRuleDefDO"(id, name, rank, mandatory, description) VALUES
-		(10000, 'ValidateCustomOrderPropertiesPTBean', 1000, false, 'Validation fails if custom order level property group|key|value = order|validation|fail-syncrounously is given.')
+		(10000, 'ValidateCustomOrderPropertiesPTBean', 1000, false, 'Validation fails if custom order level property group|key|value = order|validation|fail is given.')
+	ON CONFLICT (id) DO NOTHING;
+
+
+
+	--DECISION BEANS
+	INSERT INTO oms."DecisionBeanDefDO"(id, description) values
+		(20000, 'codPaymentDecisionBean')
 	ON CONFLICT (id) DO NOTHING;
 
 	INSERT INTO oms."DecisionBeanDefDO"(id, description) values
-		(10000, 'COD_PAYMENT_DECISION_BEAN')
+		(20001, 'maxOrderValueDecisionBean')
 	ON CONFLICT (id) DO NOTHING;
 
 	INSERT INTO oms."DecisionBeanDefDO"(id, description) values
-		(10001, 'MAX_ORDER_VALUE_DECISION_BEAN')
+		(40000, 'orderTransmissionDecisionBean')
+	ON CONFLICT (id) DO NOTHING;
+
+
+
+	--EXECUTION BEANS
+	INSERT INTO oms."ExecutionBeanDefDO"(id, "decisionBeanDefRef", description) values
+		(10000, null,  'customOrderMessageTransmitter')
 	ON CONFLICT (id) DO NOTHING;
 
 

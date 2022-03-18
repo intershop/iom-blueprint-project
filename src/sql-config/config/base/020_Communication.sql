@@ -12,30 +12,11 @@ supplierIds int8[];
 senderId int8;
 receiverId int8;
 transmitter varchar = 'customOrderMessageTransmitter';
+decisionBean varchar = 'orderTransmissionDecisionBean';
 -- end variables block with
 BEGIN
 
-	/*
-	TODOS:
-		-  *CHECK* have all required PartnerReferrerDO (who is an actor and which role he has)
-
-		- have CommunicationDO for order export (which type/form of communication is supported)
-			<-- have ext. ExecutionBeanDefDO ! 10000
-			<-- have ext. decision bean ?
-		- have all required CommunicationPartnerDO (who is sending/receiving which type/form of information in which way and how often to retry)
-		- configure execution of order export / + DecisionBean (TBI)
-	*/
-
-	-- insert the transmitter if not existing yet
-	IF 0 = (SELECT count(*) FROM oms."CommunicationDO" WHERE key = transmitter)
-	THEN
-		INSERT INTO oms."ExecutionBeanDefDO"
-			(id, "decisionBeanDefRef", description)
-		VALUES
-			(10000, null, transmitter);
-	END IF;
-
-	-- register the customOrderMessageTransmitter
+	-- REGISTER customOrderMessageTransmitter
 	INSERT INTO oms."CommunicationDO"
 	(
     	id,
@@ -60,7 +41,7 @@ BEGIN
 		(SELECT id FROM oms."TransmissionFormDefDO" WHERE name = 'PUSH')
     WHERE 1 NOT IN (SELECT 1 FROM oms."CommunicationDO" where key = transmitter);
 
-	-- enable customOrderMessageTransmitter for both shops and it's suppliers
+	-- CONFIGURE that shops and it's suppliers exporting orders using customOrderMessageTransmitter
 	FOREACH shopId IN ARRAY shops_all LOOP
 	
 		-- iterate all suppliers of the shop and insert if not existing yet
@@ -72,8 +53,8 @@ BEGIN
 			receiverId := (SELECT id FROM oms."PartnerReferrerDO" WHERE "supplierRef" = supplierId);
 
 			IF NOT EXISTS (SELECT * FROM "CommunicationPartnerDO"
-				WHERE "receivingPartnerReferrerRef" = senderId
-				AND "sendingPartnerReferrerRef" = receiverId
+				WHERE "sendingPartnerReferrerRef" = senderId
+				AND "receivingPartnerReferrerRef" = receiverId				
 				AND "communicationRef" = (SELECT id FROM oms."CommunicationDO" WHERE key = transmitter))
 			THEN
 
@@ -83,8 +64,8 @@ BEGIN
 					"decisionBeanDefRef",
 					"splitTransmission",
 					"communicationRef",
-					"receivingPartnerReferrerRef",
 					"sendingPartnerReferrerRef",
+					"receivingPartnerReferrerRef",
 					"maxNoOfRetries",
 					"retryDelay",
 					"mergeTypeDefRef",
@@ -92,7 +73,7 @@ BEGIN
 				)
 				SELECT 
 					nextval('"CommunicationPartnerDO_id_seq"'),
-					null, -- TODO to skip the export by order property
+					(SELECT id FROM oms."DecisionBeanDefDO" WHERE description = decisionBean), -- skip export ?
 					false,
 					(SELECT id FROM oms."CommunicationDO" WHERE key = transmitter),
 					senderId,
