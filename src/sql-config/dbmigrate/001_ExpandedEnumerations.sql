@@ -28,6 +28,12 @@ BEGIN
 		(10000, null,  'customOrderMessageTransmitter')
 	ON CONFLICT (id) DO NOTHING;
 
+	--approval types
+	INSERT INTO oms."ApprovalTypeDefDO"(id, "name", "ObjectTypeName") values
+		(10000, 'PaymentMethod',  'Order')
+	ON CONFLICT (id) DO NOTHING;
+
+
 
 --further examples
 

@@ -6,6 +6,7 @@ import javax.persistence.Transient;
 
 import bakery.persistence.annotation.PersistedEnumerationTable;
 import bakery.persistence.dataobject.configuration.common.ApprovalTypeDefDO;
+import bakery.persistence.dataobject.configuration.common.ObjectTypeDefDO;
 import bakery.persistence.dataobject.transformer.EnumInterface;
 import bakery.util.StringUtils;
 
@@ -50,5 +51,18 @@ public enum ExpandedApprovalTypeDefDO implements EnumInterface
     {
         return this.jndiName;
     }
+    
+    
+    @Column(name = "`ObjectTypeName`")
+	public String getObjectTypeName()
+	{
+		return ObjectTypeDefDO.ORDER.getName();
+	}
+ 
+	protected void setObjectTypeName(String name)
+	{
+		//dummy setter for the needs of hibernate
+	}
+ 
 
 }
