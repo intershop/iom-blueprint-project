@@ -25,10 +25,8 @@ public enum ExpandedArticleExportConfigBeanDefDO implements EnumInterface
 
     private ExpandedArticleExportConfigBeanDefDO(Integer id, String jndiName)
     {
-
         this.id = id;
         this.jndiName = jndiName;
-
     }
 
     @Override

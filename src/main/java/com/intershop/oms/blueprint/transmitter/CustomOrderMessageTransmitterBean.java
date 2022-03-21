@@ -78,7 +78,7 @@ public class CustomOrderMessageTransmitterBean implements MessageTransmitter
          */
         
         /**
-         * Make 3rd party API call using storeOrder-object. 
+         * Make 3rd party API call using storeOrder-object.
          */
         
         log.debug("Finished transmitting order " + orderId);
