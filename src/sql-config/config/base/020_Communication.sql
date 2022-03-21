@@ -49,7 +49,7 @@ BEGIN
 	FOREACH shopId IN ARRAY shops_all LOOP
 	
 		-- iterate all suppliers of the shop and insert if not existing yet
-		supplierIds := ARRAY(SELECT id FROM oms."Shop2SupplierDO" WHERE "shopRef" = shopId and "supplierRef" != internal_supplier_id);
+		supplierIds := ARRAY(SELECT "supplierRef" FROM oms."Shop2SupplierDO" WHERE "shopRef" = shopId and "supplierRef" != internal_supplier_id);
 		senderId := (SELECT id FROM oms."PartnerReferrerDO" WHERE "shopRef" = shopId);
 
 		FOREACH supplierId IN ARRAY supplierIds LOOP
@@ -77,7 +77,7 @@ BEGIN
 				)
 				SELECT 
 					nextval('"CommunicationPartnerDO_id_seq"'),
-					null, --(SELECT id FROM oms."DecisionBeanDefDO" WHERE description = decisionBean), -- skip export ?
+					(SELECT id FROM oms."DecisionBeanDefDO" WHERE description = decisionBean), -- skip export ?
 					false,
 					communicationId,
 					senderId,
