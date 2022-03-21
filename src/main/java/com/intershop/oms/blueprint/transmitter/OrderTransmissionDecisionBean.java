@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import bakery.logic.service.util.AbstractExecutionDecider;
+import bakery.logic.service.util.ExecutionDecider;
+import bakery.persistence.dataobject.configuration.connections.CommunicationPartnerDO;
 import bakery.persistence.dataobject.order.OrderDO;
 import bakery.persistence.dataobject.order.OrderTransmissionDO;
 import bakery.util.exception.TechnicalException;
@@ -17,7 +19,8 @@ import bakery.util.exception.TechnicalException;
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
-public class OrderTransmissionDecisionBean extends AbstractExecutionDecider<OrderTransmissionDO> // TODO: is this related to OrderTransmissionDO ?
+public class OrderTransmissionDecisionBean extends AbstractExecutionDecider<CommunicationPartnerDO> implements ExecutionDecider<CommunicationPartnerDO>
+
 {
     private static final String GROUP   = "order";
     private static final String KEY     = "export";
@@ -26,7 +29,7 @@ public class OrderTransmissionDecisionBean extends AbstractExecutionDecider<Orde
     private Logger log = LoggerFactory.getLogger(OrderTransmissionDecisionBean.class);
     
     @Override
-    public boolean isExecutionRequired(OrderDO orderDO, OrderTransmissionDO orderTransmissionDO) // TODO: is this related to OrderTransmissionDO ?
+    public boolean isExecutionRequired(OrderDO orderDO, CommunicationPartnerDO communicationPartner)
     {
         if (null == orderDO)
         {

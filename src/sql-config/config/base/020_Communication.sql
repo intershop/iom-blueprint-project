@@ -6,6 +6,7 @@ $vars_shop_supplier
 -- PAUSE velocity parser
 #[[
 -- local variables go here
+internal_supplier_id int8 = 1;
 shopId int8;
 supplierId int8;
 supplierIds int8[];
@@ -13,6 +14,7 @@ senderId int8;
 receiverId int8;
 transmitter varchar = 'customOrderMessageTransmitter';
 decisionBean varchar = 'orderTransmissionDecisionBean';
+communicationId int8;
 -- end variables block with
 BEGIN
 
@@ -41,11 +43,13 @@ BEGIN
 		(SELECT id FROM oms."TransmissionFormDefDO" WHERE name = 'PUSH')
     WHERE 1 NOT IN (SELECT 1 FROM oms."CommunicationDO" where key = transmitter);
 
+	communicationId := (SELECT id FROM oms."CommunicationDO" WHERE key = transmitter);
+
 	-- CONFIGURE that shops and it's suppliers exporting orders using customOrderMessageTransmitter
 	FOREACH shopId IN ARRAY shops_all LOOP
 	
 		-- iterate all suppliers of the shop and insert if not existing yet
-		supplierIds := ARRAY(SELECT id FROM oms."Shop2SupplierDO" WHERE "shopRef" = shopId);
+		supplierIds := ARRAY(SELECT id FROM oms."Shop2SupplierDO" WHERE "shopRef" = shopId and "supplierRef" != internal_supplier_id);
 		senderId := (SELECT id FROM oms."PartnerReferrerDO" WHERE "shopRef" = shopId);
 
 		FOREACH supplierId IN ARRAY supplierIds LOOP
@@ -55,7 +59,7 @@ BEGIN
 			IF NOT EXISTS (SELECT * FROM "CommunicationPartnerDO"
 				WHERE "sendingPartnerReferrerRef" = senderId
 				AND "receivingPartnerReferrerRef" = receiverId				
-				AND "communicationRef" = (SELECT id FROM oms."CommunicationDO" WHERE key = transmitter))
+				AND "communicationRef" = communicationId)
 			THEN
 
 				INSERT INTO oms."CommunicationPartnerDO"
@@ -73,9 +77,9 @@ BEGIN
 				)
 				SELECT 
 					nextval('"CommunicationPartnerDO_id_seq"'),
-					(SELECT id FROM oms."DecisionBeanDefDO" WHERE description = decisionBean), -- skip export ?
+					null, --(SELECT id FROM oms."DecisionBeanDefDO" WHERE description = decisionBean), -- skip export ?
 					false,
-					(SELECT id FROM oms."CommunicationDO" WHERE key = transmitter),
+					communicationId,
 					senderId,
 					receiverId,
 					5,

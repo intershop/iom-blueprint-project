@@ -12,11 +12,16 @@ userref int8;
 roleref int8;
 rightref int8;
 
+--shop
 webservice_user_name varchar = 'webservice_shop'; --if you change the name, change cryptedPassword too
-webservice_user_rights int8[] = ARRAY[123,124,125,126,131,137,139,140,141,142,143,144,145,146,147,148];
+webservice_user_rights int8[] = ARRAY[1,2,123,124,125,126,131,137,139,140,141,142,143,144,145,146,147,148];
+
+--supplier TODO
+--supplier_webservice_user_name varchar = 'webservice_supplier'; --if you change the name, change cryptedPassword too
+--supplier_webservice_user_rights int8[] = ARRAY[];
 
 callcenter_agent_name varchar = 'callcenter_agent'; --if you change the name, change cryptedPassword too
-callcenter_agent_rights int8[] = ARRAY[1,2,3,4,5,6,7,8,9,10,11,12,13,17,19,20,21,25,26,27,28,29,30,31,32,33,
+callcenter_agent_rights int8[] = ARRAY[3,4,5,6,7,8,9,10,11,12,13,17,19,20,21,25,26,27,28,29,30,31,32,33,
 									   34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,56,57,58,62,
 									   63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,106,107,108,109,112,
 									   113,114,115,116,117,118,119,120,121,132,133,135,136,138];
