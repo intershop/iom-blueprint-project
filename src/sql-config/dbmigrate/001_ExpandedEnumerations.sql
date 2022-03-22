@@ -28,7 +28,12 @@ BEGIN
 		(10000, null,  'customOrderMessageTransmitter')
 	ON CONFLICT (id) DO NOTHING;
 
-	--approval types
+	--ROUTING RULES
+	INSERT INTO oms."OrderSupplierEvaluationRuleDefDO"(id, "name", "description", "rank", "mandatory") values
+		(10000, 'OneSupplierOnlyRoutingRulePTBean', 'Determines that only one supplier is used for the entire order delivery.', 50, false)
+	ON CONFLICT (id) DO NOTHING;
+
+	--APPROVAL TYPES
 	INSERT INTO oms."ApprovalTypeDefDO"(id, "name", "ObjectTypeName") values
 		(10000, 'PaymentMethod',  'Order')
 	ON CONFLICT (id) DO NOTHING;
