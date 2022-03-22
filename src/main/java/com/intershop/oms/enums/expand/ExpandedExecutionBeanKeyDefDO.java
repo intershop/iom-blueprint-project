@@ -14,11 +14,12 @@ public enum ExpandedExecutionBeanKeyDefDO implements ExecutionBeanKeyDefDOEnumIn
 {
 
     /**
-     * Minimum ID for custom entries: 10000
+     * Start with 10000 to avoid conflict with ExecutionBeanKeyDefDO.
+     * The name must be unique across both classes.
+     * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
-    /*
-    EXAMPLE_SHOPCUSTOMERMAILSENDERBEAN_SHOP_EMAIL_ADDRESS( -123, ExpandedExecutionBeanDefDO.EXAMPLE.getId(), "shopEmailAddress", ParameterTypeDefDO.EMAIL, Flag.MANDATORY, null, Flag.ACTIVE_OMT )   
-    */
+
+    // FIXME EXAMPLE_SHOPCUSTOMERMAILSENDERBEAN_SHOP_EMAIL_ADDRESS( -123, ExpandedExecutionBeanDefDO.EXAMPLE.getId(), "shopEmailAddress", ParameterTypeDefDO.EMAIL, Flag.MANDATORY, null, Flag.ACTIVE_OMT )   
     ;
 
     private Integer id;
@@ -114,13 +115,8 @@ public enum ExpandedExecutionBeanKeyDefDO implements ExecutionBeanKeyDefDOEnumIn
     }
 
     /**
-     * <p>
-     * Default parameterValue zum parameterKey.
-     * </p>
-     * <p>
-     * Maximale Anzahl erlaubter Zeichen:
-     * {@value ExecutionBeanKeyDefDO#VALUE_LENGTH}.
-     * </p>
+     * Default parameter value of parameterKey.
+     * Max accepted length {@value ExecutionBeanKeyDefDO#VALUE_LENGTH}.
      */
     @Override
     @Column(name = "`defaultValue`", length = ExecutionBeanKeyDefDO.VALUE_LENGTH)
@@ -129,23 +125,11 @@ public enum ExpandedExecutionBeanKeyDefDO implements ExecutionBeanKeyDefDOEnumIn
         return this.defaultValue;
     }
 
-    /**
-     * <p>
-     * Default parameterValue zum parameterKey.
-     * </p>
-     * <p>
-     * Maximale Anzahl erlaubter Zeichen:
-     * {@value ExecutionBeanKeyDefDO#VALUE_LENGTH}
-     * </p>
-     */
     protected void setDefaultValue(String defaultValue)
     {
         this.defaultValue = defaultValue;
     }
 
-    /**
-     * activ/inactiv
-     */
     @Override
     @Column(name = "`activeOMT`")
     public Boolean isActiveOMT()
@@ -153,9 +137,6 @@ public enum ExpandedExecutionBeanKeyDefDO implements ExecutionBeanKeyDefDOEnumIn
         return this.activeOMT;
     }
 
-    /**
-     * activ/inactiv
-     */
     public void setActiveOMT(Boolean activeOMT)
     {
         this.activeOMT = activeOMT;

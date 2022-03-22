@@ -14,9 +14,14 @@ public enum ExpandedIdentCodeGenerationBeanDefDO implements EnumInterface
 {
 
     /**
-     * Minimum ID for custom entries: 1000
+     * Start with 10000 to avoid conflict with IdentCodeGenerationBeanDefDO.
+     * The name must be unique across both classes.
+     * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
-;
+    
+    // FIXME: give an example
+    ;
+    
     private Integer id;
     private String jndiName;
 

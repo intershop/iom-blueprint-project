@@ -13,9 +13,14 @@ public enum ExpandedOrderSupplierEvaluationRuleDefDO implements OrderSupplierEva
 {
 
     /**
-     * Minimum ID for custom entries: 1000
+     * Start with 10000 to avoid conflict with OrderSupplierEvaluationRuleDefDO.
+     * The name must be unique across both classes.
+     * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
-;
+    
+    ONE_SUPPLIER_ONLY_CHECK(10000, "OneSupplierOnlyRoutingRulePTBean", "Determines that only one supplier is used for the entire order delivery.", "java:global/iom-blueprint-project/OneSupplierOnlyRoutingRulePTBean!bakery.logic.service.order.task.OrderSupplierCheckPT", 50, false)
+    ;
+    
     private Integer id;
     private String name;
     private String description;
@@ -23,8 +28,7 @@ public enum ExpandedOrderSupplierEvaluationRuleDefDO implements OrderSupplierEva
     private int rank;
     private boolean mandatory;
 
-    private ExpandedOrderSupplierEvaluationRuleDefDO(Integer id, String name, String description, String jndiName,
-                    int rank, boolean mandatory)
+    private ExpandedOrderSupplierEvaluationRuleDefDO(Integer id, String name, String description, String jndiName, int rank, boolean mandatory)
     {
         this.id = id;
         this.name = name;
@@ -34,9 +38,6 @@ public enum ExpandedOrderSupplierEvaluationRuleDefDO implements OrderSupplierEva
         this.mandatory = mandatory;
     }
 
-    /**
-     * Id der Pruefungsart
-     */
     @Override
     @Id
     public Integer getId()
@@ -44,17 +45,11 @@ public enum ExpandedOrderSupplierEvaluationRuleDefDO implements OrderSupplierEva
         return this.id;
     }
 
-    /**
-     * Id der Pruefungsart
-     */
     protected void setId(Integer id)
     {
         this.id = id;
     }
 
-    /**
-     * Namen der Pruefungsregel
-     */
     @Override
     @Column(name = "`name`", length = 50, nullable = false)
     public String getName()
@@ -62,16 +57,13 @@ public enum ExpandedOrderSupplierEvaluationRuleDefDO implements OrderSupplierEva
         return this.name;
     }
 
-    /**
-     * Namen der Pruefungsregel
-     */
     public void setName(String name)
     {
         this.name = name;
     }
 
     /**
-     * Ranking (Reihenfolge) der Pruefung
+     * Sorted priority the rule should be check in.
      */
     @Override
     @Column(name = "`rank`", nullable = false)
@@ -80,18 +72,13 @@ public enum ExpandedOrderSupplierEvaluationRuleDefDO implements OrderSupplierEva
         return this.rank;
     }
 
-    /**
-     * Ranking (Reihenfolge) der Pruefung
-     */
     public void setRank(int rank)
     {
         this.rank = rank;
     }
 
     /**
-     * Gibt an ob dieser Parameter abgeschaltet werden darf.
-     *
-     * @return <b>true</b> oder <b>false</b>
+     * @return Whether the rule must not be disabled or not. 
      */
     @Override
     @Column(name = "`mandatory`", nullable = false)
@@ -100,12 +87,6 @@ public enum ExpandedOrderSupplierEvaluationRuleDefDO implements OrderSupplierEva
         return this.mandatory;
     }
 
-    /**
-     * Gibt an ob dieser Parameter abgeschaltet werden darf.
-     *
-     * @param mandatory
-     *            <b>true</b> oder <b>false</b>
-     */
     public void setMandatory(boolean mandatory)
     {
         this.mandatory = mandatory;
@@ -118,9 +99,6 @@ public enum ExpandedOrderSupplierEvaluationRuleDefDO implements OrderSupplierEva
         return this.jndiName;
     }
 
-    /**
-     * Beschreibung der Pruefungsregel
-     */
     @Override
     @Column(name = "`description`", length = 100, nullable = false)
     public String getDescription()
@@ -128,11 +106,9 @@ public enum ExpandedOrderSupplierEvaluationRuleDefDO implements OrderSupplierEva
         return this.description;
     }
 
-    /**
-     * Beschreibung der Pruefungsregel
-     */
     public void setDescription(String description)
     {
         this.description = description;
     }
+    
 }

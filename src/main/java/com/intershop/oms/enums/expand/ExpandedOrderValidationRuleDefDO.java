@@ -13,13 +13,14 @@ import bakery.persistence.expand.OrderValidationRuleDefDOEnumInterface;
 @PersistedEnumerationTable( OrderValidationRuleDefDO.class )
 public enum ExpandedOrderValidationRuleDefDO implements OrderValidationRuleDefDOEnumInterface
 {
+    
     /**
-     * Minimum ID for custom entries: 10000 length, restriction for name: 50
+     * Start with 10000 to avoid conflict with OrderValidationRuleDefDO.
      * The name must be unique across both classes.
-     * Values with negative id are meant as syntax example and are ignored (won't get persisted within the db).
+     * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
-    SYNCROUNOUS_PROPERTY_VALIDATION (Integer.valueOf(10000), "ValidateCustomOrderPropertiesSyncrPTBean", "java:global/iom-blueprint-project/ValidateCustomOrderPropertiesSyncrPTBean!bakery.logic.service.order.task.ValidateOrderPT", 1000, false, "Validation fails if custom order level property group|key|value = order|validation|fail-syncrounously is given."),
-    ASYNCROUNOUS_PROPERTY_VALIDATION(Integer.valueOf(10001), "ValidateCustomOrderPropertiesASyncrPTBean", "java:global/iom-blueprint-project/ValidateCustomOrderPropertiesASyncrPTBean!bakery.logic.service.order.task.ValidateOrderPT", 1001, false, "Validation fails if custom order level property group|key|value = validation|fail-asyncrounously-autocancel is given.")
+
+    CUSTOM_PROPERTY_VALIDATION (Integer.valueOf(10000), "ValidateCustomOrderPropertiesPTBean", "java:global/iom-blueprint-project/ValidateCustomOrderPropertiesPTBean!bakery.logic.service.order.task.ValidateOrderPT", 1000, false, "Validation fails if custom order level property group|key|value = order|validation|fail-syncrounously is given.")
     ;
     
     private Integer id;
@@ -76,7 +77,7 @@ public enum ExpandedOrderValidationRuleDefDO implements OrderValidationRuleDefDO
     }
 
     /**
-     * Priority the rule should be checked.
+     * Sorted priority the rule should be check in.
      */
     @Override
     @Column(name = "rank", nullable = false)
@@ -85,11 +86,6 @@ public enum ExpandedOrderValidationRuleDefDO implements OrderValidationRuleDefDO
         return this.rank;
     }
 
-    /**
-     * Priority the rule should be checked.
-     * 
-     * @param rank
-     */
     public void setRank(int rank)
     {
         this.rank = rank;

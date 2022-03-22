@@ -19,7 +19,7 @@ shops_all int8[] = ARRAY[shop_intronics_b2c, shop_intronics_b2b];
 -- all abstract shops
 shops_parent_all int8[] = ARRAY[]::int8[];
 
--- Supplier
+-- suppliers
 supplier_wh_texas int8 = 20010;
 supplier_wh_arizona int8 = 20020;
 supplier_wh_losangeles int8 = 20030;

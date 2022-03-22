@@ -1,12 +1,48 @@
 DO $$
 BEGIN
 
---examples
+	--ORDER VALIDATION RULES
+	INSERT INTO oms."OrderValidationRuleDefDO"(id, name, rank, mandatory, description) VALUES
+		(10000, 'ValidateCustomOrderPropertiesPTBean', 1000, false, 'Validation fails if custom order level property group|key|value = order|validation|fail is given.')
+	ON CONFLICT (id) DO NOTHING;
+
+
+
+	--DECISION BEANS
+	INSERT INTO oms."DecisionBeanDefDO"(id, description) values
+		(20000, 'codPaymentDecisionBean')
+	ON CONFLICT (id) DO NOTHING;
+
+	INSERT INTO oms."DecisionBeanDefDO"(id, description) values
+		(20001, 'maxOrderValueDecisionBean')
+	ON CONFLICT (id) DO NOTHING;
+
+	INSERT INTO oms."DecisionBeanDefDO"(id, description) values
+		(40000, 'orderTransmissionDecisionBean')
+	ON CONFLICT (id) DO NOTHING;
+
+
+
+	--EXECUTION BEANS
+	INSERT INTO oms."ExecutionBeanDefDO"(id, "decisionBeanDefRef", description) values
+		(10000, null,  'customOrderMessageTransmitter')
+	ON CONFLICT (id) DO NOTHING;
+
+	--ROUTING RULES
+	INSERT INTO oms."OrderSupplierEvaluationRuleDefDO"(id, "name", "description", "rank", "mandatory") values
+		(10000, 'OneSupplierOnlyRoutingRulePTBean', 'Determines that only one supplier is used for the entire order delivery.', 50, false)
+	ON CONFLICT (id) DO NOTHING;
+
+	--APPROVAL TYPES
+	INSERT INTO oms."ApprovalTypeDefDO"(id, "name", "ObjectTypeName") values
+		(10000, 'PaymentMethod',  'Order')
+	ON CONFLICT (id) DO NOTHING;
+
+
+
+--further examples
 
 /*
-	INSERT INTO oms."DecisionBeanDefDO"(id, description) values
-		(10000, 'Example')
-	ON CONFLICT (id) DO NOTHING;
 
 	INSERT INTO oms."DocumentMapperDefDO"(id,name) values
 		(1000, 'Example')
@@ -35,9 +71,6 @@ BEGIN
 		(1000, 'Example', false, 'Example', 30)
 	ON CONFLICT (id) DO NOTHING;
 
-	INSERT INTO oms."OrderValidationRuleDefDO"(id, name, rank, mandatory, description) VALUES
-		(10000, 'ValidateMandatoryPropertiesPTBean', 999, false, 'ValidateMandatoryPropertiesPTBean')
-	ON CONFLICT (id) DO NOTHING;
 
 	INSERT INTO oms."TransformerBeanDefDO"(id, name) VALUES
 		(1000, 'Example')

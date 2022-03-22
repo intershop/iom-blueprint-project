@@ -81,6 +81,9 @@ PERFORM create_or_update_shop2supplier(
 	NULL, TRUE, ''
 );
 
+
+/* all shops must be mapped to the internal supplier */
+
 -- shop_intronics_b2b -> internal supplier
 PERFORM create_or_update_shop2supplier(
 	-- active, shopref, supplierref
@@ -91,10 +94,14 @@ PERFORM create_or_update_shop2supplier(
 	NULL, TRUE, ''
 );
 
--- enable cash on delivery (COD) for all suppliers (except internal)
+-- enable cash on delivery (COD) for 3 suppliers only
+UPDATE oms."Shop2SupplierDO"
+	SET "supplierSupportsCOD" = FALSE
+	WHERE "supplierRef" NOT IN (supplier_wh_texas, supplier_wh_arizona, supplier_wh_detroit);
+
 UPDATE oms."Shop2SupplierDO"
 	SET "supplierSupportsCOD" = TRUE
-	WHERE "supplierRef" >= 10000;
+	WHERE "supplierRef" IN (supplier_wh_texas, supplier_wh_arizona, supplier_wh_detroit);
 
 -- stockReduceModel: on delivery for all
 UPDATE oms."Shop2SupplierDO"

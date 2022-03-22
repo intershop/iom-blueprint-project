@@ -12,9 +12,14 @@ public enum ExpandedNumberRangeFormatterDefDO implements NumberRangeFormatterEnu
 {
 
     /**
-     * Minimum ID for custom entries: 1000
+     * Start with 10000 to avoid conflict with NumberRangeFormatterDefDO.
+     * The name must be unique across both classes.
+     * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
-    EXAMPLE(-999, "EXAMPLE_INVOICENO_GENERATOR", "java:global/blueprint-app/blueprint-ejb/ExampleNumberRangeSequencerBean!bakery.logic.service.configuration.NumberRangeFormatterService"),;
+    
+    EXAMPLE(-999, "EXAMPLE_INVOICENO_GENERATOR", "java:global/blueprint-app/blueprint-ejb/ExampleNumberRangeSequencerBean!bakery.logic.service.configuration.NumberRangeFormatterService")
+    ;
+    
     private Integer id;
     private String jndiName;
     private String description;

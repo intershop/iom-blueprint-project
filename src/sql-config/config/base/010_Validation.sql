@@ -15,16 +15,12 @@ BEGIN
 	FOREACH shopref in array shops_all LOOP
 
 		FOR rec IN (
-			--select 1 as rule_id, TRUE as synchron union all 
-			--select 3,            TRUE,            union all 
 			select 4  as rule_id,   FALSE as synchron	union all 
-			select 5,           	FALSE          	union all 
-			select 6,           	TRUE           	union all 
-			--select 10,           FALSE,           union all 
-			select 11,          	FALSE          	union all 
-			select 13,          	TRUE           	union all 
-			select 10000,       	TRUE           	union all -- custom rule syncrounous
-			select 10001,			FALSE           		  -- custom rule asyncrounous
+			select 5,           	FALSE          		union all 
+			select 6,           	TRUE           		union all 
+			select 11,          	FALSE          		union all 
+			select 13,          	TRUE           		union all 
+			select 10000,       	TRUE           		-- custom rule syncrounous
 			)
 		LOOP
 	

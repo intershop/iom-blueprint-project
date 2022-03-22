@@ -12,11 +12,25 @@ import bakery.util.StringUtils;
 @PersistedEnumerationTable(DecisionBeanDefDO.class)
 public enum ExpandedDecisionBeanDefDO implements EnumInterface
 {
+    
     /**
-     * Minimum ID for custom entries: 1000 suggestion: for regular decision
-     * bean: 1xxx for order approval beans: 2xxx
+     * Start with 10000 to avoid conflict with DecisionBeanDefDO.
+     * The name must be unique across both classes.
+     * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
-    EXAMPLE(-999, "java:global/example-app/InvoicingDecisionBean")
+    
+    // general 1xxxx
+    GENERAL_DECISION_BEAN(Integer.valueOf(-10000), "java:global/iom-blueprint-project/TBD"),
+    
+    // order approval 2xxxx
+    COD_PAYMENT_DECISION_BEAN(Integer.valueOf(20000), "java:global/iom-blueprint-project/CashOnDeliveryApprovalDecisionBean"),
+    MAX_ORDER_VALUE_DECISION_BEAN(Integer.valueOf(20001), "java:global/iom-blueprint-project/OrderValueApprovalDecisionBean"),
+    
+    // rma approval 3xxxx
+    RMA_DECISION_BEAN(Integer.valueOf(-30000), "java:global/iom-blueprint-project/TBD"),
+    
+    // export|transmissions 4xxxx
+    ORDER_TRANSMISSION_DECISION_BEAN(Integer.valueOf(40000), "java:global/iom-blueprint-project/OrderTransmissionDecisionBean")
     ;
 
     private Integer id;
@@ -24,10 +38,8 @@ public enum ExpandedDecisionBeanDefDO implements EnumInterface
 
     private ExpandedDecisionBeanDefDO(Integer id, String jndiName)
     {
-
         this.id = id;
         this.jndiName = jndiName;
-
     }
 
     @Override

@@ -14,7 +14,9 @@ public enum ExpandedArticleExportConfigBeanDefDO implements EnumInterface
 {
 
     /**
-     * Minimum ID for custom entries: 1000
+     * Start with 10000 to avoid conflict with ArticleExportConfigBeanDefDO.
+     * The name must be unique across both classes.
+     * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
     EXAMPLE(-999, "java:global/example-app/example-ejb/ExampleExportCSVBean");
 
@@ -23,10 +25,8 @@ public enum ExpandedArticleExportConfigBeanDefDO implements EnumInterface
 
     private ExpandedArticleExportConfigBeanDefDO(Integer id, String jndiName)
     {
-
         this.id = id;
         this.jndiName = jndiName;
-
     }
 
     @Override
