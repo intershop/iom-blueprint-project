@@ -12,14 +12,20 @@ userref int8;
 roleref int8;
 rightref int8;
 
-user_admin_rights int8[] = ARRAY [85,88,127,128,129,130];
+-- user administartion
+user_admin_rights int8[] = ARRAY [85,88,127,128,130];
 user_admin_role_name text='user_administrator';
 
+shop_service_user_name text = 'webservice_shop'; --if you change the name, change cryptedPassword too
 
 --technical shop APIs
 shop_service_role_name text = 'shop_services'; --if you change the name, change cryptedPassword too
-shop_service_user_name text = 'webservice_shop'; --if you change the name, change cryptedPassword too
 shop_service_rights int8[] = ARRAY[1,2,123,124,125,126,131,137,139,140,141,142,143,144,145,146,147,148];
+
+--technical supplier APIs
+supplier_service_role_name text = 'supplier_services'; 
+                                     --returns,              ATP,   Dispatches
+supplier_service_rights int8[] = ARRAY[131,139,140,141,142,  123,   10,11];
 
 --technical supplier API
 
@@ -29,7 +35,7 @@ callcenter_role_name text = 'callcenter_agent';
 callcenter_agent_name text = 'callcenter_agent'; --if you change the name, change cryptedPassword too
 callcenter_agent_rights int8[] = ARRAY[3,4,5,6,7,8,9,10,11,12,13,17,19,20,21,25,26,27,28,29,30,31,32,33,
 									   34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,56,57,58,62,
-									   63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,106,107,108,109,112,
+									   63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,107,108,109,112,
 									   113,114,115,116,117,118,119,120,121,132,133,135,136,138];
 -- end variables block with 
 
@@ -63,6 +69,20 @@ BEGIN
 	 FROM  unnest( shop_service_rights)uar  
 	 CROSS JOIN  (select id as r_id from "RoleDO" where name=shop_service_role_name)r;
 
+    -- role for supplier services
+   
+    INSERT INTO "RoleDO" (id, name, description, version)
+	 SELECT nextval('"RoleDO_id_seq"'),
+	 supplier_service_role_name,
+	 'rights for supplier APIs',
+	 0
+	 WHERE NOT EXISTS (select * from "RoleDO" where name= supplier_service_role_name);
+	 
+	 INSERT  INTO "Role2RightDO" (id, "rightDefRef","roleRef")
+	 SELECT nextval('"Role2RightDO_id_seq"'), uar, r_id 
+	 FROM  unnest( supplier_service_rights)uar  
+	 CROSS JOIN  (select id as r_id from "RoleDO" where name=supplier_service_role_name)r;
+
     -- role for call center
     
     INSERT INTO "RoleDO" (id, name, description, version)
@@ -93,19 +113,11 @@ BEGIN
 		VALUES
 			(nextval('"UserDO_id_seq"'),shop_service_user_name,true,'company', --1
 			'webservice',2,'shop',0, --2
-			'2022-02-24 10:37:47.282',false,1, --3
+			now(),false,0, --3
 			'','fEbjJo7gZ5sAMgZtPy2FjCQunYSuJ64Xh37hJNNG/j8=','hkP5gPPxgrmpRBH0mdvdGQ==', --4
 			NULL,1); --5
 	END IF;
-	
-	--User2RoleDO: asssign user to role
-	INSERT INTO "User2RoleDO" (id,"roleRef", "userRef") 
-	SELECT
-	  nextval('"User2RoleDO_id_seq"'),
-	  (SELECT id FROM "RoleDO" WHERE "name" = shop_service_role_name),
-	  (SELECT id FROM "UserDO" WHERE "accountName" = shop_service_user_name)
-	ON CONFLICT ("roleRef", "userRef") DO NOTHING;
-	
+
 	-- assign user and role to organization
 	INSERT INTO "User2OrganizationDO" (id,"organizationRef", "userRef") 
 	SELECT
@@ -118,9 +130,10 @@ BEGIN
 	SELECT
 		nextval('"User2Role2OrganizationDO_id_seq"'),
 		1,
-		(SELECT id FROM "RoleDO" WHERE "name" = shop_service_role_name),
+		 "RoleDO".id,
 		(SELECT id FROM "UserDO" WHERE "accountName" = shop_service_user_name)
-		ON CONFLICT ("organizationRef", "roleRef", "userRef") DO NOTHING;
+	FROM "RoleDO" WHERE "name" IN( shop_service_role_name, supplier_service_role_name)
+	ON CONFLICT ("organizationRef", "roleRef", "userRef") DO NOTHING;
 	
 	----------------------------
 	
@@ -134,22 +147,13 @@ BEGIN
 		VALUES
 			(nextval('"UserDO_id_seq"'),callcenter_agent_name,true,'company', --1
 			'callcenter',2,'agent',0, --2
-			'2022-02-24 10:37:47.282',false,1, --3
+			now(),false,0, --3
 			'','Nqa1Yvs9r9Clp3qpLgoUMhrT/tfq1ZWDXQUvOK0x2/I=','AMDFaxpae/ipXgY7sho+kg==', --4
 			NULL,1); --5
 	END IF;
 	userref = (SELECT id FROM  "UserDO" WHERE "accountName" = callcenter_agent_name);
-	
 
-	
-	--User2RoleDO: asssign user to role
-	INSERT INTO "User2RoleDO" (id,"roleRef", "userRef") 
-	SELECT 
-		nextval('"User2RoleDO_id_seq"'),
-		(SELECT id FROM "RoleDO" WHERE "name" = callcenter_role_name),
-		(SELECT id FROM "UserDO" WHERE "accountName" = callcenter_agent_name)
-	ON CONFLICT ("roleRef", "userRef") DO NOTHING;
-	
+
 	-- assign user and role to organization
 	INSERT INTO "User2OrganizationDO" (id,"organizationRef", "userRef") 
 	SELECT
@@ -162,9 +166,10 @@ BEGIN
 	SELECT
 		nextval('"User2Role2OrganizationDO_id_seq"'),
 		1,
-		(SELECT id FROM "RoleDO" WHERE "name" = callcenter_role_name),
+		"RoleDO".id,
 		(SELECT id FROM "UserDO" WHERE "accountName" = callcenter_agent_name)
-		ON CONFLICT ("organizationRef", "roleRef", "userRef") DO NOTHING;
+	FROM "RoleDO" WHERE "name" IN( callcenter_role_name, user_admin_role_name)
+	ON CONFLICT ("organizationRef", "roleRef", "userRef") DO NOTHING;
 		
 END;
 -- RESUME velocity parser
