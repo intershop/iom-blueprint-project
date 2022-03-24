@@ -15,6 +15,9 @@ receiverId int8;
 order_transmitter varchar = 'customOrderMessageTransmitter';
 order_decisionBean varchar = 'orderTransmissionDecisionBean';
 supplier_transmitter varchar = 'supplierMessageTransmitter';
+supplier_transmitter_key_res varchar = 'supplierMessageTransmitterRes';
+supplier_transmitter_key_dis varchar = 'supplierMessageTransmitterDis';
+supplier_transmitter_key_ret varchar = 'supplierMessageTransmitterRet';
 supplier_decisionBean varchar = 'supplierTransmissionDecisionBean';
 communicationId int8;
 -- end variables block with
@@ -116,15 +119,15 @@ BEGIN
 		nextval('"CommunicationDO_id_seq"'),
 		true,
 		null,
-		supplier_transmitter,
+		supplier_transmitter_key_res,
 		(SELECT id FROM oms."DocumentFormatDefDO" WHERE name = 'XML'),
     	(SELECT id FROM oms."ExecutionBeanDefDO" WHERE description = supplier_transmitter),
 		(SELECT id FROM oms."TransmissionTypeDefDO" WHERE name = 'sendResponse'),
 		(SELECT id FROM oms."CommunicationVersionDefDO" WHERE "incomingURLParameter" = 'v1.0'),
 		(SELECT id FROM oms."TransmissionFormDefDO" WHERE name = 'PUSH')
-    WHERE 1 NOT IN (SELECT 1 FROM oms."CommunicationDO" where key = supplier_transmitter);
+    WHERE 1 NOT IN (SELECT 1 FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_res);
 
-	communicationId := (SELECT id FROM oms."CommunicationDO" WHERE key = supplier_transmitter);
+	communicationId := (SELECT id FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_res);
 
 	-- CONFIGURE partners
 	FOREACH shopId IN ARRAY shops_all LOOP
@@ -194,15 +197,15 @@ BEGIN
 		nextval('"CommunicationDO_id_seq"'),
 		true,
 		null,
-		supplier_transmitter,
+		supplier_transmitter_key_dis,
 		(SELECT id FROM oms."DocumentFormatDefDO" WHERE name = 'XML'),
     	(SELECT id FROM oms."ExecutionBeanDefDO" WHERE description = supplier_transmitter),
 		(SELECT id FROM oms."TransmissionTypeDefDO" WHERE name = 'sendDispatch'),
 		(SELECT id FROM oms."CommunicationVersionDefDO" WHERE "incomingURLParameter" = 'v1.0'),
 		(SELECT id FROM oms."TransmissionFormDefDO" WHERE name = 'PUSH')
-    WHERE 1 NOT IN (SELECT 1 FROM oms."CommunicationDO" where key = supplier_transmitter);
+    WHERE 1 NOT IN (SELECT 1 FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_dis);
 
-	communicationId := (SELECT id FROM oms."CommunicationDO" WHERE key = supplier_transmitter);
+	communicationId := (SELECT id FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_dis);
 
 	-- CONFIGURE partners
 	FOREACH shopId IN ARRAY shops_all LOOP
@@ -272,15 +275,15 @@ BEGIN
 		nextval('"CommunicationDO_id_seq"'),
 		true,
 		null,
-		supplier_transmitter,
+		supplier_transmitter_key_ret,
 		(SELECT id FROM oms."DocumentFormatDefDO" WHERE name = 'XML'),
     	(SELECT id FROM oms."ExecutionBeanDefDO" WHERE description = supplier_transmitter),
 		(SELECT id FROM oms."TransmissionTypeDefDO" WHERE name = 'sendReturn'),
 		(SELECT id FROM oms."CommunicationVersionDefDO" WHERE "incomingURLParameter" = 'v1.0'),
 		(SELECT id FROM oms."TransmissionFormDefDO" WHERE name = 'PUSH')
-    WHERE 1 NOT IN (SELECT 1 FROM oms."CommunicationDO" where key = supplier_transmitter);
+    WHERE 1 NOT IN (SELECT 1 FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_ret);
 
-	communicationId := (SELECT id FROM oms."CommunicationDO" WHERE key = supplier_transmitter);
+	communicationId := (SELECT id FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_ret);
 
 	-- CONFIGURE partners
 	FOREACH shopId IN ARRAY shops_all LOOP
