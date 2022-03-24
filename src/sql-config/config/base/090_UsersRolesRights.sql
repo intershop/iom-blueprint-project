@@ -21,7 +21,7 @@ shop_service_user_name text = 'webservice_shop'; --if you change the name, chang
 
 --technical shop APIs
 shop_service_role_name text = 'shop_services'; --if you change the name, change cryptedPassword too
-shop_service_rights int8[] = ARRAY[1,2,123,124,125,126,131,137,139,140,141,142,143,144,145,146,147,148];
+shop_service_rights int8[] = ARRAY[1,2,67,123,124,125,126,131,137,139,140,141,142,143,144,145,146,147,148];
 
 --technical supplier APIs
 supplier_service_user_name text = 'webservice_supplier'; --if you change the name, change cryptedPassword too
