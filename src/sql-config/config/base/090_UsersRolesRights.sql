@@ -23,6 +23,7 @@ shop_service_role_name text = 'shop_services'; --if you change the name, change 
 shop_service_rights int8[] = ARRAY[1,2,123,124,125,126,131,137,139,140,141,142,143,144,145,146,147,148];
 
 --technical supplier APIs
+supplier_service_user_name text = 'webservice_supplier'; --if you change the name, change cryptedPassword too
 supplier_service_role_name text = 'supplier_services'; 
                                      --returns,              ATP,   Dispatches
 supplier_service_rights int8[] = ARRAY[131,139,140,141,142,  123,   10,11];
@@ -99,26 +100,38 @@ BEGIN
 
 
 	/* 
-	 * This is only for demo purposes.
+	 * This is only for demo purposes, the corresponding password is !InterShop00!
 	 * You should create users and roles in the OMT.
+	 * You can only define another password withi the OMT, 
+	 * and then pick the modified values from the attributes "cryptedPassword" and "hashSalt"
 	 */
 	
-	-- User webservice_user
+	-- webservice users
 	IF NOT EXISTS (SELECT NULL FROM oms."UserDO" WHERE "accountName" = shop_service_user_name) THEN
 		INSERT INTO "UserDO" (id,"accountName",active,"companyName", --1
-			"firstName","languageDefRef","lastName","loginErrors", --2
+			"firstName","languageDefRef","lastName", --2
 			"modificationDate","uniformRoleConf","version", --3
-			email,"cryptedPassword","hashSalt", --4
-			"deletionTime",discriminator) --5 
+			email,"cryptedPassword","hashSalt") --4
 		VALUES
 			(nextval('"UserDO_id_seq"'),shop_service_user_name,true,'company', --1
-			'webservice',2,'shop',0, --2
+			'webservice',2,'shop', --2
 			now(),false,0, --3
-			'','fEbjJo7gZ5sAMgZtPy2FjCQunYSuJ64Xh37hJNNG/j8=','hkP5gPPxgrmpRBH0mdvdGQ==', --4
-			NULL,1); --5
+			'','fEbjJo7gZ5sAMgZtPy2FjCQunYSuJ64Xh37hJNNG/j8=','hkP5gPPxgrmpRBH0mdvdGQ=='); --4
 	END IF;
 
-	-- assign user and role to organization
+	IF NOT EXISTS (SELECT NULL FROM oms."UserDO" WHERE "accountName" = supplier_service_user_name) THEN
+		INSERT INTO "UserDO" (id,"accountName",active,"companyName", --1
+			"firstName","languageDefRef","lastName", --2
+			"modificationDate","uniformRoleConf","version", --3
+			email,"cryptedPassword","hashSalt") --4
+		VALUES
+			(nextval('"UserDO_id_seq"'),supplier_service_user_name,true,'company', --1
+			'webservice',2,'supplier', --2
+			now(),false,0, --3
+			'','a+Bfq6fQCRNYzDe5KuUqs/luhhMW48dP9fCox5dAKWM=','fQ+2HULNe06R3yhNqpWnOg=='); --4
+	END IF;
+
+	-- assign user and role to organization shop_service_user_name
 	INSERT INTO "User2OrganizationDO" (id,"organizationRef", "userRef") 
 	SELECT
 		nextval('"User2OrganizationDO_id_seq"'),
@@ -132,7 +145,24 @@ BEGIN
 		1,
 		 "RoleDO".id,
 		(SELECT id FROM "UserDO" WHERE "accountName" = shop_service_user_name)
-	FROM "RoleDO" WHERE "name" IN( shop_service_role_name, supplier_service_role_name)
+	FROM "RoleDO" WHERE "name" IN( shop_service_role_name)
+	ON CONFLICT ("organizationRef", "roleRef", "userRef") DO NOTHING;
+	
+	-- assign user and role to organization supplier_service_user_name
+	INSERT INTO "User2OrganizationDO" (id,"organizationRef", "userRef") 
+	SELECT
+		nextval('"User2OrganizationDO_id_seq"'),
+		1,
+		(SELECT id FROM "UserDO" WHERE "accountName" = supplier_service_user_name)
+	ON CONFLICT ("organizationRef", "userRef") DO NOTHING;
+	
+	INSERT INTO "User2Role2OrganizationDO" (id,"organizationRef", "roleRef", "userRef") 
+	SELECT
+		nextval('"User2Role2OrganizationDO_id_seq"'),
+		1,
+		 "RoleDO".id,
+		(SELECT id FROM "UserDO" WHERE "accountName" = supplier_service_user_name)
+	FROM "RoleDO" WHERE "name" IN(  supplier_service_role_name)
 	ON CONFLICT ("organizationRef", "roleRef", "userRef") DO NOTHING;
 	
 	----------------------------
@@ -140,16 +170,14 @@ BEGIN
 	-- User callcenter_agent
 	IF NOT EXISTS (SELECT NULL FROM oms."UserDO" WHERE "accountName" = callcenter_agent_name) THEN
 		INSERT INTO "UserDO" (id,"accountName",active,"companyName", --1
-			"firstName","languageDefRef","lastName","loginErrors", --2
+			"firstName","languageDefRef","lastName", --2
 			"modificationDate","uniformRoleConf","version", --3
-			email,"cryptedPassword","hashSalt", --4
-			"deletionTime",discriminator) --5 
+			email,"cryptedPassword","hashSalt") --4
 		VALUES
 			(nextval('"UserDO_id_seq"'),callcenter_agent_name,true,'company', --1
-			'callcenter',2,'agent',0, --2
+			'callcenter',2,'agent', --2
 			now(),false,0, --3
-			'','Nqa1Yvs9r9Clp3qpLgoUMhrT/tfq1ZWDXQUvOK0x2/I=','AMDFaxpae/ipXgY7sho+kg==', --4
-			NULL,1); --5
+			'','Nqa1Yvs9r9Clp3qpLgoUMhrT/tfq1ZWDXQUvOK0x2/I=','AMDFaxpae/ipXgY7sho+kg=='); --4
 	END IF;
 	userref = (SELECT id FROM  "UserDO" WHERE "accountName" = callcenter_agent_name);
 
