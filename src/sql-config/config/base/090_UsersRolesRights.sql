@@ -15,6 +15,7 @@ rightref int8;
 -- user administartion
 user_admin_rights int8[] = ARRAY [85,88,127,128,130];
 user_admin_role_name text='user_administrator';
+user_admin_user_name text='user_admin';
 
 shop_service_user_name text = 'webservice_shop'; --if you change the name, change cryptedPassword too
 
@@ -30,8 +31,6 @@ supplier_service_rights int8[] = ARRAY[131,139,140,141,142,  123,   10,11];
 
 --technical supplier API
 
---supplier_webservice_user_name varchar = 'webservice_supplier'; --if you change the name, change cryptedPassword too
---supplier_webservice_user_rights int8[] = ARRAY[];
 callcenter_role_name text = 'callcenter_agent';
 callcenter_agent_name text = 'callcenter_agent'; --if you change the name, change cryptedPassword too
 callcenter_agent_rights int8[] = ARRAY[3,4,5,6,7,8,9,10,11,12,13,17,19,20,21,25,26,27,28,29,30,31,32,33,
@@ -54,7 +53,8 @@ BEGIN
 	 INSERT  INTO "Role2RightDO" (id, "rightDefRef","roleRef")
 	 SELECT nextval('"Role2RightDO_id_seq"'), uar, r_id 
 	 FROM  unnest( user_admin_rights)uar  
-	 CROSS JOIN  (select id as r_id from "RoleDO" where name=user_admin_role_name)r;
+	 CROSS JOIN  (select id as r_id from "RoleDO" where name=user_admin_role_name)r
+	 ON CONFLICT ("rightDefRef","roleRef") DO NOTHING;
 
    -- role for shop services
    
@@ -68,7 +68,8 @@ BEGIN
 	 INSERT  INTO "Role2RightDO" (id, "rightDefRef","roleRef")
 	 SELECT nextval('"Role2RightDO_id_seq"'), uar, r_id 
 	 FROM  unnest( shop_service_rights)uar  
-	 CROSS JOIN  (select id as r_id from "RoleDO" where name=shop_service_role_name)r;
+	 CROSS JOIN  (select id as r_id from "RoleDO" where name=shop_service_role_name)r
+	 ON CONFLICT ("rightDefRef","roleRef") DO NOTHING;
 
     -- role for supplier services
    
@@ -82,7 +83,8 @@ BEGIN
 	 INSERT  INTO "Role2RightDO" (id, "rightDefRef","roleRef")
 	 SELECT nextval('"Role2RightDO_id_seq"'), uar, r_id 
 	 FROM  unnest( supplier_service_rights)uar  
-	 CROSS JOIN  (select id as r_id from "RoleDO" where name=supplier_service_role_name)r;
+	 CROSS JOIN  (select id as r_id from "RoleDO" where name=supplier_service_role_name)r
+	 ON CONFLICT ("rightDefRef","roleRef") DO NOTHING;
 
     -- role for call center
     
@@ -96,11 +98,11 @@ BEGIN
  	 INSERT  INTO "Role2RightDO" (id, "rightDefRef","roleRef")
  	 SELECT nextval('"Role2RightDO_id_seq"'), uar, r_id 
 	 FROM  unnest( callcenter_agent_rights)uar  
- 	 CROSS JOIN  (select id as r_id from "RoleDO" where name=callcenter_role_name)r;
-
+ 	 CROSS JOIN  (select id as r_id from "RoleDO" where name=callcenter_role_name)r
+	 ON CONFLICT ("rightDefRef","roleRef") DO NOTHING;
 
 	/* 
-	 * This is only for demo purposes, the corresponding password is !InterShop00!
+	 * This is only for demo purposes, the corresponding passwords is for these 4 users !InterShop00!
 	 * You should create users and roles in the OMT.
 	 * You can only define another password withi the OMT, 
 	 * and then pick the modified values from the attributes "cryptedPassword" and "hashSalt"
@@ -198,6 +200,42 @@ BEGIN
 		(SELECT id FROM "UserDO" WHERE "accountName" = callcenter_agent_name)
 	FROM "RoleDO" WHERE "name" IN( callcenter_role_name, user_admin_role_name)
 	ON CONFLICT ("organizationRef", "roleRef", "userRef") DO NOTHING;
+	
+	----------------------------
+
+	-- user_admin 
+	IF NOT EXISTS (SELECT NULL FROM oms."UserDO" WHERE "accountName" = user_admin_user_name) THEN
+		INSERT INTO "UserDO" (id,"accountName",active,"companyName", --1
+			"firstName","languageDefRef","lastName", --2
+			"modificationDate","uniformRoleConf","version", --3
+			email,"cryptedPassword","hashSalt") --4
+		VALUES
+			(nextval('"UserDO_id_seq"'),user_admin_user_name,true,'company', --1
+			'user ',2,'admin', --2
+			now(),false,0, --3
+			'','z4q9/vhfWJo9suBtJU8TNR3i7/acCkZhqJpGoNEHLas=','p4uJNxFfemFTa+zX+wJ5rw=='); --4
+	END IF;
+	userref = (SELECT id FROM  "UserDO" WHERE "accountName" = user_admin_user_name);
+
+
+	-- assign user and role to organization
+	INSERT INTO "User2OrganizationDO" (id,"organizationRef", "userRef") 
+	SELECT
+		nextval('"User2OrganizationDO_id_seq"'),
+		1,
+		(SELECT id FROM "UserDO" WHERE "accountName" = user_admin_user_name)
+		ON CONFLICT ("organizationRef", "userRef") DO NOTHING;
+	
+	INSERT INTO "User2Role2OrganizationDO" (id,"organizationRef", "roleRef", "userRef") 
+	SELECT
+		nextval('"User2Role2OrganizationDO_id_seq"'),
+		1,
+		"RoleDO".id,
+		(SELECT id FROM "UserDO" WHERE "accountName" = user_admin_user_name)
+	FROM "RoleDO" WHERE "name" IN(  user_admin_role_name)
+	ON CONFLICT ("organizationRef", "roleRef", "userRef") DO NOTHING;
+	
+	
 		
 END;
 -- RESUME velocity parser
