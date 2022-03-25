@@ -30,7 +30,8 @@ public enum ExpandedDecisionBeanDefDO implements EnumInterface
     RMA_DECISION_BEAN(Integer.valueOf(-30000), "java:global/iom-blueprint-project/TBD"),
     
     // export|transmissions 4xxxx
-    ORDER_TRANSMISSION_DECISION_BEAN(Integer.valueOf(40000), "java:global/iom-blueprint-project/OrderTransmissionDecisionBean")
+    ORDER_TRANSMISSION_DECISION_BEAN(Integer.valueOf(40000), "java:global/iom-blueprint-project/OrderTransmissionDecisionBean"),
+    SUPPLIER_TRANSMISSION_DECISION_BEAN(Integer.valueOf(41000), "java:global/iom-blueprint-project/SupplierTransmissionDecisionBean")
     ;
 
     private Integer id;

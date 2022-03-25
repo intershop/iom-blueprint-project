@@ -17,7 +17,7 @@ import bakery.util.exception.TechnicalException;
  * Message (response, dispatch, return) should not be exported if custom root level property is given as group|key|value = <response|dispatch|return>|export|false
  */
 @Stateless
-public class SupplierMessageTransmissionDecisionBean extends AbstractExecutionDecider<CommunicationPartnerDO> implements ExecutionDecider<CommunicationPartnerDO>
+public class SupplierTransmissionDecisionBean extends AbstractExecutionDecider<CommunicationPartnerDO> implements ExecutionDecider<CommunicationPartnerDO>
 {
     
     private static final String GROUP_RES   = "response";
@@ -26,7 +26,7 @@ public class SupplierMessageTransmissionDecisionBean extends AbstractExecutionDe
     private static final String KEY         = "export";
     private static final String VALUE       = "false";
     
-    private Logger log = LoggerFactory.getLogger(SupplierMessageTransmissionDecisionBean.class);
+    private Logger log = LoggerFactory.getLogger(SupplierTransmissionDecisionBean.class);
     
     @Override
     public boolean isExecutionRequired(ResponseDO responseDO, CommunicationPartnerDO communicationPartner)

@@ -21,6 +21,10 @@ BEGIN
 		(40000, 'orderTransmissionDecisionBean')
 	ON CONFLICT (id) DO NOTHING;
 
+	INSERT INTO oms."DecisionBeanDefDO"(id, description) values
+		(41000, 'supplierTransmissionDecisionBean')
+	ON CONFLICT (id) DO NOTHING;
+
 
 
 	--EXECUTION BEANS
