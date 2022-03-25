@@ -41,6 +41,9 @@ callcenter_agent_rights int8[] = ARRAY[3,4,5,6,7,8,9,10,11,12,13,17,19,20,21,25,
 
 BEGIN
 
+  -- make sure to have a late change from IOM 4.0.0 (temporary solution, can be removed after 4.0.0 release...)
+  ALTER TABLE "UserDO" ALTER "uniformRoleConf" SET DEFAULT false;
+
   -- role for user administration
    
     INSERT INTO "RoleDO" (id, name, description, version)
@@ -112,24 +115,24 @@ BEGIN
 	IF NOT EXISTS (SELECT NULL FROM oms."UserDO" WHERE "accountName" = shop_service_user_name) THEN
 		INSERT INTO "UserDO" (id,"accountName",active,"companyName", --1
 			"firstName","languageDefRef","lastName", --2
-			"modificationDate","uniformRoleConf","version", --3
+			"modificationDate","version", --3
 			email,"cryptedPassword","hashSalt") --4
 		VALUES
 			(nextval('"UserDO_id_seq"'),shop_service_user_name,true,'company', --1
 			'webservice',2,'shop', --2
-			now(),false,0, --3
+			now(),0, --3
 			'','fEbjJo7gZ5sAMgZtPy2FjCQunYSuJ64Xh37hJNNG/j8=','hkP5gPPxgrmpRBH0mdvdGQ=='); --4
 	END IF;
 
 	IF NOT EXISTS (SELECT NULL FROM oms."UserDO" WHERE "accountName" = supplier_service_user_name) THEN
 		INSERT INTO "UserDO" (id,"accountName",active,"companyName", --1
 			"firstName","languageDefRef","lastName", --2
-			"modificationDate","uniformRoleConf","version", --3
+			"modificationDate","version", --3
 			email,"cryptedPassword","hashSalt") --4
 		VALUES
 			(nextval('"UserDO_id_seq"'),supplier_service_user_name,true,'company', --1
 			'webservice',2,'supplier', --2
-			now(),false,0, --3
+			now(),0, --3
 			'','a+Bfq6fQCRNYzDe5KuUqs/luhhMW48dP9fCox5dAKWM=','fQ+2HULNe06R3yhNqpWnOg=='); --4
 	END IF;
 
@@ -173,12 +176,12 @@ BEGIN
 	IF NOT EXISTS (SELECT NULL FROM oms."UserDO" WHERE "accountName" = callcenter_agent_name) THEN
 		INSERT INTO "UserDO" (id,"accountName",active,"companyName", --1
 			"firstName","languageDefRef","lastName", --2
-			"modificationDate","uniformRoleConf","version", --3
+			"modificationDate","version", --3
 			email,"cryptedPassword","hashSalt") --4
 		VALUES
 			(nextval('"UserDO_id_seq"'),callcenter_agent_name,true,'company', --1
 			'callcenter',2,'agent', --2
-			now(),false,0, --3
+			now(),0, --3
 			'','Nqa1Yvs9r9Clp3qpLgoUMhrT/tfq1ZWDXQUvOK0x2/I=','AMDFaxpae/ipXgY7sho+kg=='); --4
 	END IF;
 	userref = (SELECT id FROM  "UserDO" WHERE "accountName" = callcenter_agent_name);
@@ -207,12 +210,12 @@ BEGIN
 	IF NOT EXISTS (SELECT NULL FROM oms."UserDO" WHERE "accountName" = user_admin_user_name) THEN
 		INSERT INTO "UserDO" (id,"accountName",active,"companyName", --1
 			"firstName","languageDefRef","lastName", --2
-			"modificationDate","uniformRoleConf","version", --3
+			"modificationDate","version", --3
 			email,"cryptedPassword","hashSalt") --4
 		VALUES
 			(nextval('"UserDO_id_seq"'),user_admin_user_name,true,'company', --1
 			'user ',2,'admin', --2
-			now(),false,0, --3
+			now(),0, --3
 			'','z4q9/vhfWJo9suBtJU8TNR3i7/acCkZhqJpGoNEHLas=','p4uJNxFfemFTa+zX+wJ5rw=='); --4
 	END IF;
 	userref = (SELECT id FROM  "UserDO" WHERE "accountName" = user_admin_user_name);
