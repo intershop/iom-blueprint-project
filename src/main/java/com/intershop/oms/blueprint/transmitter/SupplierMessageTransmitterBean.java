@@ -3,13 +3,13 @@ package com.intershop.oms.blueprint.transmitter;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.intershop.oms.ps.services.configuration.ConfigurationLogicService;
 import com.theberlinbakery.types.v1_0.StoreDispatch;
 import com.theberlinbakery.types.v1_0.StoreResponse;
 import com.theberlinbakery.types.v1_0.StoreReturn;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import bakery.logic.communication.mapper.out.DispatchMapperOut;
 import bakery.logic.communication.mapper.out.ResponseMapperOut;
@@ -31,21 +31,20 @@ import bakery.util.exception.ValidationException;
 @Stateless
 public class SupplierMessageTransmitterBean implements MessageTransmitter
 {
+    
     private static final Logger log = LoggerFactory.getLogger(SupplierMessageTransmitterBean.class);
 
     @EJB(lookup = "java:global/bakery.base-app-" + DeploymentConfig.APP_VERSION + "/bakery.logic-core-"
                     + DeploymentConfig.APP_VERSION
-                    + "/ResponseMapperOutBean!bakery.logic.communication.mapper.v1_0.out.ResponseMapperOut")
+                    + "/ResponseMapperOutBean!bakery.logic.communication.mapper.out.ResponseMapperOut")
     private ResponseMapperOut responseMapperOut;
     
-    @EJB(lookup = "java:global/bakery.base-app-" + DeploymentConfig.APP_VERSION + "/bakery.logic-core-"
-                    + DeploymentConfig.APP_VERSION
-                    + "/DispatchMapperOutBean!bakery.logic.communication.mapper.v1_0.out.DispatchMapperOut")
+    @EJB(lookup = DispatchMapperOut.LOGIC_DSIPATCHMAPPEROUT) // there's an API-typo
     private DispatchMapperOut dispatchMapperOut;
     
     @EJB(lookup = "java:global/bakery.base-app-" + DeploymentConfig.APP_VERSION + "/bakery.logic-core-"
                     + DeploymentConfig.APP_VERSION
-                    + "/ReturnMapperOutBean!bakery.logic.communication.mapper.v1_0.out.ReturnMapperOut")
+                    + "/ReturnMapperOutBean!bakery.logic.communication.mapper.out.ReturnMapperOut")
     private ReturnMapperOut returnMapperOut;
 
     @EJB(lookup = TransmissionWrapperFactory.LOGIC_TRANSMISSIONFACTORYBEAN)
@@ -86,6 +85,11 @@ public class SupplierMessageTransmitterBean implements MessageTransmitter
         return abstractTransmission;
     }
 
+    /**
+     * Make API-call to submit the data.
+     * @param responseTransmissionDO
+     * @return
+     */
     private ResponseTransmissionDO transmitResponse(ResponseTransmissionDO responseTransmissionDO)
     {
         StoreResponse storeResponse;
@@ -94,6 +98,9 @@ public class SupplierMessageTransmitterBean implements MessageTransmitter
         Long responseId = responseTransmissionDO.getResponseDO().getId();
         log.debug("Started transmitting response " + responseId + " for order " + orderId + ".");
 
+        /**
+         * Map to API-object.
+         */
         TransmissionWrapper transmissionWrapper = transmissionWrapperFactory.getTransmissionWrapper(responseTransmissionDO);
         try
         {
@@ -106,7 +113,7 @@ public class SupplierMessageTransmitterBean implements MessageTransmitter
         }
 
         /**
-         * If required storeResponse can be extended storeResponse-object using the related responseTransmissionDO.getResponseDO()
+         * If required storeResponse can be extended storeResponse-object using the related responseTransmissionDO.getResponseDO().
          */
         
         /**
@@ -118,6 +125,11 @@ public class SupplierMessageTransmitterBean implements MessageTransmitter
         return responseTransmissionDO;
     }
     
+    /**
+     * Make API-call to submit the data.
+     * @param dispatchTransmissionDO
+     * @return
+     */
     private DispatchTransmissionDO transmitDispatch(DispatchTransmissionDO dispatchTransmissionDO)
     {
         StoreDispatch storeDispatch;
@@ -126,6 +138,9 @@ public class SupplierMessageTransmitterBean implements MessageTransmitter
         Long dispatchId = dispatchTransmissionDO.getDispatchDO().getId();
         log.debug("Started transmitting dispatch " + dispatchId + " for order " + orderId + ".");
 
+        /**
+         * Map to API-object.
+         */
         TransmissionWrapper transmissionWrapper = transmissionWrapperFactory.getTransmissionWrapper(dispatchTransmissionDO);
         try
         {
@@ -150,6 +165,11 @@ public class SupplierMessageTransmitterBean implements MessageTransmitter
         return dispatchTransmissionDO;
     }
     
+    /**
+     * Make API-call to submit the data.
+     * @param returnTransmissionDO
+     * @return
+     */
     private ReturnTransmissionDO transmitReturn(ReturnTransmissionDO returnTransmissionDO)
     {
         StoreReturn storeReturn;
@@ -158,9 +178,11 @@ public class SupplierMessageTransmitterBean implements MessageTransmitter
         Long returnId = returnTransmissionDO.getReturnDO().getId();
         log.debug("Started transmitting return " + returnId + " for order " + orderId);
 
+        /**
+         * Map to API-object.
+         */
         TransmissionWrapper transmissionWrapper = transmissionWrapperFactory.getTransmissionWrapper(returnTransmissionDO);
         storeReturn = (StoreReturn)returnMapperOut.mapReturn(returnTransmissionDO, transmissionWrapper);
-        
 
         /**
          * If required storeReturn can be extended storeReturn-object using the related returnTransmissionDO.getReturnDO()

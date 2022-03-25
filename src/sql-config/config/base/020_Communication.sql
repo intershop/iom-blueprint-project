@@ -86,8 +86,8 @@ BEGIN
 					null, --TODO fix exception   (SELECT id FROM oms."DecisionBeanDefDO" WHERE description = order_decisionBean), -- skip export ?
 					false,
 					communicationId,
-					senderId,
-					receiverId,
+					senderId,	-- a shop
+					receiverId,	-- a supplier
 					5,
 					'2m',
 					null,
@@ -134,15 +134,15 @@ BEGIN
 	
 		-- iterate all suppliers of the shop and insert if not existing yet
 		supplierIds := ARRAY(SELECT "supplierRef" FROM oms."Shop2SupplierDO" WHERE "shopRef" = shopId and "supplierRef" != internal_supplier_id);
-		senderId := (SELECT id FROM oms."PartnerReferrerDO" WHERE "shopRef" = shopId);
+		--senderId := (SELECT id FROM oms."PartnerReferrerDO" WHERE "shopRef" = shopId);
 
 		FOREACH supplierId IN ARRAY supplierIds LOOP
 
-			receiverId := (SELECT id FROM oms."PartnerReferrerDO" WHERE "supplierRef" = supplierId);
+			senderId := (SELECT id FROM oms."PartnerReferrerDO" WHERE "supplierRef" = supplierId);
 
 			IF NOT EXISTS (SELECT * FROM "CommunicationPartnerDO"
 				WHERE "sendingPartnerReferrerRef" = senderId
-				AND "receivingPartnerReferrerRef" = receiverId				
+				--AND "receivingPartnerReferrerRef" = receiverId				
 				AND "communicationRef" = communicationId)
 			THEN
 
@@ -164,8 +164,8 @@ BEGIN
 					null, --TODO fix exception   (SELECT id FROM oms."DecisionBeanDefDO" WHERE description = supplier_decisionBean), -- skip export ?
 					false,
 					communicationId,
-					senderId,
-					receiverId,
+					senderId, -- a supplier
+					null,
 					5,
 					'2m',
 					null,
@@ -212,15 +212,15 @@ BEGIN
 	
 		-- iterate all suppliers of the shop and insert if not existing yet
 		supplierIds := ARRAY(SELECT "supplierRef" FROM oms."Shop2SupplierDO" WHERE "shopRef" = shopId and "supplierRef" != internal_supplier_id);
-		senderId := (SELECT id FROM oms."PartnerReferrerDO" WHERE "shopRef" = shopId);
+		--senderId := (SELECT id FROM oms."PartnerReferrerDO" WHERE "shopRef" = shopId);
 
 		FOREACH supplierId IN ARRAY supplierIds LOOP
 
-			receiverId := (SELECT id FROM oms."PartnerReferrerDO" WHERE "supplierRef" = supplierId);
+			senderId := (SELECT id FROM oms."PartnerReferrerDO" WHERE "supplierRef" = supplierId);
 
 			IF NOT EXISTS (SELECT * FROM "CommunicationPartnerDO"
 				WHERE "sendingPartnerReferrerRef" = senderId
-				AND "receivingPartnerReferrerRef" = receiverId				
+				--AND "receivingPartnerReferrerRef" = receiverId				
 				AND "communicationRef" = communicationId)
 			THEN
 
@@ -242,8 +242,8 @@ BEGIN
 					null, --TODO fix exception   (SELECT id FROM oms."DecisionBeanDefDO" WHERE description = supplier_decisionBean), -- skip export ?
 					false,
 					communicationId,
-					senderId,
-					receiverId,
+					senderId, -- a supplier
+					null,
 					5,
 					'2m',
 					null,
@@ -290,15 +290,15 @@ BEGIN
 	
 		-- iterate all suppliers of the shop and insert if not existing yet
 		supplierIds := ARRAY(SELECT "supplierRef" FROM oms."Shop2SupplierDO" WHERE "shopRef" = shopId and "supplierRef" != internal_supplier_id);
-		senderId := (SELECT id FROM oms."PartnerReferrerDO" WHERE "shopRef" = shopId);
+		--senderId := (SELECT id FROM oms."PartnerReferrerDO" WHERE "shopRef" = shopId);
 
 		FOREACH supplierId IN ARRAY supplierIds LOOP
 
-			receiverId := (SELECT id FROM oms."PartnerReferrerDO" WHERE "supplierRef" = supplierId);
+			senderId := (SELECT id FROM oms."PartnerReferrerDO" WHERE "supplierRef" = supplierId);
 
 			IF NOT EXISTS (SELECT * FROM "CommunicationPartnerDO"
 				WHERE "sendingPartnerReferrerRef" = senderId
-				AND "receivingPartnerReferrerRef" = receiverId				
+				--AND "receivingPartnerReferrerRef" = receiverId				
 				AND "communicationRef" = communicationId)
 			THEN
 
@@ -320,8 +320,8 @@ BEGIN
 					null, --TODO fix exception   (SELECT id FROM oms."DecisionBeanDefDO" WHERE description = supplier_decisionBean), -- skip export ?
 					false,
 					communicationId,
-					senderId,
-					receiverId,
+					senderId, -- a supplier
+					null,
 					5,
 					'2m',
 					null,
@@ -332,7 +332,8 @@ BEGIN
 		END LOOP;
 	
 	END LOOP;
-	
+
+
 	
 END;
 ]]#
