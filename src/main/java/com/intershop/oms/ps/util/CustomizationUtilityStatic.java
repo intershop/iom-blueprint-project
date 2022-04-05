@@ -141,7 +141,7 @@ public final class CustomizationUtilityStatic
 
     public static void setOrUpdateProperty(DocumentDO documentDO, String key, String value)
     {
-        for (DocumentPropertyDO prop : documentDO.getDocumentPropertyList())
+        for (DocumentPropertyDO prop : documentDO.getPropertyList())
         {
             if (key.equals(prop.getKey()))
             {
@@ -155,7 +155,7 @@ public final class CustomizationUtilityStatic
         newProp.setKey(key);
         newProp.setValue(value);
         newProp.setDocumentDO(documentDO);
-        documentDO.getDocumentPropertyList().add(newProp);
+        documentDO.getPropertyList().add(newProp);
     }
 
     public static void setOrUpdateProperty(ReturnAnnouncement returnAnnouncementXML, String group, String key, String value)
