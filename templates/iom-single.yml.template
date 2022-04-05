@@ -79,9 +79,9 @@ ${DbmigrateDirYml}          mountPath: /opt/oms/stored_procedures
 ${DbmigrateDirYml}        - name: dbmigrate-scripts
 ${DbmigrateDirYml}          mountPath: /opt/oms/migrations
 ${SqlconfDirYml__}        - name: sqlconf
-${SqlconfDirYml__}          mountPath: /opt/oms/caas-config/sql-config
+${SqlconfDirYml__}          mountPath: /opt/oms/project-config/sql-config
 ${JsonconfDirYml_}        - name: jsonconf
-${JsonconfDirYml_}          mountPath: /opt/oms/caas-config/json-config
+${JsonconfDirYml_}          mountPath: /opt/oms/project-config/json-config
 ${DumpsDirYml____}        - name: dumps
 ${DumpsDirYml____}          mountPath: /opt/oms/dumps
         env:
@@ -104,7 +104,7 @@ ${DumpsDirYml____}          mountPath: /opt/oms/dumps
           - name: OMS_DB_USER_CONNECTION_SUFFIX
             value: '${PGUSER_CONNECTION_SUFFIX}'
           - name: OMS_DB_SQLHASH
-            value: 'false'
+            value: '${OMS_DB_SQLHASH}'
           - name: OMS_SHAREDFS_HEALTHCHECK
             value: disabled
           - name: OMS_LOGLEVEL_CONSOLE
@@ -123,11 +123,11 @@ ${DumpsDirYml____}          mountPath: /opt/oms/dumps
             value: '${OMS_LOGLEVEL_SCRIPTS}'
           - name: OMS_LOG_REST_IDS
             value: '${OMS_LOG_REST_IDS}'
-          - name: CAAS_ENV_NAME
+          - name: PROJECT_ENV_NAME
             value: '${PROJECT_ENV_NAME}'
-          - name: CAAS_IMPORT_TEST_DATA
+          - name: PROJECT_IMPORT_TEST_DATA
             value: '${PROJECT_IMPORT_TEST_DATA}'
-          - name: CAAS_IMPORT_TEST_DATA_TIMEOUT
+          - name: PROJECT_IMPORT_TEST_DATA_TIMEOUT
             value: '${PROJECT_IMPORT_TEST_DATA_TIMEOUT}'
           - name: JBOSS_OPTS
             value: "--debug *:8787"
