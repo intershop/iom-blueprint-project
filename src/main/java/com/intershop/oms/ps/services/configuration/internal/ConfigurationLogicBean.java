@@ -18,8 +18,6 @@ import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.intershop.oms.ps.services.configuration.AbstractConfigurationVO;
 import com.intershop.oms.ps.services.configuration.ConfigurationLogicService;
 import com.intershop.oms.ps.services.configuration.CustomConfiguration;
@@ -35,7 +33,8 @@ public class ConfigurationLogicBean implements ConfigurationLogicService
     private Map<String, List<? extends AbstractConfigurationVO>> shopTypeConfig;
     private Map<String, List<? extends AbstractConfigurationVO>> supplierTypeConfig;
     private Map<String, List<? extends AbstractConfigurationVO>> shopSupplierTypeConfig;
-    private BiMap<String, Class<? extends AbstractConfigurationVO>> configTypeMap = HashBiMap.create();
+    private Map<String, Class<? extends AbstractConfigurationVO>> configTypeToClass = new HashMap<>();
+    private Map<Class<? extends AbstractConfigurationVO>, String> classToConfigType = new HashMap<>();
 
     @PersistenceContext
     private EntityManager em;
@@ -61,7 +60,8 @@ public class ConfigurationLogicBean implements ConfigurationLogicService
             }
 
             log.debug("registering config type: " + clazz.getCanonicalName());
-            configTypeMap.put(customConfiguration.identifier(), clazz);
+            configTypeToClass.put(customConfiguration.identifier(), clazz);
+            classToConfigType.put(clazz, customConfiguration.identifier());
         }
 
     }
@@ -96,7 +96,7 @@ public class ConfigurationLogicBean implements ConfigurationLogicService
     private <T extends AbstractConfigurationVO> List<T> getConfigDOs(Class<T> type, Long shopRef, Long supplierRef)
     {
         List<? extends AbstractConfigurationVO> configs;
-        String typeName = configTypeMap.inverse().get(type);
+        String typeName = classToConfigType.get(type);
         if (shopRef == null)
         {
             configs = supplierTypeConfig.get(supplierRef.toString() + "_" + typeName);
@@ -162,7 +162,7 @@ public class ConfigurationLogicBean implements ConfigurationLogicService
     @SuppressWarnings("unchecked")
     private <T extends AbstractConfigurationVO> T mapConfigDO(CustomConfigurationDO config)
     {
-        Class<? extends AbstractConfigurationVO> configClazz = configTypeMap.get(config.getConfigType());
+        Class<? extends AbstractConfigurationVO> configClazz = configTypeToClass.get(config.getConfigType());
         if (configClazz == null)
         {
             log.warn("found config with unknown config type: " + config.getConfigType());
