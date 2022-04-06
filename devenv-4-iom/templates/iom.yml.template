@@ -204,9 +204,8 @@ ${DumpsDirYml____}            mountPath: /opt/dumps
               value: '${PGUSER_CONNECTION_SUFFIX}'
             - name: OMS_LOGLEVEL_SCRIPTS
               value: '${OMS_LOGLEVEL_SCRIPTS}'
-              # devenv has to ignore sql-hash in any case!
             - name: OMS_DB_SQLHASH
-              value: 'false'
+              value: '${OMS_DB_SQLHASH}'
             - name: CAAS_ENV_NAME
               value: '${PROJECT_ENV_NAME}'
 ---

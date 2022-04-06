@@ -1,4 +1,4 @@
-DEVENV4IOM_VERSION=2.0.0-SNAPSHOT
+DEVENV4IOM_VERSION=2.0.1
 
 ################################################################################
 # Defaults
@@ -6,6 +6,9 @@ DEVENV4IOM_VERSION=2.0.0-SNAPSHOT
 # The following section defines useful defaults for all variables that could be
 # used with the template_engine.sh script.
 ################################################################################
+
+# Kubernetes context must never be empty.
+KUBERNETES_CONTEXT="${KUBERNETES_CONTEXT:-docker-desktop}"
 
 # used for calculation of automatic port forwarding
 INDEX="${INDEX:-0}"
@@ -344,6 +347,8 @@ OMS_DB_SEARCHPATH="${OMS_DB_SEARCHPATH:-customer, oms, omt, product, admin, bizc
 OMS_DB_USER="${OMS_DB_USER:-oms_user}"
 OMS_DB_PASS="${OMS_DB_PASS:-oms_pw}"
 OMS_DB_NAME="${OMS_DB_NAME:-oms_db}"
+
+OMS_DB_SQLHASH="${OMS_DB_SQLHASH:-false}"
 
 TIMEZONE="${TIMEZONE:-Europe/Berlin}"
 

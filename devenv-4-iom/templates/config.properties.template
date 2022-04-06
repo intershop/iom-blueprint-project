@@ -22,6 +22,11 @@
 # - kube
 ID="${ID}"
 
+# kubectl is able to work with different Kubernetes clusters. The Kubernetes
+# context determines, which cluster is controlled by kubectl. This configuration
+# variable defines the Kubernetes context to be used by devenv-4-iom.
+KUBERNETES_CONTEXT="${KUBERNETES_CONTEXT}"
+
 ################################################################################
 # Docker Image Settings
 ################################################################################
@@ -110,6 +115,15 @@ OMS_DB_SEARCHPATH="${OMS_DB_SEARCHPATH}"
 OMS_DB_USER="${OMS_DB_USER}"
 OMS_DB_PASS="${OMS_DB_PASS}"
 OMS_DB_NAME="${OMS_DB_NAME}"
+
+# Enable/Disable SQL-Hashes
+# During image creation, hashes are created and stored within the image, that
+# are stored within the DB after according SQL-scripts were executed, to avoid
+# repeated execution of SQL-scripts. In a development environment these hashes
+# must be ignored. But there are special cases, that need the posibility of
+# configuration of this feature.
+# Allowed values are true|false
+OMS_DB_SQLHASH="${OMS_DB_SQLHASH}"
 
 ################################################################################
 # IOM Runtime Configuration
