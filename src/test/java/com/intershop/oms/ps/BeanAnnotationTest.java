@@ -15,7 +15,7 @@ import javax.persistence.PersistenceContext;
 
 import org.junit.jupiter.api.Test;
 import org.reflections.Reflections;
-import org.reflections.scanners.SubTypesScanner;
+import org.reflections.scanners.Scanners;
 
 // this test class can be used to perform some static "code analysis" to check
 // for missing annotations
@@ -25,9 +25,9 @@ public class BeanAnnotationTest
     @Test
     public void test() throws Exception
     {
-        Reflections reflectionsFramework = new Reflections("com.intershop.oms.ps", new SubTypesScanner(false));
+        Reflections reflectionsFramework = new Reflections("com.intershop.oms.ps",  Scanners.SubTypes.filterResultsBy(s -> true));
         // you can add custom java packages like this:
-        Reflections reflectionsProject = new Reflections("com.intershop.oms.example", new SubTypesScanner(false));
+        Reflections reflectionsProject = new Reflections("com.intershop.oms.example", Scanners.SubTypes.filterResultsBy(s -> true));
 
         List<Class<? extends Object>> classes = new ArrayList<>();
         classes.addAll(reflectionsProject.getSubTypesOf(Object.class));

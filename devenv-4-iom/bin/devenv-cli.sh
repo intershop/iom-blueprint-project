@@ -271,7 +271,7 @@ SEE
     $ME [CONFIG-FILE] delete namespace
 
 BACKGROUND
-    kubectl create namespace $EnvId
+    kubectl create namespace $EnvId --context="$KUBERNETES_CONTEXT"
 EOF
 }
 
@@ -304,7 +304,7 @@ BACKGROUND
       --template="$DEVENV_DIR/templates/mailhog.yml.template" \\
       --config="$CONFIG_FILES" \\
       --project-dir="$PROJECT_DIR" |
-      kubectl apply --namespace $EnvId -f -
+      kubectl apply --namespace $EnvId --context="$KUBERNETES_CONTEXT"  -f -
 EOF
 }
 
@@ -346,14 +346,14 @@ BACKGROUND
     $KeepDatabaseSh     --template="$DEVENV_DIR/templates/postgres-storage.yml.template" \\
     $KeepDatabaseSh     --config="$CONFIG_FILES" \\
     $KeepDatabaseSh     --project-dir="$PROJECT_DIR" |
-    $KeepDatabaseSh   kubectl apply --namespace $EnvId -f -
+    $KeepDatabaseSh   kubectl apply --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f -
 
     # create Postgres
     "$DEVENV_DIR/bin/template_engine.sh" \\
         --template="$DEVENV_DIR/templates/postgres.yml.template" \\
         --config="$CONFIG_FILES" \\
         --project-dir="$PROJECT_DIR" |
-      kubectl apply --namespace $EnvId -f -
+      kubectl apply --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f -
 EOF
 }
 
@@ -390,7 +390,7 @@ BACKGROUND
         --template="$DEVENV_DIR/templates/$IomTemplate" \\
         --config="$CONFIG_FILES" \\
         --project-dir="$PROJECT_DIR" |
-      kubectl apply --namespace $EnvId -f -
+      kubectl apply --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f -
 EOF
 }
 
@@ -498,7 +498,7 @@ SEE
     $ME [CONFIG-FILE] create namespace
 
 BACKGROUND
-    kubectl delete namespace ${EnvId}
+    kubectl delete namespace ${EnvId} --context="$KUBERNETES_CONTEXT"
 EOF
 }
 
@@ -529,7 +529,7 @@ BACKGROUND
         --template="$DEVENV_DIR/templates/mailhog.yml.template" \\
         --config="$CONFIG_FILES" \\
         --project-dir="$PROJECT_DIR" |
-      kubectl delete --namespace $EnvId -f -
+      kubectl delete --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f -
 EOF
 }
 
@@ -562,7 +562,7 @@ BACKGROUND
         --template="$DEVENV_DIR/templates/postgres.yml.template" \\
         --config="$CONFIG_FILES" \\
         --project-dir="$PROJECT_DIR" |
-      kubectl delete --namespace $EnvId -f -
+      kubectl delete --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f -
 
     # Unlink Docker volume from database storage
     MOUNTPOINT="\"\$(docker volume inspect --format='{{.Mountpoint}}' $EnvId-pgdata)\"" \\
@@ -570,7 +570,7 @@ BACKGROUND
         --template="$DEVENV_DIR/templates/postgres-storage.yml.template" \\
         --config="$CONFIG_FILES" \\
         --project-dir="$PROJECT_DIR" |
-      kubectl delete --namespace $EnvId -f -
+      kubectl delete --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f -
 EOF
 }
 
@@ -602,7 +602,7 @@ BACKGROUND
         --template="$DEVENV_DIR/templates/$IomTemplate" \\
         --config="$CONFIG_FILES" \\
         --project-dir="$PROJECT_DIR" |
-      kubectl delete --namespace $EnvId -f -
+      kubectl delete --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f -
 EOF
 }
 
@@ -706,12 +706,12 @@ SEE
 
 BACKGROUND
     # redeploy omt selectively
-    POD_NAME=\$(kubectl get pods --namespace $EnvId -l app=iom -o jsonpath="{.items[0].metadata.name}")
-    kubectl exec \$POD_NAME --namespace $EnvId -- bash -ic redeploy omt
+    POD_NAME=\$(kubectl get pods --namespace $EnvId --context="$KUBERNETES_CONTEXT" -l app=iom -o jsonpath="{.items[0].metadata.name}")
+    kubectl exec \$POD_NAME --namespace $EnvId --context="$KUBERNETES_CONTEXT" -- bash -ic redeploy omt
 
     # redeploy all
-    POD_NAME=\$(kubectl get pods --namespace $EnvId -l app=iom -o jsonpath="{.items[0].metadata.name}")
-    kubectl exec \$POD_NAME --namespace $EnvId -- bash -ic redeploy
+    POD_NAME=\$(kubectl get pods --namespace $EnvId --context="$KUBERNETES_CONTEXT" -l app=iom -o jsonpath="{.items[0].metadata.name}")
+    kubectl exec \$POD_NAME --namespace $EnvId --context="$KUBERNETES_CONTEXT" -- bash -ic redeploy
 EOF
 }
 
@@ -752,8 +752,8 @@ SEE
     $ME [CONFIG-FILE] info   iom
 
 BACKGROUND
-    POD_NAME=\$(kubectl get pods --namespace $EnvId -l app=iom -o jsonpath="{.items[0].metadata.name}")
-    kubectl exec \$POD_NAME --namespace $EnvId -- bash -ic apply-templates
+    POD_NAME=\$(kubectl get pods --namespace $EnvId --context="$KUBERNETES_CONTEXT" -l app=iom -o jsonpath="{.items[0].metadata.name}")
+    kubectl exec \$POD_NAME --namespace $EnvId --context="$KUBERNETES_CONTEXT" -- bash -ic apply-templates
 EOF
 }
 
@@ -793,8 +793,8 @@ SEE
     $ME [CONFIG-FILE] info   iom
 
 BACKGROUND
-    POD_NAME=\$(kubectl get pods --namespace $EnvId -l app=iom -o jsonpath="{.items[0].metadata.name}")
-    kubectl exec \$POD_NAME --namespace $EnvId -- bash -ic apply-xslt
+    POD_NAME=\$(kubectl get pods --namespace $EnvId --context="$KUBERNETES_CONTEXT" -l app=iom -o jsonpath="{.items[0].metadata.name}")
+    kubectl exec \$POD_NAME --namespace $EnvId --context="$KUBERNETES_CONTEXT" -- bash -ic apply-xslt
 EOF
 }
 
@@ -847,20 +847,21 @@ BACKGROUND
         --template="$DEVENV_DIR/templates/apply-sql.yml.template" \\
         --config="$CONFIG_FILES" \\
         --project-dir="$PROJECT_DIR" | 
-      kubectl apply --namespace $EnvId -f -
+      kubectl apply --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f -
 
     # get logs of job
     POD_NAME=\$(kubectl get pods --namespace $EnvId \\
+      --context="$KUBERNETES_CONTEXT" \\
       -l job-name=apply-sql-job \\
       -o jsonpath="{.items[0].metadata.name}")
-    kubectl logs \$POD_NAME --namespace $EnvId
+    kubectl logs \$POD_NAME --namespace $EnvId --context="$KUBERNETES_CONTEXT"
 
     # delete apply-sql-job
     "$DEVENV_DIR/bin/template_engine.sh" \\
         --template="$DEVENV_DIR/templates/apply-sql.yml.template" \\
         --config="$CONFIG_FILES" \\
         --project-dir="$PROJECT_DIR" | 
-      kubectl delete --namespace $EnvId -f -
+      kubectl delete --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f -
 EOF
 }
 
@@ -913,18 +914,18 @@ BACKGROUND
         --template="$DEVENV_DIR/templates/sqlconfig.yml.template" \\
         --config="$CONFIG_FILES" \\
         --project-dir="$PROJECT_DIR" |
-      kubectl apply --namespace $EnvId -f -
+      kubectl apply --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f -
 
     # get logs of job
-    POD_NAME=\$(kubectl get pods --namespace $EnvId -l job-name=sqlconfig-job -o jsonpath="{.items[0].metadata.name}")
-    kubectl logs \$POD_NAME --namespace $EnvId
+    POD_NAME=\$(kubectl get pods --namespace $EnvId --context="$KUBERNETES_CONTEXT" -l job-name=sqlconfig-job -o jsonpath="{.items[0].metadata.name}")
+    kubectl logs \$POD_NAME --namespace $EnvId --context="$KUBERNETES_CONTEXT"
 
     # delete sqlconfig-job
     "$DEVENV_DIR/bin/template_engine.sh" \\
         --template="$DEVENV_DIR/templates/sqlconfig.yml.template" \\
         --config="$CONFIG_FILES" \\
         --project-dir="$PROJECT_DIR" |
-      kubectl delete --namespace $EnvId -f -
+      kubectl delete --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f -
 EOF
 }
 
@@ -976,18 +977,18 @@ BACKGROUND
         --template="$DEVENV_DIR/templates/jsonconfig.yml.template" \\
         --config="$CONFIG_FILES" \\
         --project-dir="$PROJECT_DIR" |
-      kubectl apply --namespace $EnvId -f -
+      kubectl apply --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f -
 
     # get logs of job
-    POD_NAME=\$(kubectl get pods --namespace $EnvId -l job-name=jsonconfig-job -o jsonpath="{.items[0].metadata.name}")
-    kubectl logs \$POD_NAME --namespace $EnvId
+    POD_NAME=\$(kubectl get pods --namespace $EnvId --context="$KUBERNETES_CONTEXT" -l job-name=jsonconfig-job -o jsonpath="{.items[0].metadata.name}")
+    kubectl logs \$POD_NAME --namespace $EnvId --context="$KUBERNETES_CONTEXT"
 
     # delete jsonconfig-job
     "$DEVENV_DIR/bin/template_engine.sh" \\
         --template="$DEVENV_DIR/templates/jsonconfig.yml.template" \\
         --config="$CONFIG_FILES" \\
         --project-dir="$PROJECT_DIR" |
-      kubectl delete --namespace $EnvId -f -
+      kubectl delete --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f -
 EOF
 }
 
@@ -1048,18 +1049,18 @@ BACKGROUND
         --template="$DEVENV_DIR/templates/dbmigrate.yml.template" \\
         --config="$CONFIG_FILES" \\
         --project-dir="$PROJECT_DIR" |
-      kubectl apply --namespace $EnvId -f -
+      kubectl apply --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f -
 
     # get logs of job
-    POD_NAME=\$(kubectl get pods --namespace $EnvId -l job-name=dbmigrate-job -o jsonpath="{.items[0].metadata.name}")
-    kubectl logs \$POD_NAME --namespace $EnvId
+    POD_NAME=\$(kubectl get pods --namespace $EnvId --context="$KUBERNETES_CONTEXT" -l job-name=dbmigrate-job -o jsonpath="{.items[0].metadata.name}")
+    kubectl logs \$POD_NAME --namespace $EnvId --context="$KUBERNETES_CONTEXT"
 
     # delete dbmigrate-job
     "$DEVENV_DIR/bin/template_engine.sh" \\
         --template="$DEVENV_DIR/templates/dbmigrate.yml.template" \\
         --config="$CONFIG_FILES" \\
         --project-dir="$PROJECT_DIR" |
-      kubectl delete --namespace $EnvId -f -
+      kubectl delete --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f -
 EOF
 }
 
@@ -1130,18 +1131,18 @@ BACKGROUND
         --template="$DEVENV_DIR/templates/dump.yml.template" \\
         --config="$CONFIG_FILES" \\
         --project-dir="$PROJECT_DIR" |
-      kubectl apply --namespace $EnvId -f -
+      kubectl apply --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f -
 
     # get logs of job
-    POD_NAME=\$(kubectl get pods --namespace $EnvId -l job-name=dump-job -o jsonpath="{.items[0].metadata.name}")
-    kubectl logs \$POD_NAME --namespace $EnvId
+    POD_NAME=\$(kubectl get pods --namespace $EnvId --context="$KUBERNETES_CONTEXT" -l job-name=dump-job -o jsonpath="{.items[0].metadata.name}")
+    kubectl logs \$POD_NAME --namespace $EnvId --context="$KUBERNETES_CONTEXT"
 
     # delete dump-job
     "$DEVENV_DIR/bin/template_engine.sh" \\
         --template="$DEVENV_DIR/templates/dump.yml.template" \\
         --config="$CONFIG_FILES" \\
         --project-dir="$PROJECT_DIR" |
-      kubectl delete --namespace $EnvId -f -
+      kubectl delete --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f -
 EOF
 }
 
@@ -1642,11 +1643,11 @@ OS() {
 kube_job_wait() (
     JOB_NAME=$1
     TIMEOUT=$2
-    PHASE=$(kubectl get pods --namespace $EnvId -l job-name=$JOB_NAME -o jsonpath='{.items[0].status.phase}' 2> /dev/null)
+    PHASE=$(kubectl get pods --namespace $EnvId --context="$KUBERNETES_CONTEXT" -l job-name=$JOB_NAME -o jsonpath='{.items[0].status.phase}' 2> /dev/null)
     START_TIME=$(date '+%s')
     while [ \( "$PHASE" != 'Succeeded' \) -a \( $PHASE"" != 'Failed' \) -a \( $(date '+%s') -lt $(expr "$START_TIME" + "$TIMEOUT") \) ]; do
         sleep 5
-        PHASE=$(kubectl get pods --namespace $EnvId -l job-name=$JOB_NAME -o jsonpath='{.items[0].status.phase}' 2> /dev/null)
+        PHASE=$(kubectl get pods --namespace $EnvId --context="$KUBERNETES_CONTEXT" -l job-name=$JOB_NAME -o jsonpath='{.items[0].status.phase}' 2> /dev/null)
     done
     if [ "$PHASE" = 'Succeeded' ]; then
         exit 0
@@ -1668,14 +1669,14 @@ kube_job_wait() (
 kube_pod_wait() (
     APP_NAME=$1
     TIMEOUT=$2
-    PHASE=$(kubectl get pods --namespace $EnvId -l app=$APP_NAME -o jsonpath='{.items[0].status.phase}' 2> /dev/null)
+    PHASE=$(kubectl get pods --namespace $EnvId --context="$KUBERNETES_CONTEXT" -l app=$APP_NAME -o jsonpath='{.items[0].status.phase}' 2> /dev/null)
     START_TIME=$(date '+%s')
     while [ \( "$PHASE" != 'Succeeded' \) -a \
                \( "$PHASE" != 'Failed' \) -a \
                \( "$PHASE" != 'Running' \) -a \
                \( $(date '+%s') -lt $(expr "$START_TIME" + "$TIMEOUT") \) ]; do
         sleep 5
-        PHASE=$(kubectl get pods --namespace $EnvId -l app=$APP_NAME -o jsonpath='{.items[0].status.phase}' 2> /dev/null)
+        PHASE=$(kubectl get pods --namespace $EnvId --context="$KUBERNETES_CONTEXT" -l app=$APP_NAME -o jsonpath='{.items[0].status.phase}' 2> /dev/null)
     done
     [ "$PHASE" = 'Running' ]
 )
@@ -1688,7 +1689,7 @@ kube_namespace_exists() (
     NAME=$1
     # list all namespaces and check if the requested namespace exists
     NAMESPACE_EXISTS=false
-    for NAMESPACE in $(kubectl get namespaces -o jsonpath='{.items[*].metadata.name}' 2> /dev/null); do
+    for NAMESPACE in $(kubectl get namespaces --context="$KUBERNETES_CONTEXT" -o jsonpath='{.items[*].metadata.name}' 2> /dev/null); do
         if [ "$NAMESPACE" = "$EnvId" ]; then
             NAMESPACE_EXISTS=true
             break
@@ -1726,7 +1727,7 @@ kube_resource_exists() (
     NAME=$2
     # list all resources and check if NAME exists
     RESOURCE_EXISTS=false
-    for RESOURCE in $(kubectl get $TYPE -o jsonpath='{.items[*].metadata.name}' --namespace=$EnvId 2> /dev/null); do
+    for RESOURCE in $(kubectl get $TYPE --context="$KUBERNETES_CONTEXT" -o jsonpath='{.items[*].metadata.name}' --namespace=$EnvId 2> /dev/null); do
         if [ "$RESOURCE" = "$NAME" ]; then
             RESOURCE_EXISTS=true
             break
@@ -1758,7 +1759,7 @@ time2seconds() {
 kube_get_pod() (
     # get name, status, creation timestamp of pods and store them in an array
     # the array is flat and contains all names, statuses and creation timestamps in this order
-    POD_INFO=( $(kubectl get pods --namespace $EnvId -l app=$1 -o jsonpath='{.items[*].metadata.name} {.items[*].status.phase} {.items[*].metadata.creationTimestamp}' 2> /dev/null) )
+    POD_INFO=( $(kubectl get pods --namespace $EnvId --context="$KUBERNETES_CONTEXT" -l app=$1 -o jsonpath='{.items[*].metadata.name} {.items[*].status.phase} {.items[*].metadata.creationTimestamp}' 2> /dev/null) )
     POD_COUNT=$(expr ${#POD_INFO[@]} / 3)
     POD_NAME=''
 
@@ -1772,7 +1773,7 @@ kube_get_pod() (
         STATUS_INDEX=$(expr 1 \* $POD_COUNT + $I)
         if [ "${POD_INFO[$STATUS_INDEX]}" = 'Running' ]; then
             # check deletionTimestamp
-            if [ -z "$(kubectl get pod "${POD_INFO[$NAME_INDEX]}" --namespace $EnvId -o jsonpath='{.metadata.deletionTimestamp}' 2> /dev/null)" ]; then
+            if [ -z "$(kubectl get pod "${POD_INFO[$NAME_INDEX]}" --namespace $EnvId --context="$KUBERNETES_CONTEXT" -o jsonpath='{.metadata.deletionTimestamp}' 2> /dev/null)" ]; then
                 POD_NAME="${POD_INFO[$NAME_INDEX]}"
             fi
         fi
@@ -1875,31 +1876,31 @@ EOF
 Kubernetes:
 ===========
 namespace:                  $EnvId
-$(kubectl get pods --namespace=$EnvId -l app=iom)
+$(kubectl get pods --namespace=$EnvId --context="$KUBERNETES_CONTEXT" -l app=iom)
 --------------------------------------------------------------------------------
 Usefull commands:
 =================
 
-Login into Pod:             kubectl exec --namespace $EnvId $POD -c iom -it -- bash
-jboss-cli:                  kubectl exec --namespace $EnvId $POD -c iom -it -- /opt/jboss/wildfly/bin/jboss-cli.sh -c
+Login into Pod:             kubectl exec --namespace $EnvId $POD --context="$KUBERNETES_CONTEXT" -c iom -it -- bash
+jboss-cli:                  kubectl exec --namespace $EnvId $POD --context="$KUBERNETES_CONTEXT" -c iom -it -- /opt/jboss/wildfly/bin/jboss-cli.sh -c
 
-Currently used yaml:        kubectl get pod -l app=iom -o yaml --namespace=$EnvId
-Describe iom pod:           kubectl describe --namespace $EnvId pod $POD
-Describe iom deployment     kubectl describe --namespace $EnvId deployment iom
-Describe iom service        kubectl describe --namespace $EnvId service iom-service
+Currently used yaml:        kubectl get pod -l app=iom -o yaml --namespace=$EnvId --context="$KUBERNETES_CONTEXT"
+Describe iom pod:           kubectl describe --namespace $EnvId --context="$KUBERNETES_CONTEXT" pod $POD
+Describe iom deployment     kubectl describe --namespace $EnvId --context="$KUBERNETES_CONTEXT" deployment iom
+Describe iom service        kubectl describe --namespace $EnvId --context="$KUBERNETES_CONTEXT" service iom-service
 
-Get dbaccount logs:         kubectl logs $POD --namespace $EnvId -c dbaccount
-Follow dbaccount logs:      kubectl logs --tail=1 -f $POD --namespace $EnvId -c dbaccount
+Get dbaccount logs:         kubectl logs $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT" -c dbaccount
+Follow dbaccount logs:      kubectl logs --tail=1 -f $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT" -c dbaccount
 EOF
             if [ "$IsIomSingleDist" = 'false' ]; then
                 cat <<EOF
-Get config logs:            kubectl logs $POD --namespace $EnvId -c config
-Follow config logs:         kubectl logs --tail=1 -f $POD --namespace $EnvId -c config
+Get config logs:            kubectl logs $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT" -c config
+Follow config logs:         kubectl logs --tail=1 -f $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT" -c config
 EOF
             fi
             cat <<EOF
-Get iom logs:               kubectl logs $POD --namespace $EnvId -c iom
-Follow iom logs:            kubectl logs --tail=1 -f $POD --namespace $EnvId -c iom
+Get iom logs:               kubectl logs $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT" -c iom
+Follow iom logs:            kubectl logs --tail=1 -f $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT" -c iom
 --------------------------------------------------------------------------------
 EOF
         fi
@@ -1952,19 +1953,19 @@ Kubernetes:
 ===========
 namespace:                  $EnvId
 KEEP_DATABASE_DATA:         $KEEP_DATABASE_DATA
-$(kubectl get pods --namespace=$EnvId -l app=postgres)
+$(kubectl get pods --namespace=$EnvId --context="$KUBERNETES_CONTEXT" -l app=postgres)
 --------------------------------------------------------------------------------
 Usefull commands:
 =================
-Login into Pod:             kubectl exec --namespace $EnvId $POD -it -- bash
-psql into root-db:          kubectl exec --namespace $EnvId $POD -it -- bash -c "PGUSER=$PGUSER PGDATABASE=$PGDATABASE psql"
-psql into IOM-db:           kubectl exec --namespace $EnvId $POD -it -- bash -c "PGUSER=$OMS_DB_USER PGDATABASE=$OMS_DB_NAME psql"
+Login into Pod:             kubectl exec --namespace $EnvId --context="$KUBERNETES_CONTEXT" $POD -it -- bash
+psql into root-db:          kubectl exec --namespace $EnvId --context="$KUBERNETES_CONTEXT" $POD -it -- bash -c "PGUSER=$PGUSER PGDATABASE=$PGDATABASE psql"
+psql into IOM-db:           kubectl exec --namespace $EnvId --context="$KUBERNETES_CONTEXT" $POD -it -- bash -c "PGUSER=$OMS_DB_USER PGDATABASE=$OMS_DB_NAME psql"
 
-Currently used yaml:        kubectl get pod -l app=postgres -o yaml --namespace=$EnvId
-Describe pod:               kubectl describe --namespace $EnvId pod $POD
+Currently used yaml:        kubectl get pod -l app=postgres -o yaml --namespace=$EnvId --context="$KUBERNETES_CONTEXT"
+Describe pod:               kubectl describe --namespace $EnvId --context="$KUBERNETES_CONTEXT" pod $POD
 
-Get logs:                   kubectl logs $POD --namespace $EnvId
-Follow logs:                kubectl logs --tail=1 -f $POD --namespace $EnvId
+Get logs:                   kubectl logs $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT"
+Follow logs:                kubectl logs --tail=1 -f $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT"
 --------------------------------------------------------------------------------
 EOF
         fi
@@ -2000,12 +2001,12 @@ EOF
 Kubernetes:
 ===========
 namespace:                  $EnvId
-$(kubectl get pods --namespace=$EnvId -l app=mailhog)
+$(kubectl get pods --namespace=$EnvId --context="$KUBERNETES_CONTEXT" -l app=mailhog)
 --------------------------------------------------------------------------------
 Usefull commands:
 =================
-Login into Pod:             kubectl exec --namespace $EnvId $POD -it -- sh
-Currently used yaml:        kubectl get pod -l app=mailhog -o yaml --namespace=$EnvId
+Login into Pod:             kubectl exec --namespace $EnvId --context="$KUBERNETES_CONTEXT" $POD -it -- sh
+Currently used yaml:        kubectl get pod -l app=mailhog -o yaml --namespace=$EnvId --context="$KUBERNETES_CONTEXT"
 --------------------------------------------------------------------------------
 EOF
         fi
@@ -2048,11 +2049,11 @@ EOF
             cat <<EOF
 Kubernetes:
 ===========
-$(kubectl get persistentvolumes --namespace=$EnvId)
+$(kubectl get persistentvolumes --namespace=$EnvId --context="$KUBERNETES_CONTEXT")
 --------------------------------------------------------------------------------
 Usefull commands:
 =================
-Currently used yaml:        kubectl get persistentvolumes -o yaml --namespace=$EnvId
+Currently used yaml:        kubectl get persistentvolumes -o yaml --namespace=$EnvId --context="$KUBERNETES_CONTEXT"
 --------------------------------------------------------------------------------
 EOF
         else
@@ -2080,11 +2081,11 @@ $ID
 --------------------------------------------------------------------------------
 Kubernetes Pods:
 ================
-$(kubectl get pods --namespace=$EnvId)
+$(kubectl get pods --namespace=$EnvId --context="$KUBERNETES_CONTEXT")
 --------------------------------------------------------------------------------
 Kubernetes Services:
 ====================
-$(kubectl get services --namespace=$EnvId)
+$(kubectl get services --namespace=$EnvId --context="$KUBERNETES_CONTEXT")
 --------------------------------------------------------------------------------
 EOF
     fi
@@ -2160,7 +2161,7 @@ create-namespace() {
         log_msg ERROR "create-namespace: no config-file given!" < /dev/null
         SUCCESS=false
     elif ! kube_namespace_exists; then
-        kubectl create namespace $EnvId 2> "$TMP_ERR" > "$TMP_OUT"
+        kubectl create namespace $EnvId --context="$KUBERNETES_CONTEXT" 2> "$TMP_ERR" > "$TMP_OUT"
         if [ $? -ne 0 ]; then
             log_msg ERROR "create-namespace: error creating namespace '$EnvId'" < "$TMP_ERR"
             SUCCESS=true
@@ -2187,7 +2188,7 @@ create-mailserver() {
         "$DEVENV_DIR/bin/template_engine.sh" \
             --template="$DEVENV_DIR/templates/mailhog.yml.template" \
             --config="$CONFIG_FILES" \
-            --project-dir="$PROJECT_DIR" | kubectl apply --namespace $EnvId -f - 2> "$TMP_ERR" > "$TMP_OUT"
+            --project-dir="$PROJECT_DIR" | kubectl apply --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f - 2> "$TMP_ERR" > "$TMP_OUT"
         if [ $? -ne 0 ]; then
             log_msg ERROR "create-mailserver: error creating mailserver" < "$TMP_ERR"
             SUCCESS=false
@@ -2216,7 +2217,7 @@ create-postgres() {
                       "$DEVENV_DIR/bin/template_engine.sh" \
                         --template="$DEVENV_DIR/templates/postgres-storage.yml.template" \
                         --config="$CONFIG_FILES" \
-                        --project-dir="$PROJECT_DIR" | kubectl apply --namespace $EnvId -f - 2> "$TMP_ERR" > "$TMP_OUT"
+                        --project-dir="$PROJECT_DIR" | kubectl apply --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f - 2> "$TMP_ERR" > "$TMP_OUT"
             if [ $? -ne 0 ]; then
                 log_msg ERROR "create-postgres: error linking docker volume to database storage" < "$TMP_ERR"
                 SUCCESS=false
@@ -2232,7 +2233,7 @@ create-postgres() {
                 "$DEVENV_DIR/bin/template_engine.sh" \
                     --template="$DEVENV_DIR/templates/postgres.yml.template" \
                     --config="$CONFIG_FILES" \
-                    --project-dir="$PROJECT_DIR" | kubectl apply --namespace $EnvId -f - 2> "$TMP_ERR" > "$TMP_OUT"
+                    --project-dir="$PROJECT_DIR" | kubectl apply --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f - 2> "$TMP_ERR" > "$TMP_OUT"
                 if [ $? -ne 0 ]; then
                     log_msg ERROR "create-postgres: error creating postgres" < "$TMP_ERR"
                     SUCCESS=false
@@ -2263,9 +2264,9 @@ create-iom() {
     else
         # copy secret from default namespace to namespace of IOM
         if [ ! -z "$IMAGE_PULL_SECRET" ]; then
-            kubectl get secret "$IMAGE_PULL_SECRET" --namespace default -oyaml 2> "$TMP_ERR" |
+            kubectl get secret "$IMAGE_PULL_SECRET" --namespace default --context="$KUBERNETES_CONTEXT" -oyaml 2> "$TMP_ERR" |
                 grep -v 'namespace:\|resourceVersion:\|selfLink:\|uid:' |
-                kubectl apply --namespace $EnvId -f - 2>> "$TMP_ERR" > "$TMP_OUT"
+                kubectl apply --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f - 2>> "$TMP_ERR" > "$TMP_OUT"
             if [ $? -ne 0 ]; then
                 log_msg ERROR "create-iom: error copying secret $IMAGE_PULL_SECRET from default namespace" < "$TMP_ERR"
                 SUCCESS=false
@@ -2277,7 +2278,7 @@ create-iom() {
             "$DEVENV_DIR/bin/template_engine.sh" \
                 --template="$DEVENV_DIR/templates/$IomTemplate" \
                 --config="$CONFIG_FILES" \
-                --project-dir="$PROJECT_DIR" | kubectl apply --namespace $EnvId -f - 2> "$TMP_ERR" > "$TMP_OUT"
+                --project-dir="$PROJECT_DIR" | kubectl apply --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f - 2> "$TMP_ERR" > "$TMP_OUT"
             if [ $? -ne 0 ]; then
                 log_msg ERROR "create-iom: error creating iom" < "$TMP_ERR"
                 SUCCESS=false
@@ -2342,7 +2343,7 @@ delete-namespace() {
         log_msg ERROR "delete-namespace: no config-file given!" < /dev/null
         SUCCESS=false
     elif kube_namespace_exists; then
-        kubectl delete namespace $EnvId 2> "$TMP_ERR" > "$TMP_OUT"
+        kubectl delete namespace $EnvId --context="$KUBERNETES_CONTEXT" 2> "$TMP_ERR" > "$TMP_OUT"
         if [ $? -ne 0 ]; then
             log_msg ERROR "delete-namespace: error deleting namespace '$EnvId'" < "$TMP_ERR"
             SUCCESS=false
@@ -2370,7 +2371,7 @@ delete-mailserver() {
         "$DEVENV_DIR/bin/template_engine.sh" \
             --template="$DEVENV_DIR/templates/mailhog.yml.template" \
             --config="$CONFIG_FILES" \
-            --project-dir="$PROJECT_DIR" | kubectl delete --namespace $EnvId -f - 2> "$TMP_ERR" > "$TMP_OUT"
+            --project-dir="$PROJECT_DIR" | kubectl delete --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f - 2> "$TMP_ERR" > "$TMP_OUT"
         if [ $? -ne 0 ]; then
             log_msg ERROR "delete-mailserver: error deleting mail-server" < "$TMP_ERR"
             SUCCESS=false
@@ -2400,7 +2401,7 @@ delete-postgres() {
             "$DEVENV_DIR/bin/template_engine.sh" \
                 --template="$DEVENV_DIR/templates/postgres.yml.template" \
                 --config="$CONFIG_FILES" \
-                --project-dir="$PROJECT_DIR" | kubectl delete --namespace $EnvId -f - 2> "$TMP_ERR" > "$TMP_OUT"
+                --project-dir="$PROJECT_DIR" | kubectl delete --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f - 2> "$TMP_ERR" > "$TMP_OUT"
             if [ $? -ne 0 ]; then
                 log_msg ERROR "delete-postgres: error deleting postgres" < "$TMP_ERR"
                 SUCCESS_PG=false
@@ -2416,7 +2417,7 @@ delete-postgres() {
                       "$DEVENV_DIR/bin/template_engine.sh" \
                         --template="$DEVENV_DIR/templates/postgres-storage.yml.template" \
                         --config="$CONFIG_FILES" \
-                        --project-dir="$PROJECT_DIR" | kubectl delete --namespace $EnvId -f - 2> "$TMP_ERR" > "$TMP_OUT"
+                        --project-dir="$PROJECT_DIR" | kubectl delete --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f - 2> "$TMP_ERR" > "$TMP_OUT"
             if [ $? -ne 0 ]; then
                 log_msg ERROR "delete-postgres: error unlinking Docker volume from database storage" < "$TMP_ERR"
                 SUCCESS_VL=false
@@ -2444,7 +2445,7 @@ delete-iom() {
         "$DEVENV_DIR/bin/template_engine.sh" \
             --template="$DEVENV_DIR/templates/$IomTemplate" \
             --config="$CONFIG_FILES" \
-            --project-dir="$PROJECT_DIR" | kubectl delete --namespace $EnvId -f - 2> "$TMP_ERR" > "$TMP_OUT"
+            --project-dir="$PROJECT_DIR" | kubectl delete --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f - 2> "$TMP_ERR" > "$TMP_OUT"
         if [ $? -ne 0 ]; then
             log_msg ERROR "delete-iom: error deleting iom" < "$TMP_ERR"
             SUCCESS=false
@@ -2491,10 +2492,10 @@ apply-deployment() {
             SUCCESS=false
         else
             if [ -z "$PATTERN" ]; then
-                kubectl exec $POD --namespace $EnvId -- bash -ic redeploy 2> "$TMP_ERR" > "$TMP_OUT"
+                kubectl exec $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT" -- bash -ic redeploy 2> "$TMP_ERR" > "$TMP_OUT"
             else
                 # TODO no messages visible, if script ended with error!
-                kubectl exec $POD --namespace $EnvId -- bash -ic "/opt/oms/bin/forced-redeploy.sh --pattern=$PATTERN || true" 2> "$TMP_ERR" > "$TMP_OUT"
+                kubectl exec $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT" -- bash -ic "/opt/oms/bin/forced-redeploy.sh --pattern=$PATTERN || true" 2> "$TMP_ERR" > "$TMP_OUT"
             fi
             if [ $? -ne 0 ]; then
                 log_msg ERROR "apply-deployment: error applying deployments" < "$TMP_ERR"
@@ -2528,7 +2529,7 @@ apply-mail-templates() {
             log_msg ERROR "apply-mail-templates: error getting pod name" < "$TMP_ERR"
             SUCCESS=false
         else
-            kubectl exec $POD --namespace $EnvId -- bash -ic apply-templates 2> "$TMP_ERR" > "$TMP_OUT"
+            kubectl exec $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT" -- bash -ic apply-templates 2> "$TMP_ERR" > "$TMP_OUT"
             if [ $? -ne 0 ]; then
                 log_msg ERROR "apply-mail-templates: error applying mail templates" < "$TMP_ERR"
                 SUCCESS=false
@@ -2559,7 +2560,7 @@ apply-xsl-templates() {
             log_msg ERROR "apply-xsl-templates: error getting pod name" < "$TMP_ERR"
             SUCCESS=false
         else
-            kubectl exec $POD --namespace $EnvId -- bash -ic apply-xslt 2> "$TMP_ERR" > "$TMP_OUT"
+            kubectl exec $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT" -- bash -ic apply-xslt 2> "$TMP_ERR" > "$TMP_OUT"
             if [ $? -ne 0 ]; then
                 log_msg ERROR "apply-xsl-templates: error applying xsl templates" < "$TMP_ERR"
                 SUCCESS=false
@@ -2615,7 +2616,7 @@ apply-sql-scripts() {
                    "$DEVENV_DIR/bin/template_engine.sh" \
                      --template="$DEVENV_DIR/templates/apply-sql.yml.template" \
                      --config="$CONFIG_FILES" \
-                     --project-dir="$PROJECT_DIR" | kubectl apply --namespace $EnvId -f - 2> "$TMP_ERR" > "$TMP_OUT"
+                     --project-dir="$PROJECT_DIR" | kubectl apply --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f - 2> "$TMP_ERR" > "$TMP_OUT"
             if [ $? -ne 0 ]; then
                 log_msg ERROR "apply-sql-scripts: error starting job" < "$TMP_ERR"
                 SUCCESS=false
@@ -2633,12 +2634,12 @@ apply-sql-scripts() {
                     SUCCESS=false
                 fi
                 # get logs of job
-                POD=$(kubectl get pods --namespace $EnvId -l job-name=apply-sql-job -o jsonpath='{.items[0].metadata.name}' 2> "$TMP_ERR" )
+                POD=$(kubectl get pods --namespace $EnvId --context="$KUBERNETES_CONTEXT" -l job-name=apply-sql-job -o jsonpath='{.items[0].metadata.name}' 2> "$TMP_ERR" )
                 if [ -z "$POD" ]; then
                     log_msg ERROR "apply-sql-scripts: error getting pod name" < "$TMP_ERR"
                     SUCCESS=false
                 else
-                    kubectl logs $POD --namespace $EnvId 2> "$TMP_ERR" > "$TMP_OUT"
+                    kubectl logs $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT" 2> "$TMP_ERR" > "$TMP_OUT"
                     if [ $? -ne 0 ]; then
                         log_msg ERROR "apply-sql-scripts: error getting logs of job" < "$TMP_ERR"
                         SUCCESS=false
@@ -2651,7 +2652,7 @@ apply-sql-scripts() {
                 "$DEVENV_DIR/bin/template_engine.sh" \
                     --template="$DEVENV_DIR/templates/apply-sql.yml.template" \
                     --config="$CONFIG_FILES" \
-                    --project-dir="$PROJECT_DIR" | kubectl delete --namespace $EnvId -f - 2> "$TMP_ERR" > "$TMP_OUT"
+                    --project-dir="$PROJECT_DIR" | kubectl delete --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f - 2> "$TMP_ERR" > "$TMP_OUT"
                 if [ $? -ne 0 ]; then
                     log_msg ERROR "apply-sql-scripts: error deleting job" < "$TMP_ERR"
                     SUCCESS=false
@@ -2696,7 +2697,7 @@ apply-sql-config() {
             "$DEVENV_DIR/bin/template_engine.sh" \
                 --template="$DEVENV_DIR/templates/sqlconfig.yml.template" \
                 --config="$CONFIG_FILES" \
-                --project-dir="$PROJECT_DIR" | kubectl apply --namespace $EnvId -f - 2> "$TMP_ERR" > "$TMP_OUT"
+                --project-dir="$PROJECT_DIR" | kubectl apply --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f - 2> "$TMP_ERR" > "$TMP_OUT"
             if [ $? -ne 0 ]; then
                 log_msg ERROR "apply-sql-config: error starting job" < "$TMP_ERR"
                 SUCCESS=false
@@ -2714,12 +2715,12 @@ apply-sql-config() {
                     SUCCESS=false
                 fi
                 # get logs of job
-                POD=$(kubectl get pods --namespace $EnvId -l job-name=sqlconfig-job -o jsonpath='{.items[0].metadata.name}' 2> "$TMP_ERR" )
+                POD=$(kubectl get pods --namespace $EnvId --context="$KUBERNETES_CONTEXT" -l job-name=sqlconfig-job -o jsonpath='{.items[0].metadata.name}' 2> "$TMP_ERR" )
                 if [ -z "$POD" ]; then
                     log_msg ERROR "apply-sql-config: error getting pod name" < "$TMP_ERR"
                     SUCCESS=false
                 else
-                    kubectl logs $POD --namespace $EnvId 2> "$TMP_ERR" > "$TMP_OUT"
+                    kubectl logs $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT" 2> "$TMP_ERR" > "$TMP_OUT"
                     if [ $? -ne 0 ]; then
                         log_msg ERROR "apply-sql-config: error getting logs of job" < "$TMP_ERR"
                         SUCCESS=false
@@ -2732,7 +2733,7 @@ apply-sql-config() {
                 "$DEVENV_DIR/bin/template_engine.sh" \
                     --template="$DEVENV_DIR/templates/sqlconfig.yml.template" \
                     --config="$CONFIG_FILES" \
-                    --project-dir="$PROJECT_DIR" | kubectl delete --namespace $EnvId -f - 2> "$TMP_ERR" > "$TMP_OUT"
+                    --project-dir="$PROJECT_DIR" | kubectl delete --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f - 2> "$TMP_ERR" > "$TMP_OUT"
                 if [ $? -ne 0 ]; then
                     log_msg ERROR "apply-sql-config: error deleting job" < "$TMP_ERR"
                     SUCCESS=false
@@ -2779,7 +2780,7 @@ apply-json-config() {
             "$DEVENV_DIR/bin/template_engine.sh" \
                 --template="$DEVENV_DIR/templates/jsonconfig.yml.template" \
                 --config="$CONFIG_FILES" \
-                --project-dir="$PROJECT_DIR" | kubectl apply --namespace $EnvId -f - 2> "$TMP_ERR" > "$TMP_OUT"
+                --project-dir="$PROJECT_DIR" | kubectl apply --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f - 2> "$TMP_ERR" > "$TMP_OUT"
             if [ $? -ne 0 ]; then
                 log_msg ERROR "apply-json-config: error starting job" < "$TMP_ERR"
                 SUCCESS=false
@@ -2797,12 +2798,12 @@ apply-json-config() {
                     SUCCESS=false
                 fi
                 # get logs of job
-                POD=$(kubectl get pods --namespace $EnvId -l job-name=jsonconfig-job -o jsonpath='{.items[0].metadata.name}' 2> "$TMP_ERR" )
+                POD=$(kubectl get pods --namespace $EnvId --context="$KUBERNETES_CONTEXT" -l job-name=jsonconfig-job -o jsonpath='{.items[0].metadata.name}' 2> "$TMP_ERR" )
                 if [ -z "$POD" ]; then
                     log_msg ERROR "apply-json-config: error getting pod name" < "$TMP_ERR"
                     SUCCESS=false
                 else
-                    kubectl logs $POD --namespace $EnvId 2> "$TMP_ERR" > "$TMP_OUT"
+                    kubectl logs $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT" 2> "$TMP_ERR" > "$TMP_OUT"
                     if [ $? -ne 0 ]; then
                         log_msg ERROR "apply-json-config: error getting logs of job" < "$TMP_ERR"
                         SUCCESS=false
@@ -2816,7 +2817,7 @@ apply-json-config() {
                 "$DEVENV_DIR/bin/template_engine.sh" \
                     --template="$DEVENV_DIR/templates/jsonconfig.yml.template" \
                     --config="$CONFIG_FILES" \
-                    --project-dir="$PROJECT_DIR" | kubectl delete --namespace $EnvId -f - 2> "$TMP_ERR" > "$TMP_OUT"
+                    --project-dir="$PROJECT_DIR" | kubectl delete --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f - 2> "$TMP_ERR" > "$TMP_OUT"
                 if [ $? -ne 0 ]; then
                     log_msg ERROR "apply-json-config: error deleting job" < "$TMP_ERR"
                     SUCCESS=false
@@ -2863,7 +2864,7 @@ apply-dbmigrate() {
             "$DEVENV_DIR/bin/template_engine.sh" \
                 --template="$DEVENV_DIR/templates/dbmigrate.yml.template" \
                 --config="$CONFIG_FILES" \
-                --project-dir="$PROJECT_DIR" | kubectl apply --namespace $EnvId -f - 2> "$TMP_ERR" > "$TMP_OUT"
+                --project-dir="$PROJECT_DIR" | kubectl apply --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f - 2> "$TMP_ERR" > "$TMP_OUT"
             if [ $? -ne 0 ]; then
                 log_msg ERROR "apply-dbmigrate: error starting job" < "$TMP_ERR"
                 SUCCESS=false
@@ -2881,12 +2882,12 @@ apply-dbmigrate() {
                     SUCCESS=false
                 fi
                 # get logs of job
-                POD=$(kubectl get pods --namespace $EnvId -l job-name=dbmigrate-job -o jsonpath='{.items[0].metadata.name}' 2> "$TMP_ERR" )
+                POD=$(kubectl get pods --namespace $EnvId --context="$KUBERNETES_CONTEXT" -l job-name=dbmigrate-job -o jsonpath='{.items[0].metadata.name}' 2> "$TMP_ERR" )
                 if [ -z "$POD" ]; then
                     log_msg ERROR "apply-dbmigrate: error getting pod name" < "$TMP_ERR"
                     SUCCESS=false
                 else
-                    kubectl logs $POD --namespace $EnvId 2> "$TMP_ERR" > "$TMP_OUT"
+                    kubectl logs $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT" 2> "$TMP_ERR" > "$TMP_OUT"
                     if [ $? -ne 0 ]; then
                         log_msg ERROR "apply-dbmigrate: error getting logs of job" < "$TMP_ERR"
                         SUCCESS=false
@@ -2899,7 +2900,7 @@ apply-dbmigrate() {
                 "$DEVENV_DIR/bin/template_engine.sh" \
                     --template="$DEVENV_DIR/templates/dbmigrate.yml.template" \
                     --config="$CONFIG_FILES" \
-                    --project-dir="$PROJECT_DIR" | kubectl delete --namespace $EnvId -f - 2> "$TMP_ERR" > "$TMP_OUT"
+                    --project-dir="$PROJECT_DIR" | kubectl delete --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f - 2> "$TMP_ERR" > "$TMP_OUT"
                 if [ $? -ne 0 ]; then
                     log_msg ERROR "apply-dbmigrate: error deleting job" < "$TMP_ERR"
                     SUCCESS=false
@@ -3000,7 +3001,7 @@ dump-create() {
             "$DEVENV_DIR/bin/template_engine.sh" \
                 --template="$DEVENV_DIR/templates/dump.yml.template" \
                 --config="$CONFIG_FILES" \
-                --project-dir="$PROJECT_DIR" | kubectl apply --namespace $EnvId -f - 2> "$TMP_ERR" > "$TMP_OUT"
+                --project-dir="$PROJECT_DIR" | kubectl apply --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f - 2> "$TMP_ERR" > "$TMP_OUT"
             if [ $? -ne 0 ]; then
                 log_msg ERROR "dump-create: error starting job" < "$TMP_ERR"
                 SUCCESS=false
@@ -3019,12 +3020,12 @@ dump-create() {
                 fi
 
                 # get logs of job
-                POD=$(kubectl get pods --namespace $EnvId -l job-name=dump-job -o jsonpath='{.items[0].metadata.name}' 2> "$TMP_ERR" )
+                POD=$(kubectl get pods --namespace $EnvId --context="$KUBERNETES_CONTEXT" -l job-name=dump-job -o jsonpath='{.items[0].metadata.name}' 2> "$TMP_ERR" )
                 if [ -z "$POD" ]; then
                     log_msg ERROR "dump-create: error getting pod name" < "$TMP_ERR"
                     SUCCESS=false
                 else
-                    kubectl logs $POD --namespace $EnvId 2> "$TMP_ERR" > "$TMP_OUT"
+                    kubectl logs $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT" 2> "$TMP_ERR" > "$TMP_OUT"
                     if [ $? -ne 0 ]; then
                         log_msg ERROR "dump-create: error getting logs of job" < "$TMP_ERR"
                         SUCCESS=false
@@ -3037,7 +3038,7 @@ dump-create() {
                 "$DEVENV_DIR/bin/template_engine.sh" \
                     --template="$DEVENV_DIR/templates/dump.yml.template" \
                     --config="$CONFIG_FILES" \
-                    --project-dir="$PROJECT_DIR" | kubectl delete --namespace $EnvId -f - 2> "$TMP_ERR" > "$TMP_OUT"
+                    --project-dir="$PROJECT_DIR" | kubectl delete --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f - 2> "$TMP_ERR" > "$TMP_OUT"
                 if [ $? -ne 0 ]; then
                     log_msg ERROR "dump-create: error deleting job" < "$TMP_ERR"
                     SUCCESS=false
@@ -3293,7 +3294,7 @@ log-dbaccount() (
             if [ ! -z "$POD" ]; then
                 # make sure to get info about failed kubectl call
                 set -o pipefail
-                kubectl logs $FOLLOW_FLAG $POD --namespace $EnvId -c dbaccount 2> "$TMP_ERR" |
+                kubectl logs $FOLLOW_FLAG $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT" -c dbaccount 2> "$TMP_ERR" |
                     $JQ -R 'fromjson? | select(type == "object")' |
                     $JQ $COMPACT_FLAG "select((.logType != \"access\") and ( $(level_filter $LEVEL ${LEVELS[@]}) ))"
                 RESULT=$?
@@ -3369,7 +3370,7 @@ log-config() (
                 if [ ! -z "$POD" ]; then
                     # make sure to get info about failed kubectl call
                     set -o pipefail
-                    kubectl logs $FOLLOW_FLAG $POD --namespace $EnvId -c config 2> "$TMP_ERR" |
+                    kubectl logs $FOLLOW_FLAG $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT" -c config 2> "$TMP_ERR" |
                         $JQ -R 'fromjson? | select(type == "object")' |
                         $JQ $COMPACT_FLAG "select((.logType != \"access\") and ( $(level_filter $LEVEL ${LEVELS[@]}) ))"
                     RESULT=$?
@@ -3447,7 +3448,7 @@ log-iom() (
             if [ ! -z "$POD" ]; then
                 # make sure to get info about failed kubectl call
                 set -o pipefail
-                kubectl logs $FOLLOW_FLAG $POD --namespace $EnvId -c iom 2> "$TMP_ERR" |
+                kubectl logs $FOLLOW_FLAG $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT" -c iom 2> "$TMP_ERR" |
                     $JQ -R 'fromjson? | select(type == "object")' |
                     $JQ $COMPACT_FLAG "select((.logType != \"access\") and ( $(level_filter $LEVEL ${LEVELS[@]}) ))"
                 RESULT=$?
@@ -3527,7 +3528,7 @@ log-access() (
             if [ ! -z "$POD" ]; then
                 # make sure to get info about failed kubectl call
                 set -o pipefail
-                kubectl logs $FOLLOW_FLAG $POD --namespace $EnvId -c iom 2> "$TMP_ERR" |
+                kubectl logs $FOLLOW_FLAG $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT" -c iom 2> "$TMP_ERR" |
                     $JQ -R 'fromjson? | select(type == "object")' |
                     $JQ $COMPACT_FLAG "select((.logType == \"access\") $FILTER)"
                 RESULT=$?
