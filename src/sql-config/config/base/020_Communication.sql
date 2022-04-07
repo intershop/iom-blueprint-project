@@ -83,7 +83,7 @@ BEGIN
 				)
 				SELECT 
 					nextval('"CommunicationPartnerDO_id_seq"'),
-					null, --TODO fix exception   (SELECT id FROM oms."DecisionBeanDefDO" WHERE description = order_decisionBean), -- skip export ?
+					(SELECT id FROM oms."DecisionBeanDefDO" WHERE description = order_decisionBean), -- skip export ?
 					false,
 					communicationId,
 					senderId,	-- a shop
