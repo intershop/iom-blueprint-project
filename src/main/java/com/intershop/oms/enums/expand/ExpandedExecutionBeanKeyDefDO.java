@@ -19,19 +19,19 @@ public enum ExpandedExecutionBeanKeyDefDO implements ExecutionBeanKeyDefDOEnumIn
      * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
 
-    // FIXME EXAMPLE_SHOPCUSTOMERMAILSENDERBEAN_SHOP_EMAIL_ADDRESS( -123, ExpandedExecutionBeanDefDO.EXAMPLE.getId(), "shopEmailAddress", ParameterTypeDefDO.EMAIL, Flag.MANDATORY, null, Flag.ACTIVE_OMT )   
-    ;
-
+   //  EXAMPLE_SHOPCUSTOMERMAILSENDERBEAN_SHOP_EMAIL_ADDRESS( 10001, ExpandedExecutionBeanDefDO.CUSTOM_ORDER_MESSAGE_TRANSMITTER.getId(), "shopEmailAddress", ParameterTypeDefDO.EMAIL, ExecutionBeanKeyDefDO.Flag.OPTIONAL, null);
+	
     private Integer id;
     private Integer executionBeanDefRef;
     private String parameterKey;
     private ParameterTypeDefDO parameterTypeDefDO;
     private Boolean mandatory;
     private String defaultValue;
-    private Boolean activeOMT;
+    @Deprecated (since="4.1.0", forRemoval=true)
+    private Boolean activeOMT=false;
 
     private ExpandedExecutionBeanKeyDefDO(int id, Integer executionBeanDefRef, String parameterKey,
-                    ParameterTypeDefDO parameterTypeDefDO, boolean mandatory, String defaultValue, boolean activeOMT)
+                    ParameterTypeDefDO parameterTypeDefDO, boolean mandatory, String defaultValue)
     {
         this.id = Integer.valueOf(id);
         this.executionBeanDefRef = executionBeanDefRef;
@@ -39,7 +39,6 @@ public enum ExpandedExecutionBeanKeyDefDO implements ExecutionBeanKeyDefDOEnumIn
         this.setParameterTypeDefDO(parameterTypeDefDO);
         this.mandatory = Boolean.valueOf(mandatory);
         this.defaultValue = defaultValue;
-        this.activeOMT = Boolean.valueOf(activeOMT);
     }
 
     @Override
@@ -129,14 +128,14 @@ public enum ExpandedExecutionBeanKeyDefDO implements ExecutionBeanKeyDefDOEnumIn
     {
         this.defaultValue = defaultValue;
     }
-
-    @Override
+    @Deprecated (since="4.1.0", forRemoval=true)
     @Column(name = "`activeOMT`")
     public Boolean isActiveOMT()
     {
         return this.activeOMT;
     }
 
+    @Deprecated (since="4.1.0", forRemoval=true)
     public void setActiveOMT(Boolean activeOMT)
     {
         this.activeOMT = activeOMT;
