@@ -40,7 +40,7 @@ BEGIN
 
 	--ROUTING RULES
 	INSERT INTO oms."OrderSupplierEvaluationRuleDefDO"(id, "name", "description", "rank", "mandatory") values
-		(10000, 'OneSupplierOnlyRoutingRulePTBean', 'Determines that only one supplier is used for the entire order delivery.', 50, false)
+		(10000, 'SupplierHasStockCheckPTBean', 'Filters for suppliers that have stock to deliver.', 50, false)
 	ON CONFLICT (id) DO NOTHING;
 
 
