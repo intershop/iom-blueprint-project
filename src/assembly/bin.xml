@@ -47,7 +47,7 @@
                 <include>**/*</include>
             </includes>
             <excludes>
-            	<exclude>env/dev/zip_1020/*.zip</exclude>
+            	<exclude>env/dev/zip_10020/*.zip</exclude>
             </excludes>
             <filtered>false</filtered>
             <lineEnding>unix</lineEnding>
