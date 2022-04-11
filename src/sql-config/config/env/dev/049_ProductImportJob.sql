@@ -11,12 +11,15 @@ $vars_shop_supplier
   communicationPartner bigint;
 
   fileNameRegex varchar;
+  filepath varchar;
   supplierref int8;
+  
 BEGIN
 
-	fileNameRegex = 'productdata.zip';
-    transformerGroupName = 'ProductImport';
-    
+	fileNameRegex = '10020_productdata_[0-9]+.zip';
+   transformerGroupName = '20020_ProductImportUnzip';
+   filepath =  './10020_productdata_zips/';
+   
     IF NOT EXISTS (SELECT NULL FROM "TransformerProcessGroupDO" WHERE name = transformerGroupName) THEN
         INSERT INTO "TransformerProcessGroupDO"(id, name)
         SELECT nextval('"TransformerProcessGroupDO_id_seq"'), transformerGroupName;
@@ -39,10 +42,12 @@ BEGIN
     IF NOT EXISTS (SELECT NULL FROM oms."FileTransferConfigurationDO"
         WHERE "partnerReferrerRef" = (select id from "PartnerReferrerDO" where "supplierRef" = supplier_wh_texas)
             AND "transformerProcessGroupRef" = transformerGroupId) THEN
+--1040, 30:describe, change for filecopy ?        
         INSERT INTO oms."FileTransferConfigurationDO" (id, "basePath", "transmissionTypeDefRef", "typeDefRef", "creationDate",
             "modificationDate", "partnerReferrerRef", "description", "transformerProcessGroupRef")
-            SELECT nextval('"FileTransferConfigurationDO_id_seq"'), null, 1040, 30, current_timestamp, current_timestamp,
+            SELECT nextval('"FileTransferConfigurationDO_id_seq"'), filepath, 1040, 30, current_timestamp, current_timestamp,
                 (select id from "PartnerReferrerDO" where "supplierRef" = supplier_wh_texas), transformerGroupName, transformerGroupId;
+    
     END IF;
     ftpConfigRef = (SELECT id FROM oms."FileTransferConfigurationDO" WHERE "partnerReferrerRef" =
         (select id from "PartnerReferrerDO" where "supplierRef" = supplier_wh_texas) AND "transformerProcessGroupRef" = transformerGroupId);
@@ -51,7 +56,7 @@ BEGIN
     IF NOT EXISTS (SELECT NULL FROM "ScheduleDO" WHERE "key" = transformerGroupName AND "configId" = ftpConfigRef) THEN
         INSERT INTO oms."ScheduleDO" (id, "creationDate", "modificationDate", active, "configId", cron, "expectedRuntime", "jobDefRef", "lastRun", "lockedSince", "key", "maxNoOfRetries", "retryDelay", "countRetry")
             SELECT nextval('"ScheduleDO_id_seq"'), current_timestamp, current_timestamp, TRUE,
-            ftpConfigRef, '0 0/5 * * * ?', 60000, 3, NULL, NULL,
+            ftpConfigRef, '0 0/2 * * * ?', 60000, 3, NULL, NULL,
             transformerGroupName, 9999, '10m', 0;
     END IF;
 
