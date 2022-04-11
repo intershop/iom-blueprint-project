@@ -13,6 +13,7 @@ import bakery.persistence.expand.ExecutionBeanKeyDefDOEnumInterface;
 public enum ExpandedExecutionBeanKeyDefDO implements ExecutionBeanKeyDefDOEnumInterface
 {
 
+
     /**
      * Start with 10000 to avoid conflict with ExecutionBeanKeyDefDO.
      * The name must be unique across both classes.
