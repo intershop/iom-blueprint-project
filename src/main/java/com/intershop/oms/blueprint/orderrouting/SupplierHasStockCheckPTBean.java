@@ -16,7 +16,6 @@ import bakery.persistence.dataobject.common.OrderObject;
 import bakery.persistence.dataobject.common.OrderPosition;
 import bakery.persistence.dataobject.configuration.common.OrderEvaluationDefDO;
 import bakery.persistence.dataobject.configuration.shop.ShopDO;
-import bakery.persistence.dataobject.configuration.states.OrderSupplierEvaluationStatesDefDO;
 import bakery.persistence.dataobject.configuration.supplier.SupplierDO;
 import bakery.persistence.dataobject.configuration.user.UserDO;
 import bakery.persistence.dataobject.order.OrderSupplierEvaluationDO;
@@ -24,7 +23,6 @@ import bakery.persistence.exception.RequestedNoObjectException;
 import bakery.persistence.service.article.atp.AtpPersistenceService;
 import bakery.persistence.service.configuration.Shop2SupplierPersistenceService;
 import bakery.persistence.service.configuration.ShopPersistenceService;
-import bakery.persistence.states.controller.InvalidStateTransitionException;
 import bakery.util.exception.DatabaseException;
 import bakery.util.exception.NoObjectException;
 import bakery.util.exception.TechnicalException;
@@ -68,7 +66,7 @@ public class SupplierHasStockCheckPTBean implements OrderSupplierCheckPT
             throw new TechnicalException(e);
         }
         
-        routePositions(orderObject.getPositionsForDOSE(), shopDO.getId(), container.getUser(), container.getInitiator());
+        routePositions(orderObject.getPositionsForDOSE(), shopDO.getId(), container.getUser(), container.getInitiator(), isErrorForcesAutomaticCancelation);
 
         logger.debug("SupplierHasStockCheckPTBean - finished for order: {}", container.getObjectId());
 
@@ -82,8 +80,9 @@ public class SupplierHasStockCheckPTBean implements OrderSupplierCheckPT
      * @param shopId
      * @param user
      * @param initiator
+     * @param isErrorForcesAutomaticCancelation
      */
-    private void routePositions(List<OrderPosition> orderPositionList, Long shopId, UserDO user, InitiatorDefDO initiator)
+    private void routePositions(List<OrderPosition> orderPositionList, Long shopId, UserDO user, InitiatorDefDO initiator, boolean isErrorForcesAutomaticCancelation)
     {
         for (OrderPosition pos : orderPositionList)
         {           
@@ -97,11 +96,20 @@ public class SupplierHasStockCheckPTBean implements OrderSupplierCheckPT
                 }
                 else
                 {
-                    // supplier has no stock
-                    eval.setOrderEvaluationDefDO(OrderEvaluationDefDO.ERROR); 
+                    // supplier has NO stock
+                    // order should be canceled 
+                    if(isErrorForcesAutomaticCancelation)
+                    {
+                        eval.setOrderEvaluationDefDO(OrderEvaluationDefDO.CANCEL);    
+                    }
+                    // order should NOT be canceled
+                    else
+                    {
+                        eval.setOrderEvaluationDefDO(OrderEvaluationDefDO.ERROR);    
+                    }                    
                 }
             }
-        }
+        }  
     }
             
     /**
