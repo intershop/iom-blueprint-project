@@ -104,7 +104,7 @@ BEGIN
             ftpConfigRef, 
             '0 0/2 * * * ?', 
             60000, 
-            3, 
+            3,  --(FTP Job)
             transformerGroupName, 
             9999, 
             '10m', 
