@@ -3,6 +3,11 @@
 
 -- DROP FUNCTION oms.create_or_update_payment(boolean, integer, character varying, bigint, bigint, smallint);
 
+/*
+ Function to simplify the shop 2 payment mapping configuration. 
+ contains some hard configurated configurable parameters. May hence not be usable in all cases. 
+*/
+
 CREATE OR REPLACE FUNCTION oms.create_or_update_payment(
 	p_active boolean,
 	p_paymentdefref integer,
