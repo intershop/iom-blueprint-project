@@ -13,8 +13,8 @@ public enum ExpandedChargeTypeDefDO implements ChargeTypeDefDOEnumInterface
 {
     // start with 1000 to avoid conflicts with ChargeTypeDefDO
     // the name must be unique across both classes
-	CONTAINER_SERVICE_CHARGE(Integer.valueOf(1000), "Container Service Charge", "tb.chargetype.containercharge", "Container Service Charges");
-    
+	CONTAINER_SERVICE_CHARGE(Integer.valueOf(1000), "Container Service Charge", "Container Charge", "Container Service Charges");
+
 
 
     private Integer id;
