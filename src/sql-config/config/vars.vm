@@ -63,7 +63,9 @@ eb_erp int = 1000;
 ')
 
 #set($vars_decision_beans = '
+-- decision beans
 db_mail int = 1000;
+db_invoicing int = 10001;
 ')
 
 #set($vars_payment_methods = '

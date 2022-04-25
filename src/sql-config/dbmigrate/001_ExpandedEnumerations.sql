@@ -10,18 +10,10 @@ BEGIN
 
 	--DECISION BEANS
 	INSERT INTO oms."DecisionBeanDefDO"(id, description) values
-		(20000, 'codPaymentDecisionBean')
-	ON CONFLICT (id) DO NOTHING;
-
-	INSERT INTO oms."DecisionBeanDefDO"(id, description) values
-		(20001, 'maxOrderValueDecisionBean')
-	ON CONFLICT (id) DO NOTHING;
-
-	INSERT INTO oms."DecisionBeanDefDO"(id, description) values
-		(40000, 'orderTransmissionDecisionBean')
-	ON CONFLICT (id) DO NOTHING;
-
-	INSERT INTO oms."DecisionBeanDefDO"(id, description) values
+		(10001, 'invoicingDecisionBean'),
+		(20000, 'codPaymentDecisionBean'),
+		(20001, 'maxOrderValueDecisionBean'),
+		(40000, 'orderTransmissionDecisionBean'),
 		(41000, 'supplierTransmissionDecisionBean')
 	ON CONFLICT (id) DO NOTHING;
 
@@ -29,10 +21,7 @@ BEGIN
 
 	--EXECUTION BEANS
 	INSERT INTO oms."ExecutionBeanDefDO"(id, "decisionBeanDefRef", description) values
-		(10000, null,  'customOrderMessageTransmitter')
-	ON CONFLICT (id) DO NOTHING;
-
-	INSERT INTO oms."ExecutionBeanDefDO"(id, "decisionBeanDefRef", description) values
+		(10000, null,  'customOrderMessageTransmitter'),
 		(20000, null,  'supplierMessageTransmitter')
 	ON CONFLICT (id) DO NOTHING;
 
