@@ -24,7 +24,8 @@ public enum ExpandedExecutionBeanDefDO implements ExecutionBeanDefDOEnumInterfac
      * The name must be unique across both classes.
      * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
-    CUSTOM_ORDER_MESSAGE_TRANSMITTER(Integer.valueOf(10000), "java:global/iom-blueprint-project/CustomOrderMessageTransmitterBean!bakery.logic.service.transmission.MessageTransmitter", null)
+    CUSTOM_ORDER_MESSAGE_TRANSMITTER(Integer.valueOf(10000), "java:global/iom-blueprint-project/CustomOrderMessageTransmitterBean!bakery.logic.service.transmission.MessageTransmitter", null),
+    SUPPLIER_MESSAGE_TRANSMITTER(Integer.valueOf(20000),     "java:global/iom-blueprint-project/SupplierMessageTransmitterBean!bakery.logic.service.transmission.MessageTransmitter", null)
     ;
 
     private Integer id;

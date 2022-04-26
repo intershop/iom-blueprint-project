@@ -10,28 +10,29 @@ BEGIN
 
 	--DECISION BEANS
 	INSERT INTO oms."DecisionBeanDefDO"(id, description) values
-		(20000, 'codPaymentDecisionBean')
-	ON CONFLICT (id) DO NOTHING;
-
-	INSERT INTO oms."DecisionBeanDefDO"(id, description) values
-		(20001, 'maxOrderValueDecisionBean')
-	ON CONFLICT (id) DO NOTHING;
-
-	INSERT INTO oms."DecisionBeanDefDO"(id, description) values
-		(40000, 'orderTransmissionDecisionBean')
+		(10001, 'invoicingDecisionBean'),
+		(20000, 'codPaymentDecisionBean'),
+		(20001, 'maxOrderValueDecisionBean'),
+		(40000, 'orderTransmissionDecisionBean'),
+		(41000, 'supplierTransmissionDecisionBean')
 	ON CONFLICT (id) DO NOTHING;
 
 
 
 	--EXECUTION BEANS
 	INSERT INTO oms."ExecutionBeanDefDO"(id, "decisionBeanDefRef", description) values
-		(10000, null,  'customOrderMessageTransmitter')
+		(10000, null,  'customOrderMessageTransmitter'),
+		(20000, null,  'supplierMessageTransmitter')
 	ON CONFLICT (id) DO NOTHING;
+
+
 
 	--ROUTING RULES
 	INSERT INTO oms."OrderSupplierEvaluationRuleDefDO"(id, "name", "description", "rank", "mandatory") values
-		(10000, 'OneSupplierOnlyRoutingRulePTBean', 'Determines that only one supplier is used for the entire order delivery.', 50, false)
+		(10000, 'SupplierHasStockCheckPTBean', 'Filters for suppliers that have stock to deliver.', 50, false)
 	ON CONFLICT (id) DO NOTHING;
+
+
 
 	--APPROVAL TYPES
 	INSERT INTO oms."ApprovalTypeDefDO"(id, "name", "ObjectTypeName") values
