@@ -71,6 +71,9 @@ PERFORM create_or_update_shop2supplier(
 	carrier_dhl, FALSE, NULL
 );
 
+
+/* all shops must be mapped to the internal supplier */
+
 -- shop_intronics_b2c -> internal supplier
 PERFORM create_or_update_shop2supplier(
 	-- active, shopref, supplierref
@@ -81,8 +84,6 @@ PERFORM create_or_update_shop2supplier(
 	NULL, TRUE, ''
 );
 
-
-/* all shops must be mapped to the internal supplier */
 
 -- shop_intronics_b2b -> internal supplier
 PERFORM create_or_update_shop2supplier(

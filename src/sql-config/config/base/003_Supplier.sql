@@ -27,7 +27,7 @@ IF NOT EXISTS (SELECT NULL FROM "SupplierDO" WHERE id = supplier_wh_texas) THEN
 	    TRUE,                       						-- legal                          boolean
     	'inTRONICS Texas Warehouse',						-- name                           varchar
 	    'inTRONICS Texas Warehouse',						-- suppliername                   varchar
-	    FALSE,                      						-- supportsreservation            boolean
+	    TRUE,                      						-- supportsreservation            boolean
 	    TRUE,                       						-- supportsresponse               boolean
 	    FALSE,                       						-- singlepositionarticle          boolean
 	    'inTRONICS Texas Warehouse',						-- internalsuppliername           varchar
@@ -57,7 +57,7 @@ IF NOT EXISTS (SELECT NULL FROM "SupplierDO" WHERE id = supplier_wh_arizona) THE
 	    TRUE,                       						-- legal                          boolean
     	'inTRONICS Arizona Warehouse',						-- name                           varchar
 	    'inTRONICS Arizona Warehouse',						-- suppliername                   varchar
-	    FALSE,                      						-- supportsreservation            boolean
+	    TRUE,                      						-- supportsreservation            boolean
 	    TRUE,                       						-- supportsresponse               boolean
 	    FALSE,                       						-- singlepositionarticle          boolean
 	    'inTRONICS Arizona Warehouse',						-- internalsuppliername           varchar
@@ -87,7 +87,7 @@ IF NOT EXISTS (SELECT NULL FROM "SupplierDO" WHERE id = supplier_wh_losangeles) 
 	    TRUE,                       						-- legal                          boolean
     	'inTRONICS Los Angeles Warehouse',					-- name                           varchar
 	    'inTRONICS Los Angeles Warehouse',					-- suppliername                   varchar
-	    FALSE,                      						-- supportsreservation            boolean
+	    TRUE,                      						-- supportsreservation            boolean
 	    TRUE,                       						-- supportsresponse               boolean
 	    FALSE,                       						-- singlepositionarticle          boolean
 	    'inTRONICS Los Angeles Warehouse',					-- internalsuppliername           varchar
@@ -117,7 +117,7 @@ IF NOT EXISTS (SELECT NULL FROM "SupplierDO" WHERE id = supplier_wh_detroit) THE
 	    TRUE,                       						-- legal                          boolean
     	'inTRONICS Detroit Warehouse',						-- name                           varchar
 	    'inTRONICS Detroit Warehouse',						-- suppliername                   varchar
-	    FALSE,                      						-- supportsreservation            boolean
+	    TRUE,                      						-- supportsreservation            boolean
 	    TRUE,                       						-- supportsresponse               boolean
 	    FALSE,                       						-- singlepositionarticle          boolean
 	    'inTRONICS Detroit Warehouse',						-- internalsuppliername           varchar
@@ -147,7 +147,7 @@ IF NOT EXISTS (SELECT NULL FROM "SupplierDO" WHERE id = supplier_retailer_losang
 	    TRUE,                       						-- legal                          boolean
     	'inTRONICS Los Angeles Retailer',					-- name                           varchar
 	    'inTRONICS Los Angeles Retailer',					-- suppliername                   varchar
-	    FALSE,                      						-- supportsreservation            boolean
+	    TRUE,                      						-- supportsreservation            boolean
 	    TRUE,                       						-- supportsresponse               boolean
 	    FALSE,                       						-- singlepositionarticle          boolean
 	    'inTRONICS Los Angeles Retailer',					-- internalsuppliername           varchar

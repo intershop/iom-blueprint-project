@@ -39,7 +39,7 @@ BEGIN
     END IF;
     transformerGroupId = (SELECT id FROM "TransformerProcessGroupDO" WHERE name = transformerGroupName);
 
-    -- Add new custom transformer for unzip (TransformerBeanDefDO id 19)
+    -- Add new custom transformer process for unzip (TransformerBeanDefDO id 19)
     IF NOT EXISTS (SELECT * FROM "TransformerProcessDO" WHERE "transformerBeanDefRef" = 19 AND "transformerProcessGroupRef" = transformerGroupId) THEN
     
         INSERT INTO "TransformerProcessDO"( id, index, "transformerBeanDefRef", "transformerProcessGroupRef", "filenameRegex", "moveObsoleteFiles")
@@ -48,7 +48,7 @@ BEGIN
     END IF;
     transformerProcessId = (SELECT id FROM "TransformerProcessDO" WHERE "transformerBeanDefRef" = 19 AND "transformerProcessGroupRef" = transformerGroupId);
 
-    -- Add parameters for the new transformer
+    -- Add parameters for the new transformer process
     -- (TransformerProcessParameterKeyDefDO 4=sourceFilename, 1=shopId)
     PERFORM upsert_tp_parameter(4, fileNameRegex, transformerProcessId);
     -- parent shopid
