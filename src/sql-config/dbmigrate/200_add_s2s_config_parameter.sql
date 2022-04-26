@@ -1,11 +1,7 @@
-/*
-This function name is not well chosen. It is too generic and could hence conflict with a future core function.
-Moreover it does not mention the object containing the new parameter.
-better would be something like add_s2s_config_parameter(...)
-*/
+
 
 -- DROP FUNCTION oms.add_config_parameter(bigint, character varying, character varying, character varying);
-CREATE OR REPLACE FUNCTION add_s2s_config_parameter(
+CREATE OR REPLACE FUNCTION oms.add_s2s_config_parameter(
 	 p_shop2supplierref bigint,
 	 p_configtype       varchar,
 	 p_key              varchar,
@@ -30,3 +26,9 @@ END;
 
 $$
 LANGUAGE plpgsql VOLATILE;
+
+comment on function oms.add_s2s_config_parameter(
+     p_shop2supplierref bigint,
+     p_configtype       varchar,
+     p_key              varchar,
+     p_value            varchar) is 'used to define custom attributes to given Shop2SupplierDOs';
