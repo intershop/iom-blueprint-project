@@ -47,7 +47,7 @@ BEGIN
 		(SELECT id FROM oms."TransmissionTypeDefDO" WHERE name = 'sendAnnounceOrder'),
 		(SELECT id FROM oms."CommunicationVersionDefDO" WHERE "incomingURLParameter" = 'v1.0'),
 		(SELECT id FROM oms."TransmissionFormDefDO" WHERE name = 'PUSH')
-    WHERE 1 NOT IN (SELECT 1 FROM oms."CommunicationDO" where key = order_transmitter);
+    WHERE NOT EXISTS (SELECT * FROM oms."CommunicationDO" where key = order_transmitter);
 
 	communicationId := (SELECT id FROM oms."CommunicationDO" WHERE key = order_transmitter);
 
@@ -125,7 +125,7 @@ BEGIN
 		(SELECT id FROM oms."TransmissionTypeDefDO" WHERE name = 'sendResponse'),
 		(SELECT id FROM oms."CommunicationVersionDefDO" WHERE "incomingURLParameter" = 'v1.0'),
 		(SELECT id FROM oms."TransmissionFormDefDO" WHERE name = 'PUSH')
-    WHERE 1 NOT IN (SELECT 1 FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_res);
+    WHERE NOT EXISTS (SELECT * FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_res);
 
 	communicationId := (SELECT id FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_res);
 
@@ -203,7 +203,7 @@ BEGIN
 		(SELECT id FROM oms."TransmissionTypeDefDO" WHERE name = 'sendDispatch'),
 		(SELECT id FROM oms."CommunicationVersionDefDO" WHERE "incomingURLParameter" = 'v1.0'),
 		(SELECT id FROM oms."TransmissionFormDefDO" WHERE name = 'PUSH')
-    WHERE 1 NOT IN (SELECT 1 FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_dis);
+    WHERE NOT EXISTS (SELECT * FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_dis);
 
 	communicationId := (SELECT id FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_dis);
 
@@ -281,7 +281,7 @@ BEGIN
 		(SELECT id FROM oms."TransmissionTypeDefDO" WHERE name = 'sendReturn'),
 		(SELECT id FROM oms."CommunicationVersionDefDO" WHERE "incomingURLParameter" = 'v1.0'),
 		(SELECT id FROM oms."TransmissionFormDefDO" WHERE name = 'PUSH')
-    WHERE 1 NOT IN (SELECT 1 FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_ret);
+    WHERE NOT EXISTS (SELECT * FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_ret);
 
 	communicationId := (SELECT id FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_ret);
 
@@ -290,8 +290,7 @@ BEGIN
 	
 		-- iterate all suppliers of the shop and insert if not existing yet
 		supplierIds := ARRAY(SELECT "supplierRef" FROM oms."Shop2SupplierDO" WHERE "shopRef" = shopId and "supplierRef" != internal_supplier_id);
-		--senderId := (SELECT id FROM oms."PartnerReferrerDO" WHERE "shopRef" = shopId);
-
+		
 		FOREACH supplierId IN ARRAY supplierIds LOOP
 
 			senderId := (SELECT id FROM oms."PartnerReferrerDO" WHERE "supplierRef" = supplierId);
