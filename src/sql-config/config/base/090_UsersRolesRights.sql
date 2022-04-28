@@ -26,8 +26,8 @@ shop_service_rights int8[] = ARRAY[1,2,67,123,124,125,126,131,137,139,140,141,14
 --technical supplier APIs
 supplier_service_user_name text = 'webservice_supplier'; --if you change the name, change cryptedPassword too
 supplier_service_role_name text = 'supplier_services'; 
-                                     --returns,              ATP,   Dispatches
-supplier_service_rights int8[] = ARRAY[131,139,140,141,142,  123,   10,11];
+                                     --returns,              ATP,   Dispatches   Create_receipt_message
+supplier_service_rights int8[] = ARRAY[131,139,140,141,142,  123,   10,11,       13];
 
 --technical supplier API
 
