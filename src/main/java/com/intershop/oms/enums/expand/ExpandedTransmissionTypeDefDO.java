@@ -16,8 +16,11 @@ public enum ExpandedTransmissionTypeDefDO implements TransmissionTypeDefDOEnumIn
 {
 
     /**
-     * Minimum ID for custom entries: 10000
+     * Start with 10000 to avoid conflict with TransmissionTypeDefDO.
+     * The name must be unique across both classes.
+     * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
+    
     // Mails to customers of a shop
     EXAMPLE_SEND_CUSTOMER_MAIL_ORDER( -9999, "exampleSendCustomerMailOrder", RoleDefDO.CUSTOMER, ExpandedMessageTypeDefDO.EXAMPLE_SEND_CUSTOMER_MAIL_ORDER )
     ;

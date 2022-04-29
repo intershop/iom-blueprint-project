@@ -13,8 +13,11 @@ public enum ExpandedPaymentDefDO implements PaymentDefDOEnumInterface
 {
 
     /**
-     * Minimum ID for custom entries: 1000
+     * Start with 10000 to avoid conflict with PaymentDefDO.
+     * The name must be unique across both classes.
+     * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
+    
     TEST(-999, "AfterPay", "AfterPay", null, "AfterPay")
     ;
 
@@ -74,11 +77,11 @@ public enum ExpandedPaymentDefDO implements PaymentDefDOEnumInterface
     @Column(name = "`paymentGroupRef`")
     public Integer getPaymentGroupRef()
     {
-        return this.paymentGroupRef;
+        return this.getPaymentGroup().getId();
     }
 
     @Override
-    @Transient
+    @Transient //starting with 4.1.0, this name is persisted as  @Column(name = "`paymentName`",  nullable = false)
     public String getFieldName()
     {
         return this.name();

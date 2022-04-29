@@ -9,27 +9,35 @@ CREATE OR REPLACE FUNCTION oms.upsert_eb_value(
   RETURNS void AS
 $BODY$
 
-DECLARE
- ret int8;
-
 BEGIN
 
-	SELECT id from oms."ExecutionBeanValueDO" where "communicationPartnerRef" = p_communicationPartnerRef and "executionBeanKeyDefRef" = p_executionBeanKeyDefRef
-	INTO ret;
-
-	IF NOT EXISTS (SELECT NULL from oms."ExecutionBeanValueDO" where "communicationPartnerRef" = p_communicationPartnerRef and "executionBeanKeyDefRef" = p_executionBeanKeyDefRef) THEN
-		INSERT INTO oms."ExecutionBeanValueDO"(id, "executionBeanKeyDefRef", "parameterValue", "communicationPartnerRef")
-		SELECT nextval('oms."ExecutionBeanValueDO_id_seq"'), p_executionBeanKeyDefRef, p_parameterValue, p_communicationPartnerRef
-		;
+	IF NOT EXISTS (select * from oms."ExecutionBeanValueDO" 
+						where "communicationPartnerRef" = p_communicationPartnerRef 
+						and "executionBeanKeyDefRef" = p_executionBeanKeyDefRef) 
+	THEN
+		INSERT INTO oms."ExecutionBeanValueDO"(
+			id, 
+			"executionBeanKeyDefRef", 
+			"parameterValue", 
+			"communicationPartnerRef")
+		SELECT nextval('oms."ExecutionBeanValueDO_id_seq"'),
+			p_executionBeanKeyDefRef,
+			p_parameterValue,
+			p_communicationPartnerRef;
 	ELSE
-		UPDATE  oms."ExecutionBeanValueDO" SET "parameterValue" = p_parameterValue
-			WHERE "executionBeanKeyDefRef" = p_executionBeanKeyDefRef AND "communicationPartnerRef" = p_communicationPartnerRef;
+		UPDATE  oms."ExecutionBeanValueDO" SET 
+			"parameterValue" = p_parameterValue
+		WHERE "executionBeanKeyDefRef" = p_executionBeanKeyDefRef 
+		AND "communicationPartnerRef" = p_communicationPartnerRef;
 	END IF;
 
-    RETURN;
+	RETURN;
 
 END;
 
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
+
+  comment  on function upsert_eb_value(bigint,text, bigint) is 'Add an entry or update the parameterValue in ExecutionBeanValueDO';
+  

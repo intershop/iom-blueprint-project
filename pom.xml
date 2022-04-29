@@ -6,25 +6,21 @@
 
     <groupId>com.intershop.oms.blueprint</groupId>
     <artifactId>iom-blueprint-project</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>war</packaging>
     <name>IOM iom-blueprint-project APPLICATION</name>
     <description>IOM iom-blueprint-project APPLICATION</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <platform.version>3.7.0.0</platform.version>
-        <intershop.docker.repo>intershophub/</intershop.docker.repo>
+        <platform.version>4.0.0</platform.version>
+        <intershop.docker.repo>docker-internal.rnd.intershop.de/intershophub/</intershop.docker.repo>
         <image.base.name>iom-blueprint-project</image.base.name>
         <image.version.suffix></image.version.suffix>
         <image.version>${project.version}${image.version.suffix}</image.version>
-        <image.docker.opts.app>--docker-opts="--no-cache"</image.docker.opts.app>
-        <image.docker.opts.config>--docker-opts="--no-cache"</image.docker.opts.config>
-        <!-- bom doesn't expose resteasy-undertow version, it is required 
-            for testing -->
-        <org.jboss.resteasy.version>3.13.2.Final</org.jboss.resteasy.version>
+        <image.docker.opts>--docker-opts="--no-cache"</image.docker.opts>
         <maven.javadoc.skip>true</maven.javadoc.skip>
-        <wildfly.version>24.0.1.Final</wildfly.version>
+        <wildfly.version>26.0.1.Final</wildfly.version>
         <org.junit.version>5.7.2</org.junit.version>
         <org.mockito.version>3.11.2</org.mockito.version>
         <org.apache.commons-lang.version>3.12.0</org.apache.commons-lang.version>
@@ -66,7 +62,7 @@
         </dependency>
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jaxrs</artifactId>
+            <artifactId>resteasy-core-spi</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -88,8 +84,7 @@
         <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
-            <!-- 0.9.12 is broken -->
-            <version>0.9.11</version>
+            <version>0.10.2</version>
         </dependency>
 
         <!-- IOM Platform -->
@@ -211,6 +206,7 @@
                         <descriptor>src/assembly/bin.xml</descriptor>
                     </descriptors>
                     <appendAssemblyId>false</appendAssemblyId>
+                    <tarLongFileMode>gnu</tarLongFileMode>
                 </configuration>
                 <executions>
                     <execution>
@@ -266,6 +262,15 @@
                 </executions>
             </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.0.0-M6</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
     <profiles>
@@ -288,10 +293,10 @@
                                     <artifactItems>
                                         <artifactItem>
                                             <groupId>com.intershop.oms</groupId>
-                                            <artifactId>caas2docker</artifactId>
+                                            <artifactId>project2docker</artifactId>
                                             <version>${platform.version}</version>
                                             <type>zip</type>
-                                            <outputDirectory>${project.build.directory}/c2d</outputDirectory>
+                                            <outputDirectory>${project.build.directory}/p2d</outputDirectory>
                                         </artifactItem>
                                     </artifactItems>
                                 </configuration>
@@ -313,7 +318,7 @@
                                     <executable>mkdir</executable>
                                     <arguments>
                                         <argument>-p</argument>
-                                        <argument>c2d/caas-dl</argument>
+                                        <argument>p2d/p2d-dl</argument>
                                     </arguments>
                                     <workingDirectory>${project.build.directory}</workingDirectory>
                                 </configuration>
@@ -330,16 +335,13 @@
                                         <argument>-zxf</argument>
                                         <argument>${project.artifactId}.tgz</argument>
                                         <argument>-C</argument>
-                                        <argument>c2d/caas-dl/</argument>
+                                        <argument>p2d/p2d-dl/</argument>
                                     </arguments>
-                                    <environmentVariables>
-                                        <CAAS_PROJECT_DIR>${project.build.directory}/c2d/caas-dl/</CAAS_PROJECT_DIR>
-                                    </environmentVariables>
                                     <workingDirectory>${project.build.directory}</workingDirectory>
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>Build App Image</id>
+                                <id>Build Image</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>exec</goal>
@@ -349,44 +351,21 @@
                                     <!-- NOTE: We're using commandlineArgs 
                                         in order to allow property expansion at runtime. When using <arguments> instead 
                                         you can't expand multiple CLI switches from a single property. -->
-                                    <commandlineArgs>${project.build.directory}/c2d/caas2docker/app/build.sh
-                                        ${image.docker.opts.app}</commandlineArgs>
+                                    <commandlineArgs>${project.build.directory}/p2d/project2docker/build.sh
+                                        ${image.docker.opts}</commandlineArgs>
                                     <environmentVariables>
-                                        <IMAGE_APP_VERSION>${image.version}</IMAGE_APP_VERSION>
-                                        <IMAGE_APP_TAG>${image.version}</IMAGE_APP_TAG>
-                                        <IOM_APP_IMAGE_NAME>iom-app</IOM_APP_IMAGE_NAME>
-                                    </environmentVariables>
-                                    <workingDirectory>${basedir}</workingDirectory>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>Build Config Image</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>bash</executable>
-                                    <commandlineArgs>${project.build.directory}/c2d/caas2docker/config/build.sh
-                                        ${image.docker.opts.config}</commandlineArgs>
-                                    <environmentVariables>
-                                        <IMAGE_CONFIG_VERSION>${image.version}</IMAGE_CONFIG_VERSION>
-                                        <IMAGE_CONFIG_TAG>${image.version}</IMAGE_CONFIG_TAG>
-                                        <IOM_CONFIG_IMAGE_NAME>iom-config</IOM_CONFIG_IMAGE_NAME>
+                                        <IMAGE_BASE_NAME>${image.base.name}</IMAGE_BASE_NAME>
+                                        <PROJECT_VERSION>${project.version}</PROJECT_VERSION>
+                                        <IMAGE_TAG>${image.version}</IMAGE_TAG>
+                                        <IOM_IMAGE_NAME>iom</IOM_IMAGE_NAME>
+                                        <IOM_VERSION>${platform.version}</IOM_VERSION>
+                                        <IOM_REPO_NAME>${intershop.docker.repo}</IOM_REPO_NAME>
+                                        <PROJECT_DIR>${project.build.directory}/p2d/p2d-dl/</PROJECT_DIR>
                                     </environmentVariables>
                                     <workingDirectory>${basedir}</workingDirectory>
                                 </configuration>
                             </execution>
                         </executions>
-                        <configuration>
-                            <environmentVariables>
-                                <IMAGE_BASE_NAME>${image.base.name}</IMAGE_BASE_NAME>
-                                <IOM_VERSION>${platform.version}</IOM_VERSION>
-                                <PROJECT_VERSION>${project.version}</PROJECT_VERSION>
-                                <IOM_REPO_NAME>${intershop.docker.repo}</IOM_REPO_NAME>
-                                <CAAS_PROJECT_DIR>${project.build.directory}/c2d/caas-dl/</CAAS_PROJECT_DIR>
-                            </environmentVariables>
-                        </configuration>
                     </plugin>
                 </plugins>
             </build>

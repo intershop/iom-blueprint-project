@@ -7,23 +7,27 @@ shop_int int8 = 1;
 supplier_int int8 = 1;
 
 -- parent shops
-shop_example_parent int8 = 10010;
+
 
 -- actual shops
-shop_example_de int8 = 10011;
-shop_example_fr int8 = 10012;
+shop_intronics_b2c int8 = 10010;
+shop_intronics_b2b int8 = 10020;
 
 -- all non-abstract shops
-shops_all int8[] = ARRAY[shop_example_de, shop_example_fr];
+shops_all int8[] = ARRAY[shop_intronics_b2c, shop_intronics_b2b];
 
 -- all abstract shops
-shops_parent_all int8[] = ARRAY[shop_example_parent];
+shops_parent_all int8[] = ARRAY[]::int8[];
 
--- Supplier
-supplier_erp int8 = 20010;
+-- suppliers
+supplier_wh_texas int8 = 20010;
+supplier_wh_arizona int8 = 20020;
+supplier_wh_losangeles int8 = 20030;
+supplier_wh_detroit int8 = 20040;
+supplier_retailer_losangeles int8 = 20050;
 
 -- all suppliers
-suppliers_all int8[] = array(select id from oms."SupplierDO" where id > 1);
+suppliers_all int8[] = ARRAY[supplier_wh_texas, supplier_wh_arizona, supplier_wh_losangeles, supplier_wh_detroit, supplier_retailer_losangeles];
 
 -- payment provider
 --pp_paypal int8 = 100;
@@ -32,19 +36,12 @@ suppliers_all int8[] = array(select id from oms."SupplierDO" where id > 1);
 
 ')
 
-#set($vars_shop2supplier = '
--- naming convention: s2s_[shop_prefix]_[shop_country]_[supplier_shortcut]
-
--- belux
-s2s_example_de_int int8 = (select s2s_id(shop_example_de, supplier_int));
-s2s_example_fr_int int8 = (select s2s_id(shop_example_fr, supplier_int));
-')
-
+--see CountryDefDO for the ids
 #set($vars_country_codes = '
 -- country codes
-cc_de int = 8;
-cc_fr int = 9;
-
+cc_de int = 2;
+cc_fr int = 7;
+cc_us int = 29; 
 
 ')
 
@@ -66,15 +63,30 @@ eb_erp int = 1000;
 ')
 
 #set($vars_decision_beans = '
+-- decision beans
 db_mail int = 1000;
+db_invoicing int = 10001;
 ')
 
 #set($vars_payment_methods = '
 -- payment provider
-pp_dummy int8 = 10000;
+pp_blueprint int8 = 10000;
+
 -- payment methods
+pm_no_payment int = 1;
+pm_cash_in_advance int = 2;
+pm_creditcard int = 3;
+pm_cash_on_delivery int = 4;
 pm_invoice int = 5;
+pm_directdebit int = 7;
+pm_paypal int = 10;
+pm_fastpay int = 24;
+pm_refund int = 40;
 pm_total_zero int = 100;
+--pm_apple_pay = 10000;
+
+--payment decider bean
+db_payment_action int8 = 70;
 ')
 
 #set($vars_jobs = '
@@ -84,10 +96,10 @@ job_example int = 1000;
 
 #set($vars_carriers ='
 -- carrier
-carrier_dhl int8 = (SELECT id FROM oms."CarrierDO" WHERE name = ''DHL'');
-carrier_ups int8 = 10000;
+carrier_dhl int8 = 11;
+--carrier_dpd int8 = 12;
+--carrier_ups int8 = 15;
+--carrier_hermes int8 = 25;
 
-carriers_eu int8[] = ARRAY[carrier_dhl, carrier_ups];
-
-carriers_all int8[] = carriers_eu;
+carriers_all int8[] = ARRAY[carrier_dhl];
 ')

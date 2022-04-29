@@ -46,6 +46,9 @@
             <includes>
                 <include>**/*</include>
             </includes>
+            <excludes>
+            	<exclude>env/dev/zip_10020/*.zip</exclude>
+            </excludes>
             <filtered>false</filtered>
             <lineEnding>unix</lineEnding>
         </fileSet>
@@ -71,7 +74,7 @@
         </fileSet>
         <!-- xslt - binary data (*.png, *.ttf) -->
         <fileSet>
-            <directory>src/xslt</directory>
+            <directory>src/xsl-templates</directory>
             <outputDirectory>xslt</outputDirectory>
             <includes>
                 <include>**/*.png</include>

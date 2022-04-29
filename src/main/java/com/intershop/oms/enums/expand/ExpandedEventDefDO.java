@@ -11,12 +11,14 @@ import bakery.persistence.expand.EventDefDOEnumInterface;
 @PersistedEnumerationTable(EventDefDO.class)
 public enum ExpandedEventDefDO implements EventDefDOEnumInterface
 {
-    // start with 1000 to avoid conflicts with EventDefDO
-    // the name must be unique across both classes
-    // values with negative id are meant as syntax example and are ignored (won't get persisted within the DB)
-    CUSTOM_MAIL_EVENT_MANAGER( -999, "CUSTOM_MAIL_EVENT_MANAGER_BEAN", "java:global/example-app/CustomMailEventManagerBean" )
-    ;
-    
+
+    /**
+     * Start with 10000 to avoid conflict with EventDefDO.
+     * The name must be unique across both classes.
+     * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
+     */
+    CUSTOM_MAIL_EVENT_MANAGER(-999, "CUSTOM_MAIL_EVENT_MANAGER_BEAN", "java:global/example-app/CustomMailEventManagerBean");
+
     private Integer id;
     private String description;
     private String jndiName;
@@ -28,11 +30,6 @@ public enum ExpandedEventDefDO implements EventDefDOEnumInterface
         this.jndiName = jndiName;
     }
 
-    /**
-     * Returns the ID of the event.
-     * 
-     * @return the ID of the event.
-     */
     @Override
     @Id
     public Integer getId()
@@ -40,22 +37,12 @@ public enum ExpandedEventDefDO implements EventDefDOEnumInterface
         return id;
     }
 
-    /**
-     * Sets the ID of the event.
-     * 
-     * @return
-     */
     @SuppressWarnings("unused")
     private void setId(Integer id)
     {
         this.id = id;
     }
 
-    /**
-     * Returns the description of the event.
-     * 
-     * @return the description of the event.
-     */
     @Override
     @Column(name = "`description`")
     public String getDescription()
@@ -63,20 +50,13 @@ public enum ExpandedEventDefDO implements EventDefDOEnumInterface
         return this.description;
     }
 
-    /**
-     * Sets the description of the event.
-     * 
-     * @return
-     */
     public void setDescription(String description)
     {
         this.description = description;
     }
 
     /**
-     * Returns the JNDI-name of the event.
-     * 
-     * @return the JNDI-name of the event.
+     * @return the JNDI-name of the event
      */
     @Override
     @Transient
