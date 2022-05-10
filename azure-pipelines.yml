@@ -6,27 +6,13 @@ resources:
       name: order-iom-partner-devops
       ref: task/76533-ci-pipeline
 
-
 trigger:
   branches:
     include:
       - '*'
 
-jobs:
-
-- job: CI
-  pool: 'ubuntu-20.4-DS2_v2-adopt-adoptium-jdk'
-  continueOnError: false
-  timeoutInMinutes: 300
-  workspace:
-    clean: all
-
-  steps:
-
-  # see https://developercommunity.visualstudio.com/t/pipeline-template-from-other-repository/498657
-  - template: steps.yml@IOMDevopsRepo
-
-  - script: |
-      echo "dummy script"
-    timeoutInMinutes: 1
-    displayName: "Dummy"
+# see https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops
+# see https://developercommunity.visualstudio.com/t/pipeline-template-from-other-repository/498657
+extends:
+  template: template.yml@IOMDevopsRepo
+  parameters:
