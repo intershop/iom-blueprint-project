@@ -22,13 +22,13 @@ jobs:
     clean: all
 
   steps:
-  - checkout: IOMDevopsRepo
-    path: s/iomdevops
-    clean: true
-    timeoutInMinutes: 5
-    displayName: "checkout IOMDevopsRepo"
+  # - checkout: IOMDevopsRepo
+  #   path: s/iomdevops
+  #   clean: true
+  #   timeoutInMinutes: 5
+  #   displayName: "checkout IOMDevopsRepo"
 
-  - template: iomdevops/steps.yml  
+  - template: steps.yml@IOMDevopsRepo
 
   - checkout: self
     path: s/iomproject
