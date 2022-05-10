@@ -12,7 +12,10 @@ trigger:
       - '*'
 
 # see https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops
+# see https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops#extend-from-a-template
 # see https://developercommunity.visualstudio.com/t/pipeline-template-from-other-repository/498657
 extends:
   template: template.yml@IOMDevopsRepo
-#  parameters:
+  parameters:
+    param1: Test1
+    param2: Test2
