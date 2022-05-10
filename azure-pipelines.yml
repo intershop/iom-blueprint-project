@@ -1,0 +1,20 @@
+trigger:
+  branches:
+    include:
+      - '*'
+
+jobs:
+
+- job: CI
+  pool: 'ubuntu-20.4-DS2_v2-adopt-adoptium-jdk'
+  continueOnError: false
+  timeoutInMinutes: 300
+  workspace:
+    clean: all
+
+  steps:
+
+  - script: |
+      echo "dummy script"
+    timeoutInMinutes: 1
+    displayName: "Dummy"
