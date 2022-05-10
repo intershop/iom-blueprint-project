@@ -22,20 +22,10 @@ jobs:
     clean: all
 
   steps:
-  # - checkout: IOMDevopsRepo
-  #   path: s/iomdevops
-  #   clean: true
-  #   timeoutInMinutes: 5
-  #   displayName: "checkout IOMDevopsRepo"
 
+  # see https://developercommunity.visualstudio.com/t/pipeline-template-from-other-repository/498657
   - template: steps.yml@IOMDevopsRepo
 
-  - checkout: self
-    path: s/iomproject
-    clean: true
-    timeoutInMinutes: 5
-    displayName: "checkout IOM project"
-    
   - script: |
       echo "dummy script"
     timeoutInMinutes: 1
