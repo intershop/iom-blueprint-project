@@ -15,4 +15,4 @@ trigger:
 # see https://developercommunity.visualstudio.com/t/pipeline-template-from-other-repository/498657
 extends:
   template: template.yml@IOMDevopsRepo
-  parameters:
+#  parameters:
