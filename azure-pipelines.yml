@@ -1,3 +1,12 @@
+# see https://docs.microsoft.com/en-us/azure/devops/pipelines/process/resources?view=azure-devops&tabs=schema#define-a-repositories-resource
+resources:
+  repositories:
+    - repository: IOMDevopsRepo
+      type: git
+      name: order-iom-partner-devops
+      ref: task/76533-ci-pipeline
+
+
 trigger:
   branches:
     include:
@@ -14,6 +23,18 @@ jobs:
 
   steps:
 
+  - checkout: IOMDevopsRepo
+    path: s/iomdevops
+    clean: true
+    timeoutInMinutes: 5
+    displayName: "checkout IOMDevopsRepo"
+
+  - checkout: self
+    path: s/iomproject
+    clean: true
+    timeoutInMinutes: 5
+    displayName: "checkout IOM project"
+    
   - script: |
       echo "dummy script"
     timeoutInMinutes: 1
