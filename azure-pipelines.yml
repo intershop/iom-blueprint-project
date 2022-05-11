@@ -19,3 +19,7 @@ extends:
     MavenProject: order-iom-blueprint
     SCDockerRepoIOM: order-iom-docker.intershop.de.dockerhub
     DockerRepoIOM: docker.intershop.de/intershophub/
+    SCDockerRepoProject: order-iomci-ISH-ENG-IOM
+    DockerRepoProjectCI: iomci.azurecr.io/blueprint-ci/
+    DockerRepoProjectSnapshot: iomci.azurecr.io/blueprint-snapshot/
+    DockerRepoProjectRelease: iomci.azurecr.io/
