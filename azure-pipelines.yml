@@ -18,3 +18,4 @@ extends:
   parameters:
     MavenProject: order-iom-blueprint
     SCDockerRepoIOM: order-iom-docker.intershop.de.dockerhub
+    DockerRepoIOM: docker.intershop.de/intershophub/
