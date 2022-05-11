@@ -15,6 +15,6 @@ trigger:
 # see https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops#use-other-repositories
 extends:
   template: template.yml@IOMDevopsRepo
-    parameters:
-      MavenProject: order-iom-blueprint
+  parameters:
+    MavenProject: order-iom-blueprint
     
