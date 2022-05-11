@@ -17,4 +17,4 @@ extends:
   template: template.yml@IOMDevopsRepo
   parameters:
     MavenProject: order-iom-blueprint
-    
+    SCDockerRepoIOM: order-iom-docker.intershop.de.dockerhub
