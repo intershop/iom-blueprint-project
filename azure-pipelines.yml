@@ -11,10 +11,10 @@ trigger:
     include:
       - '*'
 
-# see https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops
 # see https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops#extend-from-a-template
-# see https://developercommunity.visualstudio.com/t/pipeline-template-from-other-repository/498657
+# see https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops#use-other-repositories
 extends:
   template: template.yml@IOMDevopsRepo
-#  parameters:
+    parameters:
+      MavenProject: order-iom-blueprint
     
