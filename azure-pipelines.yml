@@ -25,3 +25,5 @@ extends:
     ACRRepoCI:                          ci/
     ACRRepoSnapshot:                    snapshot/
     ACRRepoRelease:                     ''
+    AKSServiceConnection:               oder-iom-aks-ci-blueprint
+    AKSNamespace:                       blueprint
