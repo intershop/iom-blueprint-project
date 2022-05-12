@@ -16,10 +16,10 @@ trigger:
 extends:
   template: template.yml@IOMDevopsRepo
   parameters:
-    MavenProject: order-iom-blueprint
-    SCDockerRepoIOM: order-iom-docker.intershop.de.dockerhub
-    DockerRepoIOM: docker.intershop.de/intershophub/
-    SCDockerRepoProject: order-iomci-ISH-ENG-IOM
-    DockerRepoProjectCI: iomci.azurecr.io/blueprint-ci/
-    DockerRepoProjectSnapshot: iomci.azurecr.io/blueprint-snapshot/
-    DockerRepoProjectRelease: iomci.azurecr.io/
+    ArtifactsFeed:                      order-iom-blueprint
+    DockerRepoIOMServiceConnection:     order-iom-docker.intershop.de.dockerhub
+    DockerRepoIOMName:                  docker.intershop.de/intershophub/
+    DockerRepoProjectServiceConnection: order-iomci-ISH-ENG-IOM
+    DockerRepoProjectNameCI:            iomci.azurecr.io/ci/
+    DockerRepoProjectNameSnapshot:      iomci.azurecr.io/snapshot/
+    DockerRepoProjectNameRelease:       iomci.azurecr.io/
