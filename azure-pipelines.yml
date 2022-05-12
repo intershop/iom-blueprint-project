@@ -19,7 +19,9 @@ extends:
     ArtifactsFeed:                      order-iom-blueprint
     DockerRepoIOMServiceConnection:     order-iom-docker.intershop.de.dockerhub
     DockerRepoIOMName:                  docker.intershop.de/intershophub/
-    DockerRepoProjectServiceConnection: order-iomci-ISH-ENG-IOM
-    DockerRepoProjectNameCI:            iomci.azurecr.io/ci/
-    DockerRepoProjectNameSnapshot:      iomci.azurecr.io/snapshot/
-    DockerRepoProjectNameRelease:       iomci.azurecr.io/
+    ACRServiceConnection:               order-iomci-ISH-ENG-IOM
+    ACRName:                            iomci
+    ACRHost:                            iomci.azurecr.io
+    ACRRepoCI:                          ci/
+    ACRRepoSnapshot:                    snapshot/
+    ACRRepoRelease:                     ''
