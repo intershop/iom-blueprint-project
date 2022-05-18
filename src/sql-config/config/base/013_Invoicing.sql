@@ -167,14 +167,14 @@ LOOP
     THEN
         INSERT INTO "CommunicationPartnerDO" ("id", "decisionBeanDefRef", "splitTransmission", "communicationRef", 
             "receivingPartnerReferrerRef", "sendingPartnerReferrerRef", 
-            "maxNoOfRetries", "retryDelay", "mergeTypeDefRef")
+            "maxNoOfRetries", "retryDelay")
             SELECT nextval('"CommunicationPartnerDO_id_seq"'), null, false, 
                 --communicationRef
                 (SELECT "id" FROM "CommunicationDO" WHERE "executionBeanDefRef" = 65 AND "transmissionTypeDefRef" = 300 AND "documentFormatDefRef" = 1 ),
                 --receiving/sending parftners
                 shoppartnerref, shoppartnerref,
-                --"maxNoOfRetries", "retryDelay", "mergeTypeDefRef")
-                5, '2m', null;
+                --"maxNoOfRetries", "retryDelay")
+                5, '2m';
     END IF;
     
     communicationPartner = (SELECT id FROM "CommunicationPartnerDO" 
