@@ -78,7 +78,6 @@ BEGIN
 					"receivingPartnerReferrerRef",
 					"maxNoOfRetries",
 					"retryDelay",
-					"mergeTypeDefRef",
 					"splitTransmissionPerSupplier"
 				)
 				SELECT 
@@ -90,7 +89,6 @@ BEGIN
 					receiverId,	-- a supplier
 					5,
 					'2m',
-					null,
 					false;
 
 			END IF;
@@ -156,7 +154,6 @@ BEGIN
 					"receivingPartnerReferrerRef",
 					"maxNoOfRetries",
 					"retryDelay",
-					"mergeTypeDefRef",
 					"splitTransmissionPerSupplier"
 				)
 				SELECT 
@@ -168,7 +165,6 @@ BEGIN
 					null,
 					5,
 					'2m',
-					null,
 					false;
 
 			END IF;
@@ -234,7 +230,6 @@ BEGIN
 					"receivingPartnerReferrerRef",
 					"maxNoOfRetries",
 					"retryDelay",
-					"mergeTypeDefRef",
 					"splitTransmissionPerSupplier"
 				)
 				SELECT 
@@ -246,7 +241,6 @@ BEGIN
 					null,
 					5,
 					'2m',
-					null,
 					false;
 
 			END IF;
@@ -311,7 +305,6 @@ BEGIN
 					"receivingPartnerReferrerRef",
 					"maxNoOfRetries",
 					"retryDelay",
-					"mergeTypeDefRef",
 					"splitTransmissionPerSupplier"
 				)
 				SELECT 
@@ -323,7 +316,6 @@ BEGIN
 					null,
 					5,
 					'2m',
-					null,
 					false;
 
 			END IF;
