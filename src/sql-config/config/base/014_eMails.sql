@@ -36,15 +36,15 @@ email_intronics varchar[] = ARRAY[shop_intronics::text, 'info@intershop.de', 'in
 email_intronics_b2b varchar[] = ARRAY[shop_intronics_b2b::text, 'info@intershop.de', 'inTRONICS Business'];
 
 -- transmission type: id, subject template, message template, sender bean type [standard, custom]
+-- order confirmation
+transmissionType_500_IT varchar[] = ARRAY['500','IT_orderSubject.vm', 'IT_orderMessage.vm', 'CheckOrderQueue'];
+transmissionType_500_IB varchar[] = ARRAY['500','IB_orderSubject.vm', 'IB_orderMessage.vm', 'CheckOrderQueue'];
+-- dispatch
+transmissionType_530_IT varchar[] = ARRAY['530','IT_dispatchSubject.vm', 'IT_dispatchMessage.vm', 'CloseDispatchQueue'];
+transmissionType_530_IB varchar[] = ARRAY['530','IB_dispatchSubject.vm', 'IB_dispatchMessage.vm', 'CloseDispatchQueue'];
 -- invoice
 transmissionType_570_IT varchar[] = ARRAY['570','IT_invoiceSubject.vm', 'IT_invoiceMessage.vm', 'InvoicingTransmissionSyncQueue'];
 transmissionType_570_IB varchar[] = ARRAY['570','IB_invoiceSubject.vm', 'IB_invoiceMessage.vm', 'InvoicingTransmissionSyncQueue'];
--- order dispatch
-transmissionType_530_IT varchar[] = ARRAY['530','IT_dispatchSubject.vm', 'IT_dispatchMessage.vm', 'CloseDispatchQueue'];
-transmissionType_530_IB varchar[] = ARRAY['530','IB_dispatchSubject.vm', 'IB_dispatchMessage.vm', 'CloseDispatchQueue'];
--- order confirmed
-transmissionType_500_IT varchar[] = ARRAY['500','IT_orderSubject.vm', 'IT_orderMessage.vm', 'AnnounceOrderQueue'];
-transmissionType_500_IB varchar[] = ARRAY['500','IB_orderSubject.vm', 'IB_orderMessage.vm', 'AnnounceOrderQueue'];
 -- returns
 transmissionType_540_IT varchar[] = ARRAY['540','IT_returnSubject_can_rcl.vm', 'IT_returnMessage_can_rcl.vm', 'CloseReturnQueue'];
 transmissionType_540_IB varchar[] = ARRAY['540','IB_returnSubject_can_rcl.vm', 'IB_returnMessage_can_rcl.vm', 'CloseReturnQueue'];
