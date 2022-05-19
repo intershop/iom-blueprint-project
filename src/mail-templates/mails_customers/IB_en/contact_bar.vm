@@ -1,0 +1,183 @@
+<!-- ---------------------------------------------- -->
+<!-- BEGIN contact BLOCK                            -->
+<!-- ---------------------------------------------- -->
+
+<tr>
+	<td align="center" valign="top" style="padding: 26px 0 0 0;" class="email--contact--block">
+	
+		<!-- BEGIN contact CONTENT -->
+		
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+		
+			<!-- BEGIN contact Block Headline -->
+			
+			<tr>
+				<td align="center" valign="top">
+					<table border="0" cellpadding="0" cellspacing="0" width="100%">
+						<tr>
+							<td align="center" valign="top" style="padding: 0 0 12px 0;">
+								
+								<p><br></p>
+								
+								<h2 style="display: block; font-size: 16px; font-style: normal; font-weight: bold; letter-spacing: normal; margin: 0; font-family: $font_family;">
+								
+									Can we help? Contact us
+									
+								</h2>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			
+			<!-- //END contact Block Headline -->
+			
+			<!-- BEGIN contact Block Links -->
+			
+			<tr>
+				<td align="center" valign="top">
+					<table border="0" cellpadding="0" cellspacing="0" width="100%">
+					
+						<tr>
+							<td class="email--contact--container" valign="top">
+							
+								<!-- [developer comments] "tablestacking" for better responsive support on mobile devices-->
+								<!-- [developer comments] fixed width, because lotus notes doesnt support "tablestacking" with variable width-->
+								<!-- [developer comments] fixed width, changed in media queries (for mailclients which support media queries)-->
+								<!-- [developer comments] lotus notes 8.5 has higher priority on width, than on style="width". lotus notes 9.0 switch the priority-->
+								
+								<table class="email--contact--item" align="left" width="194" height="100" style="border: solid 1px #dedede; border-right: none; width: 194px; height: 100px;">
+									<tr>
+										<td class="col" cellpadding="0" cellspacing="0" border="0" align="center" style="<!--[if gte mso]>line-height:40px;<![endif]--> font-size:1px;">
+											<a href="$link_contact_faq" target="_blank" style="text-decoration: none;">
+											<img src="$imagePath/ib-email-icon-contact-faq.png" alt="FAQ" width="40" height="40" border="0"><br>
+											<span style="color: $link_color; font-family: $font_family; font-size: 12px; line-height: 22px;">
+											
+												FAQ
+												
+											</span>
+											</a>
+										</td>
+									</tr>
+								</table>
+								
+								<table class="email--contact--item" align="left" width="194" height="100" style="border: solid 1px #dedede; width:194px; height: 100px;">
+									<tr>
+										<td class="col" cellpadding="0" cellspacing="0" border="0" align="center" style="<!--[if gte mso]>line-height:40px;<![endif]--> font-size:1px;">
+											<img src="$imagePath/ib-email-icon-contact-phone.png" width="40" height="40" border="0"
+												
+												alt="Phone"
+												
+												><br>
+											<span style="color: $link_color; font-family: $font_family; font-size: 12px; line-height: 22px;">
+											
+												$phone
+											
+											</span>
+										</td>
+									</tr>
+								</table>
+								
+								<table class="email--contact--item" align="left" width="194" height="100" style="border: solid 1px #dedede; border-left: none; width:194px; height: 100px;">
+									<tr>
+										<td class="col" cellpadding="0" cellspacing="0" border="0" align="center" style="<!--[if gte mso]>line-height:40px;<![endif]--> font-size:1px;">
+											<a href="$link_contact_order_status" target="_blank" style="text-decoration: none;">
+											<img src="$imagePath/ib-email-icon-contact-orderstate.png" width="40" height="40" border="0"
+												
+												alt="Order Status"
+												
+												><br>
+												
+												<span style="color: $link_color; font-family: $font_family; font-size: 12px; line-height: 22px;">
+												
+													Order Status
+												
+												</span>
+											</a>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						
+						<tr>
+							<td class="email--contact--container" valign="top">
+								<table class="email--contact--item" align="left" width="194" height="100" style="border-bottom: solid 1px #dedede; border-left: solid 1px #dedede; width:194px; height: 100px;">
+									<tr>
+										<td class="col" cellpadding="0" cellspacing="0" border="0" align="center" style="<!--[if gte mso]>line-height:40px;<![endif]--> font-size:1px;">
+											<a 	target="_blank" style="text-decoration: none;"
+											
+												href="mailto:$mailTo"
+											>
+
+											<img src="$imagePath/ib-email-icon-contact-mail.png" alt="E-mail" width="40" height="40" border="0"><br>
+											<span style="color: $link_color; font-family: $font_family; font-size: 12px; line-height: 22px;">
+											
+												E-mail
+												
+											</span>
+											</a>
+										</td>
+									</tr>
+								</table>
+								
+								<table class="email--contact--item" align="left" width="194" height="100" style="border: solid 1px #dedede; border-top: none; width:194px; height: 100px;">
+									<tr>
+										<td class="col" cellpadding="0" cellspacing="0" border="0" align="center" style="<!--[if gte mso]>line-height:40px;<![endif]--> font-size:1px;">
+											<a href="$link_contact_order_status" target="_blank" style="text-decoration: none;">
+											<img width="40" height="40" border="0"
+												
+												src="$imagePath/ib-email-icon-contact-myaccount.png"
+												
+												alt="My Account"
+												
+												/><br>
+												<span style="color: $link_color; font-family: $font_family; font-size: 12px; line-height: 22px;">
+									
+													My Account
+													
+												</span>
+											</a>
+										</td>
+									</tr>
+								</table>
+								
+								<table class="email--contact--item last-item" align="left" width="194" height="100" style="border-right: solid 1px #dedede; border-bottom: solid 1px #dedede; width:194px; height: 100px;">
+									<tr>
+										<td class="col" cellpadding="0" cellspacing="0" border="0" align="center" style="<!--[if gte mso]>line-height:40px;<![endif]--> font-size:1px;">
+											<a href="$link_contact_newsletter" target="_blank" style="text-decoration: none;">
+											<img width="40" height="40" border="0"
+											
+												src="$imagePath/ib-email-icon-contact-newsletter.png"
+												
+												alt="Newsletter"
+												
+												><br>
+												
+											<span style="color: $link_color; font-family: $font_family; font-size: 12px; line-height: 22px;">
+											
+												Subscribe Newsletter
+												
+											</span>
+											</a>
+										</td>
+									</tr>
+								</table>
+								
+							</td>
+						</tr>
+						
+					</table>
+				</td>
+			</tr>
+			
+			<!-- // END contact Block Links -->
+			
+		</table>
+		
+		<!-- END contact CONTENT -->
+		
+	</td>
+</tr>
+
+<!-- // END contact BLOCK -->

@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+#parse("./IT_master/variable.vm")
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta name="viewport" content="target-densitydpi=device-dpi; width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		
+		<title>THANK YOU FOR YOUR ORDER!</title>
+		
+		#include("./IT_master/style.vm")
+		
+	</head>
+	
+	#include("./IT_master/body_top.vm")
+	
+	<!-- -------------------------------------------------- -->
+	<!-- START MAIN TEMPLATE CONTENT -->
+	<!-- -------------------------------------------------- -->
+	
+	<!-- parse/include header -->
+	#parse("./IT_en/header.vm")
+	
+	<!-- parse/include progress bar -->	
+	#set($progress_step_1 = 'Order Confirmed')
+	#set($progress_step_2 = 'Payment Confirmed')
+	#set($progress_step_3 = 'Order Shipped')
+	#set($progress_step_active_nb = 1)
+	#parse("./IT_master/progress_bar.vm")
+	
+	<!-- ---------------------------------------------- -->
+	<!-- BEGIN INTRO TEXT BLOCK                         -->
+	<!-- You should always have an intro text           -->
+	<!-- ---------------------------------------------- -->
+	<tr>
+		<td
+			align="left"
+			valign="top"
+			style="padding-top: 0; padding-right: 12px; padding-bottom: 6px; padding-left: 12px;"
+			>
+			<!-- BEGIN INTRO TEXT CONTENT -->
+			<table
+				border="0"
+				cellpadding="0"
+				cellspacing="0"
+				width="100%"
+				>
+				<tr>
+					<td
+						align="left"
+						valign="top"
+						style="font-size: 14px; color: #353132; line-height: 20px; font-family: $font_family;"
+						>
+						
+						<!-- parse/include headline -->
+						#set($headline = 'Order Confirmation')
+						#parse("./IT_master/headline.vm")
+						
+						<p style="margin-bottom: 24px; line-height: 20px;">
+						
+							Hi $escape.html($userMailLO.getBillingAddressLO().getFirstName()),
+							
+						</p>
+						<p style="margin-bottom: 20px; line-height: 20px;">
+							
+							Great, your order has been registered!
+							
+						</p>
+						<p style="margin-bottom: 20px; line-height: 20px;">
+						
+							We will start preparing it for shipping as soon as your payment has been
+							received. We will send you a confirmation email as soon as that happens.
+							Just a little more patience!
+							
+						</p>
+						
+						#if(${userMailLO.getPaymentMethodName()}=='Prepayment')
+						
+							<p style="margin-bottom: 20px; line-height: 20px;">
+							
+								Please issue the bank transfer making sure to use the following details:
+								
+							</p>
+							<p style="margin-bottom: 20px; line-height: 20px;">
+							
+								IBAN: DEXX XXXX XXXX XXXX XXXX XX<br/>
+								Account Holder: Intronics <br/>
+								Reference number (to be specified in the payment reason): $escape.html($prepayRefNo) <br/>
+								Total value: $escape.html($userMailLO.getCurrencySymbol()) $localeUtil.getFormattedNumber($userMailLO.getTotalGross(),'en')
+								
+							</p>
+							
+						#end
+						
+						<!-- include/parse one button bar-->
+						#set($btnbar1_button_text = 'Order status')
+						#set($btnbar1_button_width = $min_button_width)
+						#set($btnbar1_button_link = $link_visit_website)
+						#parse('./IT_master/one_button_bar.vm')
+										  
+						<p style="margin-bottom: 20px; line-height: 20px;">
+						
+							And don't worry, the items you have selected will be reserved until	then.
+							
+						</p>
+					</td>
+				</tr>
+			</table>
+			
+			<!-- END INTRO TEXT CONTENT -->
+			
+		</td>
+	</tr>
+	
+	<!-- // END INTRO TEXT BLOCK -->
+	
+	#parse("./IT_en/order_overview.vm")
+	
+	#parse("./IT_en/order_article_overview.vm")
+
+	<!-- include/parse two button bar-->
+	#set($btnbar2_button_1_text = 'Visit our shop')
+	#set($btnbar2_button_2_text = 'Return conditions')
+	#set($btnbar2_button_1_width = $min_button_width)
+	#set($btnbar2_button_2_width = $min_button_width)
+	#set($btnbar2_button_1_link = $link_visit_website)
+	#set($btnbar2_button_2_link = $link_return_conditions)
+	#parse('./IT_master/two_button_bar.vm')
+
+	#parse("./IT_en/footer.vm")
+	
+	<!-- -------------------------------------------------- -->
+	<!-- END MAIN TEMPLATE CONTENT                          -->
+	<!-- - you shouldn't need to edit the code below        -->
+	<!-- -------------------------------------------------- -->
+	
+	#include("./IT_master/body_bottom.vm")
+	
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+#parse("./IT_master/variable.vm")
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta name="viewport" content="target-densitydpi=device-dpi; width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		
+		<title>Return label</title>
+		
+		#include("./IT_master/style.vm")
+		
+	</head>
+	
+	#include("./IT_master/body_top.vm")
+	
+	<!-- -------------------------------------------------- -->
+	<!-- START MAIN TEMPLATE CONTENT -->
+	<!-- -------------------------------------------------- -->
+	
+	<!-- parse/include header -->
+	#parse("./IT_en/header.vm")
+	
+	<!-- ---------------------------------------------- -->
+	<!-- BEGIN INTRO TEXT BLOCK                         -->
+	<!-- You should always have an intro text           -->
+	<!-- ---------------------------------------------- -->
+	<tr>
+		<td
+			align="left"
+			valign="top"
+			style="padding-top: 0; padding-right: 12px; padding-bottom: 6px; padding-left: 12px;"
+			>
+			<!-- BEGIN INTRO TEXT CONTENT -->
+			<table
+				border="0"
+				cellpadding="0"
+				cellspacing="0"
+				width="100%"
+				>
+				<tr>
+					<td
+						align="left"
+						valign="top"
+						style="font-size: 14px; color: #353132; line-height: 20px; font-family: $font_family;"
+						>
+						
+						<!-- parse/include headline -->
+						#set($headline = 'Return Label')
+						#parse("./IT_master/headline.vm")
+						
+						<p style="margin-bottom: 24px; line-height: 20px;">
+						
+							Hi $escape.html($userMailLO.getBillingAddressLO().getFirstName()),
+							
+						</p>
+						<p style="margin-bottom: 20px; line-height: 20px;">
+							
+							attached you can find the return label for your order #if($userMailLO.getShopCustomerOrderId())$userMailLO.getShopCustomerOrderId()#else$userMailLO.getShopOrderId()#end.<br/>
+							
+							<br>
+							<br>
+							<br>
+							<br>
+							<br>
+							
+						</p>
+						
+						<!-- include/parse one button bar-->
+						#set($btnbar1_button_text = 'Order status')
+						#set($btnbar1_button_width = $min_button_width)
+						#set($btnbar1_button_link = $link_visit_website)
+						#parse('./IT_master/one_button_bar.vm')
+						
+						<p></p>
+						
+							<!-- include/parse two button bar-->
+						#set($btnbar1_button_text = 'Visit our shop')
+						#set($btnbar1_button_width = $min_button_width)
+						#set($btnbar1_button_link = $link_visit_website)
+						#parse('./IT_master/one_button_bar.vm')
+						
+					</td>
+				</tr>
+			</table>
+			
+			<!-- END INTRO TEXT CONTENT -->
+			
+		</td>
+	</tr>
+	
+	<!-- // END INTRO TEXT BLOCK -->
+
+	#parse("./IT_en/footer.vm")
+	
+	<!-- -------------------------------------------------- -->
+	<!-- END MAIN TEMPLATE CONTENT                          -->
+	<!-- - you shouldn't need to edit the code below        -->
+	<!-- -------------------------------------------------- -->
+	
+	#include("./IT_master/body_bottom.vm")
+	
+</html>
