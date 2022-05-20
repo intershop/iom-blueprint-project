@@ -25,8 +25,8 @@ BEGIN
 			p_parameterValue,
 			p_communicationPartnerRef;
 	ELSE
-		UPDATE  oms."ExecutionBeanValueDO" SET 
-			"parameterValue" = p_parameterValue
+		UPDATE  oms."ExecutionBeanValueDO" 
+		SET "parameterValue" = p_parameterValue
 		WHERE "executionBeanKeyDefRef" = p_executionBeanKeyDefRef 
 		AND "communicationPartnerRef" = p_communicationPartnerRef;
 	END IF;
@@ -36,8 +36,8 @@ BEGIN
 END;
 
 $BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
+LANGUAGE plpgsql VOLATILE
+COST 100;
 
   comment  on function upsert_eb_value(bigint,text, bigint) is 'Add an entry or update the parameterValue in ExecutionBeanValueDO';
   
