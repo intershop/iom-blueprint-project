@@ -26,7 +26,10 @@ ebv_subjectTemplate int8 := 1204;
 ebv_messageTemplate int8 := 1205;
 ebv_mimeType int8 := 1207;
 
-_null varchar;
+eventRegistryEntry_id int8;
+shop_partner_id int8;
+communicationPartner_id int8;
+
 -- end variables block with 
 BEGIN
 
@@ -54,8 +57,8 @@ transmissionType_543_IT varchar[] = ARRAY['543','IT_returnSubject_ret_def_inv.vm
 transmissionType_543_IB varchar[] = ARRAY['543','IB_returnSubject_ret_def_inv.vm', 'IB_returnMessage_ret_def_inv.vm', 'CloseReturnQueue'];
 
 -- return label mail via omt
-transmissionType_713_IT varchar[] = ARRAY['713','IT_returnLabelSubject.vm', 'IT_returnLabelMessage.vm', _null]; -- triggered via GUI and couldn't be registered as event
-transmissionType_713_IB varchar[] = ARRAY['713','IB_returnLabelSubject.vm', 'IB_returnLabelMessage.vm', _null]; -- triggered via GUI and couldn't be registered as event
+transmissionType_713_IT varchar[] = ARRAY['713','IT_returnLabelSubject.vm', 'IT_returnLabelMessage.vm', null]; -- triggered via GUI and couldn't be registered as event
+transmissionType_713_IB varchar[] = ARRAY['713','IB_returnLabelSubject.vm', 'IB_returnLabelMessage.vm', null]; -- triggered via GUI and couldn't be registered as event
 
 -- rma
 --transmissionType_715_IT varchar[] = ARRAY['715','returnAnnouncementSubject.vm', 'returnAnnouncementMessage.vm', ''];
@@ -91,6 +94,14 @@ FOREACH transmissionTypeToTemplates SLICE 1 IN ARRAY transmissionTypesToTemplate
 	subjectTemplate := transmissionTypeToTemplates[6];
 	messageTemplate := transmissionTypeToTemplates[7];
 	queueName := transmissionTypeToTemplates[8];
+	
+	eventRegistryEntry_id = (select id from "EventRegistryEntryDO"
+	                         where "processesRef"=(select id from "ProcessesDO" where "processDefRef" = (select id from "ProcessDefDO" where "queueName" = queueName)) 
+	                         and "eventDefRef"=1 
+	                         and "shopRef"=shopRef);
+	                         
+  shop_partner_id =(select id from "PartnerReferrerDO" where "shopRef" = shopRef);   
+  
 
 
 	IF queueName is not null THEN
@@ -106,9 +117,9 @@ FOREACH transmissionTypeToTemplates SLICE 1 IN ARRAY transmissionTypesToTemplate
 			nextval('"EventRegistryEntryDO_id_seq"'),CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,
 			(select id from "ProcessesDO" where "processDefRef" = (select id from "ProcessDefDO" where "queueName" = queueName)), 1,
 			1, shopRef, 'Mail Events on ' || queueName
-			WHERE 1 NOT IN
+			WHERE NOT EXISTS
 			(
-			SELECT 1 from "EventRegistryEntryDO" where
+			SELECT * from "EventRegistryEntryDO" where
 				"processesRef" = (select id from "ProcessesDO" where "processDefRef" = (select id from "ProcessDefDO" where "queueName" = queueName)) and
 				"eventDefRef" = 1 and
 				"shopRef" = shopRef
@@ -126,17 +137,17 @@ FOREACH transmissionTypeToTemplates SLICE 1 IN ARRAY transmissionTypesToTemplate
 				"mailEventDefRef", "decisionBeanDefRef", "transmissionTypeDefRef")
 				SELECT
 				nextval('"MailEventRegistryEntryDO_id_seq"'), 0, now(), now(), true,
-				(select id from "EventRegistryEntryDO" where "processesRef"=(select id from "ProcessesDO" where "processDefRef" = (select id from "ProcessDefDO" where "queueName" = queueName)) and "eventDefRef"=1 and "shopRef"=shopRef),
+				eventRegistryEntry_id,
 				1, 50, transmissionType -- "mailEventDefRef", "decisionBeanDefRef", "transmissionTypeDefRef"
-				WHERE 1 NOT IN
+				WHERE NOT EXISTS
 				(
-					SELECT 1 FROM "MailEventRegistryEntryDO" WHERE
-						"eventRegistryEntryRef" = (select id from "EventRegistryEntryDO" where "processesRef"=(select id from "ProcessesDO" where "processDefRef" = (select id from "ProcessDefDO" where "queueName" = queueName)) and "eventDefRef"=1 and "shopRef"=shopRef)
+					SELECT * FROM "MailEventRegistryEntryDO" WHERE
+						"eventRegistryEntryRef" = eventRegistryEntry_id
 						AND "mailEventDefRef" = 1
 						AND "transmissionTypeDefRef" = transmissionType
 				);
 		UPDATE "MailEventRegistryEntryDO" SET active = _active WHERE
-						"eventRegistryEntryRef" = (select id from "EventRegistryEntryDO" where "processesRef"=(select id from "ProcessesDO" where "processDefRef" = (select id from "ProcessDefDO" where "queueName" = queueName)) and "eventDefRef"=1 and "shopRef"=shopRef)
+						"eventRegistryEntryRef" = eventRegistryEntry_id
 						AND "mailEventDefRef" = 1
 						AND "transmissionTypeDefRef" = transmissionType;
 	END IF;
@@ -150,82 +161,88 @@ FOREACH transmissionTypeToTemplates SLICE 1 IN ARRAY transmissionTypesToTemplate
 			"receivingPartnerReferrerRef", "sendingPartnerReferrerRef", "maxNoOfRetries",
 			"retryDelay", "mergeTypeDefRef")
 		SELECT nextval('"CommunicationPartnerDO_id_seq"'), null, false, (select id from "CommunicationDO" where "transmissionTypeDefRef" = transmissionType),
-			null, (select id from "PartnerReferrerDO" where "shopRef" = shopRef), 12,
+			null, shop_partner_id, 12,
 			'30m', null
-		WHERE 1 NOT IN (
-			SELECT 1 FROM "CommunicationPartnerDO" WHERE
-				"communicationRef" = (select id from "CommunicationDO" where "transmissionTypeDefRef" = transmissionType)
-				AND "sendingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "shopRef" = shopRef)
-				AND "receivingPartnerReferrerRef" isNull
-		);
+		WHERE NOT EXISTS (
+			select * FROM "CommunicationPartnerDO" 
+			where "communicationRef" = (select id from "CommunicationDO" where "transmissionTypeDefRef" = transmissionType)
+			and "sendingPartnerReferrerRef" = shop_partner_id
+			and "receivingPartnerReferrerRef" is null
+		 );
+		
+	communicationPartner_id = (select id from "CommunicationPartnerDO" 
+                              where "communicationRef" = (select id from "CommunicationDO" where "transmissionTypeDefRef" = transmissionType) 
+                              and "sendingPartnerReferrerRef" = shop_partner_id 
+                              and "receivingPartnerReferrerRef" is null);
+		
 	-- shopEmailAddress (1200 - ExecutionBeanKeyDefDO.SHOPCUSTOMERMAILSENDERBEAN_SHOP_EMAIL_ADDRESS)
 	INSERT INTO "ExecutionBeanValueDO"(
 			id, "executionBeanKeyDefRef", "parameterValue", "communicationPartnerRef")
-		SELECT nextval('"ExecutionBeanValueDO_id_seq"'), ebv_senderAddress, senderAddress, (select id from "CommunicationPartnerDO" where "communicationRef" = (select id from "CommunicationDO" where "transmissionTypeDefRef" = transmissionType) AND "sendingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "shopRef" = shopRef) AND "receivingPartnerReferrerRef" isNull)
-		WHERE 1 NOT IN (
-			SELECT 1 FROM "ExecutionBeanValueDO"
+		SELECT nextval('"ExecutionBeanValueDO_id_seq"'), ebv_senderAddress, senderAddress, communicationPartner_id
+		WHERE NOT EXISTS (
+			SELECT * FROM "ExecutionBeanValueDO"
 			WHERE
-			"communicationPartnerRef" = (select id from "CommunicationPartnerDO" where "communicationRef" = (select id from "CommunicationDO" where "transmissionTypeDefRef" = transmissionType) AND "sendingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "shopRef" = shopRef) AND "receivingPartnerReferrerRef" isNull)
+			"communicationPartnerRef" = communicationPartner_id
 			and "executionBeanKeyDefRef" = ebv_senderAddress
 		)
 		;
 	UPDATE "ExecutionBeanValueDO"
 			SET "parameterValue" = senderAddress
 			WHERE
-			"communicationPartnerRef" = (select id from "CommunicationPartnerDO" where "communicationRef" = (select id from "CommunicationDO" where "transmissionTypeDefRef" = transmissionType) AND "sendingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "shopRef" = shopRef) AND "receivingPartnerReferrerRef" isNull)
+			"communicationPartnerRef" = communicationPartner_id
 			and "executionBeanKeyDefRef" = ebv_senderAddress
 		;
 	-- shopEmailSenderName (1201 - ExecutionBeanKeyDefDO.SHOPCUSTOMERMAILSENDERBEAN_SHOP_EMAIL_SENDERNAME)
 	INSERT INTO "ExecutionBeanValueDO"(
 			id, "executionBeanKeyDefRef", "parameterValue", "communicationPartnerRef")
-		SELECT nextval('"ExecutionBeanValueDO_id_seq"'), ebv_senderName, senderName, (select id from "CommunicationPartnerDO" where "communicationRef" = (select id from "CommunicationDO" where "transmissionTypeDefRef" = transmissionType) AND "sendingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "shopRef" = shopRef) AND "receivingPartnerReferrerRef" isNull)
-		WHERE 1 NOT IN (
-			SELECT 1 FROM "ExecutionBeanValueDO"
+		SELECT nextval('"ExecutionBeanValueDO_id_seq"'), ebv_senderName, senderName, communicationPartner_id
+		WHERE NOT EXISTS (
+			SELECT * FROM "ExecutionBeanValueDO"
 			WHERE
-			"communicationPartnerRef" = (select id from "CommunicationPartnerDO" where "communicationRef" = (select id from "CommunicationDO" where "transmissionTypeDefRef" = transmissionType) AND "sendingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "shopRef" = shopRef) AND "receivingPartnerReferrerRef" isNull)
+			"communicationPartnerRef" = communicationPartner_id
 			and "executionBeanKeyDefRef" = ebv_senderName
 		)
 		;
 	UPDATE "ExecutionBeanValueDO"
 			SET "parameterValue" = senderName
 			WHERE
-			"communicationPartnerRef" = (select id from "CommunicationPartnerDO" where "communicationRef" = (select id from "CommunicationDO" where "transmissionTypeDefRef" = transmissionType) AND "sendingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "shopRef" = shopRef) AND "receivingPartnerReferrerRef" isNull)
+			"communicationPartnerRef" = communicationPartner_id
 			and "executionBeanKeyDefRef" = ebv_senderName
 		;
 
 	-- subjectTemplate (1204 - ExecutionBeanKeyDefDO.SHOPCUSTOMERMAILSENDERBEAN_SUBJECT_TEMPLATE_FILE_NAME)
 	INSERT INTO "ExecutionBeanValueDO"(
 			id, "executionBeanKeyDefRef", "parameterValue", "communicationPartnerRef")
-		SELECT nextval('"ExecutionBeanValueDO_id_seq"'), ebv_subjectTemplate, subjectTemplate, (select id from "CommunicationPartnerDO" where "communicationRef" = (select id from "CommunicationDO" where "transmissionTypeDefRef" = transmissionType) AND "sendingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "shopRef" = shopRef) AND "receivingPartnerReferrerRef" isNull)
-		WHERE 1 NOT IN (
-			SELECT 1 FROM "ExecutionBeanValueDO"
+		SELECT nextval('"ExecutionBeanValueDO_id_seq"'), ebv_subjectTemplate, subjectTemplate, communicationPartner_id
+		WHERE NOT EXISTS (
+			SELECT * FROM "ExecutionBeanValueDO"
 			WHERE
-			"communicationPartnerRef" = (select id from "CommunicationPartnerDO" where "communicationRef" = (select id from "CommunicationDO" where "transmissionTypeDefRef" = transmissionType) AND "sendingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "shopRef" = shopRef) AND "receivingPartnerReferrerRef" isNull)
+			"communicationPartnerRef" = communicationPartner_id
 			and "executionBeanKeyDefRef" = ebv_subjectTemplate
 		)
 		;
 	UPDATE "ExecutionBeanValueDO"
 			SET "parameterValue" = subjectTemplate
 			WHERE
-			"communicationPartnerRef" = (select id from "CommunicationPartnerDO" where "communicationRef" = (select id from "CommunicationDO" where "transmissionTypeDefRef" = transmissionType) AND "sendingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "shopRef" = shopRef) AND "receivingPartnerReferrerRef" isNull)
+			"communicationPartnerRef" = communicationPartner_id
 			and "executionBeanKeyDefRef" = ebv_subjectTemplate
 		;
 
 	-- messageTemplate (1205 - ExecutionBeanKeyDefDO.SHOPCUSTOMERMAILSENDERBEAN_MESSAGE_TEMPLATE_FILE_NAME)
 	INSERT INTO "ExecutionBeanValueDO"(
 			id, "executionBeanKeyDefRef", "parameterValue", "communicationPartnerRef")
-		SELECT nextval('"ExecutionBeanValueDO_id_seq"'), ebv_messageTemplate, messageTemplate, (select id from "CommunicationPartnerDO" where "communicationRef" = (select id from "CommunicationDO" where "transmissionTypeDefRef" = transmissionType) AND "sendingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "shopRef" = shopRef) AND "receivingPartnerReferrerRef" isNull)
-		WHERE 1 NOT IN (
-			SELECT 1 FROM "ExecutionBeanValueDO"
+		SELECT nextval('"ExecutionBeanValueDO_id_seq"'), ebv_messageTemplate, messageTemplate, communicationPartner_id
+		WHERE NOT EXISTS (
+			SELECT * FROM "ExecutionBeanValueDO"
 			WHERE
-			"communicationPartnerRef" = (select id from "CommunicationPartnerDO" where "communicationRef" = (select id from "CommunicationDO" where "transmissionTypeDefRef" = transmissionType) AND "sendingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "shopRef" = shopRef) AND "receivingPartnerReferrerRef" isNull)
+			"communicationPartnerRef" = communicationPartner_id
 			and "executionBeanKeyDefRef" = ebv_messageTemplate
 		)
 		;
 	UPDATE "ExecutionBeanValueDO"
 			SET "parameterValue" = messageTemplate
 			WHERE
-			"communicationPartnerRef" = (select id from "CommunicationPartnerDO" where "communicationRef" = (select id from "CommunicationDO" where "transmissionTypeDefRef" = transmissionType) AND "sendingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "shopRef" = shopRef) AND "receivingPartnerReferrerRef" isNull)
+			"communicationPartnerRef" = communicationPartner_id
 			and "executionBeanKeyDefRef" = ebv_messageTemplate
 		;
 
@@ -233,11 +250,11 @@ FOREACH transmissionTypeToTemplates SLICE 1 IN ARRAY transmissionTypesToTemplate
 	-- mimeType (1207 - ExecutionBeanKeyDefDO.SHOPCUSTOMERMAILSENDERBEAN_MIME_TYPE)
 	INSERT INTO "ExecutionBeanValueDO"
 			(id, "executionBeanKeyDefRef", "parameterValue", "communicationPartnerRef")
-		SELECT nextval('"ExecutionBeanValueDO_id_seq"'), ebv_mimeType, 'text/html', (select id from "CommunicationPartnerDO" where "communicationRef" = (select id from "CommunicationDO" where "transmissionTypeDefRef" = transmissionType) AND "sendingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "shopRef" = shopRef) AND "receivingPartnerReferrerRef" isNull)
-		WHERE 1 NOT IN (
-			SELECT 1 FROM "ExecutionBeanValueDO"
+		SELECT nextval('"ExecutionBeanValueDO_id_seq"'), ebv_mimeType, 'text/html', communicationPartner_id
+		WHERE NOT EXISTS (
+			SELECT * FROM "ExecutionBeanValueDO"
 			WHERE
-			"communicationPartnerRef" = (select id from "CommunicationPartnerDO" where "communicationRef" = (select id from "CommunicationDO" where "transmissionTypeDefRef" = transmissionType) AND "sendingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "shopRef" = shopRef) AND "receivingPartnerReferrerRef" isNull)
+			"communicationPartnerRef" = communicationPartner_id
 			and "executionBeanKeyDefRef" = ebv_mimeType
 		)
 		;
