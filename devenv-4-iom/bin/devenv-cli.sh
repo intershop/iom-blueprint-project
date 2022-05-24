@@ -1876,7 +1876,10 @@ EOF
 Kubernetes:
 ===========
 namespace:                  $EnvId
+
 $(kubectl get pods --namespace=$EnvId --context="$KUBERNETES_CONTEXT" -l app=iom)
+
+$(kubectl get service --namespace=$EnvId --context="$KUBERNETES_CONTEXT" iom-service 2> /dev/null)
 --------------------------------------------------------------------------------
 Usefull commands:
 =================
@@ -1953,7 +1956,10 @@ Kubernetes:
 ===========
 namespace:                  $EnvId
 KEEP_DATABASE_DATA:         $KEEP_DATABASE_DATA
+
 $(kubectl get pods --namespace=$EnvId --context="$KUBERNETES_CONTEXT" -l app=postgres)
+
+$(kubectl get service --namespace=$EnvId --context="$KUBERNETES_CONTEXT" postgres-service 2> /dev/null)
 --------------------------------------------------------------------------------
 Usefull commands:
 =================
@@ -2001,7 +2007,10 @@ EOF
 Kubernetes:
 ===========
 namespace:                  $EnvId
+
 $(kubectl get pods --namespace=$EnvId --context="$KUBERNETES_CONTEXT" -l app=mailhog)
+
+$(kubectl get service --namespace=$EnvId --context="$KUBERNETES_CONTEXT" mailhog-service 2> /dev/null)
 --------------------------------------------------------------------------------
 Usefull commands:
 =================
