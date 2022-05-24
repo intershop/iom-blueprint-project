@@ -13,6 +13,114 @@ shop2supplier2reducereasonref bigint;
 -- end variables block with 
 BEGIN
 
+
+-- Shop Return Types
+FOREACH shopref in array shops_all LOOP
+	-- RETURN
+	IF NOT EXISTS (SELECT NULL FROM "Shop2ReturnTypeDefDO" WHERE "shopRef" = shopref AND "returnTypeDefRef" = 4) THEN
+		INSERT INTO "Shop2ReturnTypeDefDO"
+		SELECT nextval('"Shop2ReturnTypeDefDO_id_seq"'), 4, 'RET', shopref;
+	END IF;
+	-- DEFECT
+	IF NOT EXISTS (SELECT NULL FROM "Shop2ReturnTypeDefDO" WHERE "shopRef" = shopref AND "returnTypeDefRef" = 5) THEN
+		INSERT INTO "Shop2ReturnTypeDefDO"
+		SELECT nextval('"Shop2ReturnTypeDefDO_id_seq"'), 5, 'DEF', shopref;
+	END IF;
+END LOOP;
+
+-- Shop Return Reasons
+FOREACH shopref IN ARRAY shops_all
+LOOP
+	INSERT INTO "Shop2ReturnReasonDefDO" (id, "returnReasonDefRef", "shopReturnReasonName", "shopRef")
+		SELECT nextval('"Shop2ReturnReasonDefDO_id_seq"'), 301, 'RET020', shopref UNION ALL
+		SELECT nextval('"Shop2ReturnReasonDefDO_id_seq"'), 304, 'RET050', shopref UNION ALL
+		SELECT nextval('"Shop2ReturnReasonDefDO_id_seq"'), 305, 'RET060', shopref UNION ALL
+		SELECT nextval('"Shop2ReturnReasonDefDO_id_seq"'), 308, 'RET090', shopref UNION ALL
+		SELECT nextval('"Shop2ReturnReasonDefDO_id_seq"'), 313, 'RET045', shopref UNION ALL
+		SELECT nextval('"Shop2ReturnReasonDefDO_id_seq"'), 323, 'RET190', shopref --UNION ALL
+		--SELECT nextval('"Shop2ReturnReasonDefDO_id_seq"'), 1, 'CAN010', shopref UNION ALL
+		--SELECT nextval('"Shop2ReturnReasonDefDO_id_seq"'), 114, 'RCL045', shopref
+
+	ON CONFLICT ("returnReasonDefRef", "shopRef") DO UPDATE SET "shopReturnReasonName" = EXCLUDED."shopReturnReasonName";
+	
+	-- approval reason mapping Shop2ReturnReason2ApprovalStateCodeReasonDefDO
+	/*
+	INSERT INTO "Shop2ReturnReason2ApprovalStateCodeReasonDefDO"(id, "approvalStateCodeReasonDefRef", "shop2ReturnReasonDefRef")
+    	SELECT nextval('"Shop2ReturnReason2ApprovalStateCodeReasonDefDO_id_seq"'), 4100, (select id from "Shop2ReturnReasonDefDO" where "returnReasonDefRef" = 114 and "shopRef" = shopref)
+    ON CONFLICT ("approvalStateCodeReasonDefRef", "shop2ReturnReasonDefRef") DO NOTHING;
+	*/
+
+END LOOP;
+
+
+--Return Address
+
+-- lazy upsert - delete everything
+DELETE FROM oms."SupplierReturnAddressDO";
+
+FOREACH shopref IN ARRAY shops_all
+LOOP
+	FOREACH supplierref IN ARRAY suppliers_all
+	LOOP
+		IF EXISTS (SELECT id FROM "Shop2SupplierDO" WHERE "shopRef" = shopref and "supplierRef" = supplierref) THEN
+			WITH RES AS (SELECT 'RCL' as reason_name UNION ALL
+			             SELECT 'INV' as reason_name UNION ALL
+			             SELECT 'RET' as reason_name UNION ALL
+			             SELECT 'DEF' as reason_name
+			            )
+			INSERT INTO "SupplierReturnAddressDO"(
+						"id", "addressLine1", "addressLine2", "addressLine3", "addressLine4", "addressLine5", "supplier2ReturnTypeDefRef", "shop2SupplierRef")
+
+				SELECT nextval('"SupplierReturnAddressDO_id_seq"'), 'inTRONICS Warehouse c/o Intershop Communications, Inc.' , '25 Lusk Street, Suite 210', 'San Francisco, CA 94107, United States', 'Tel.: +1 415 844-1500', 'Fax: +1 415 844-3800',
+								(select id from "Supplier2ReturnTypeDefDO" where "supplierRef" = supplierref and "supplierReturnTypeName" = reason_name),
+								(select id from "Shop2SupplierDO"          where "supplierRef" = supplierref and "shopRef" = shopref)
+								from RES ON CONFLICT DO NOTHING
+				;
+		END IF;
+	END LOOP;
+END LOOP;
+
+
+-- Supplier Return Reason
+FOREACH supplierref IN ARRAY suppliers_all
+LOOP
+	INSERT INTO "Supplier2ReturnReasonDefDO" (id, "returnReasonDefRef", "supplierReturnReasonName", "supplierRef", "preselected")
+		--SELECT nextval('"Supplier2ReturnReasonDefDO_id_seq"'), 1, 'CAN010', supplierref, false UNION ALL
+		--SELECT nextval('"Supplier2ReturnReasonDefDO_id_seq"'), 2, 'CAN020', supplierref, false UNION ALL
+		--SELECT nextval('"Supplier2ReturnReasonDefDO_id_seq"'), 12, 'CAN990', supplierref, false UNION ALL
+
+		--SELECT nextval('"Supplier2ReturnReasonDefDO_id_seq"'), 100, 'RCL010', supplierref, false UNION ALL
+		--SELECT nextval('"Supplier2ReturnReasonDefDO_id_seq"'), 101, 'RCL015', supplierref, false UNION ALL
+		--SELECT nextval('"Supplier2ReturnReasonDefDO_id_seq"'), 102, 'RCL020', supplierref, false UNION ALL
+		--SELECT nextval('"Supplier2ReturnReasonDefDO_id_seq"'), 109, 'RCL990', supplierref, false UNION ALL
+
+		--SELECT nextval('"Supplier2ReturnReasonDefDO_id_seq"'), 204, 'INV990', supplierref, false UNION ALL
+
+		SELECT nextval('"Supplier2ReturnReasonDefDO_id_seq"'), 301, 'RET020', supplierref, false UNION ALL
+		SELECT nextval('"Supplier2ReturnReasonDefDO_id_seq"'), 304, 'RET050', supplierref, false UNION ALL
+		SELECT nextval('"Supplier2ReturnReasonDefDO_id_seq"'), 305, 'RET060', supplierref, false UNION ALL
+		SELECT nextval('"Supplier2ReturnReasonDefDO_id_seq"'), 308, 'RET090', supplierref, false UNION ALL
+		SELECT nextval('"Supplier2ReturnReasonDefDO_id_seq"'), 312, 'RET990', supplierref, false UNION ALL
+		SELECT nextval('"Supplier2ReturnReasonDefDO_id_seq"'), 313, 'RET045', supplierref, false UNION ALL
+		SELECT nextval('"Supplier2ReturnReasonDefDO_id_seq"'), 323, 'RET190', supplierref, false
+		;
+END LOOP;
+
+FOREACH supplierref IN ARRAY array[suppliers_all]
+LOOP
+	INSERT INTO "Supplier2ReturnTypeDefDO"(id, "returnTypeDefRef", "supplierReturnTypeName", "supplierRef", "rmaNo", preselected)
+		SELECT nextval('"Supplier2ReturnTypeDefDO_id_seq"'), 1, 'CAN', supplierref, '', false UNION ALL
+		SELECT nextval('"Supplier2ReturnTypeDefDO_id_seq"'), 2, 'RCL', supplierref, '', false UNION ALL
+		SELECT nextval('"Supplier2ReturnTypeDefDO_id_seq"'), 3, 'INV', supplierref, '', false UNION ALL
+		SELECT nextval('"Supplier2ReturnTypeDefDO_id_seq"'), 4, 'RET', supplierref, '', true UNION ALL
+		SELECT nextval('"Supplier2ReturnTypeDefDO_id_seq"'), 5, 'DEF', supplierref, '', false
+		ON CONFLICT DO NOTHING
+		;
+END LOOP;
+
+
+-- Return Reductions
+
 -- lazy upsert - delete everything
 DELETE FROM "ReductionValueDO";
 ALTER SEQUENCE "ReductionValueDO_id_seq" RESTART WITH 10000;
