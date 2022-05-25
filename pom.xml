@@ -13,14 +13,14 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <platform.version>4.0.0</platform.version>
+        <platform.version>4.1.0</platform.version>
         <intershop.docker.repo>docker-internal.rnd.intershop.de/intershophub/</intershop.docker.repo>
         <image.base.name>iom-blueprint-project</image.base.name>
         <image.version.suffix></image.version.suffix>
         <image.version>${project.version}${image.version.suffix}</image.version>
         <image.docker.opts>--docker-opts="--no-cache"</image.docker.opts>
         <maven.javadoc.skip>true</maven.javadoc.skip>
-        <wildfly.version>26.0.1.Final</wildfly.version>
+        <wildfly.version>26.1.0.Final</wildfly.version>
         <org.junit.version>5.7.2</org.junit.version>
         <org.mockito.version>3.11.2</org.mockito.version>
         <org.apache.commons-lang.version>3.12.0</org.apache.commons-lang.version>
