@@ -1,0 +1,191 @@
+<!-- ---------------------------------------------- -->
+<!-- BEGIN ACTIONS BLOCK                            -->
+<!-- ---------------------------------------------- -->
+<tr>
+    <td
+            align="left"
+            valign="top"
+            class="fl-email--actions-block"
+            style="padding: 30px 30px 0;"
+            >
+        <!-- BEGIN ACTIONS CONTENT -->
+        <table
+                border="0"
+                cellpadding="0"
+                cellspacing="0"
+                width="100%"
+                >
+            <tr>
+                <td
+                        valign="top"
+                        class="fl-email--actions-block--button-container"
+                        >
+                    <table
+                            border="0"
+                            cellspacing="0"
+                            cellpadding="0"
+                            class="fl-email--actions-block--button-container--inner"
+                            width="250"
+                            align="left"
+                            style="width: 250px; padding-bottom: 20px;"
+                            >
+                        <tr>
+                            <td
+                                    align="left"
+                                    valign="top"
+                                    style="-webkit-border-radius: 6px 0px 0px 6px; -moz-border-radius: 6px 0px 0px 6px; border-radius: 6px 0px 0px 6px; padding: 24px 10px 22px 20px;"
+                                    bgcolor="#e81937"
+                                    >
+                                <!-- [developer comments] outlook dosent like padding on a-tags, use padding on td instead-->
+                                <a
+                                        href=""
+                                        target="_blank"
+                                        style="font-size: 16px; font-weight: bold; color: #ffffff; text-decoration: none; -webkit-border-radius: 6px 0px 0px 6px; -moz-border-radius: 6px 0px 0px 6px; border-radius: 6px 0px 0px 6px; border: 1px solid #e81937; display: inline-block;"
+                                        >
+                                    <img
+                                            src=""
+                                            border="0"
+                                            width="38"
+                                            height="46"
+                                            style="display: block; padding: 0; text-decoration: none; font-size: 16px;"
+                                            />
+                                </a>
+                            </td>
+                            <td
+                                    align="left"
+                                    valign="top"
+                                    style="-webkit-border-radius: 0px 6px 6px 0px; -moz-border-radius: 6px; border-radius:  0px 6px 6px 0px; padding: 22px 10px 22px 0; min-width: 110px"
+                                    bgcolor="#e81937"
+                                    >
+                                <!-- [developer comments] outlook dosent like padding on a-tags, use padding on td instead-->
+                                <a
+                                        href=""
+                                        target="_blank"
+                                        style="font-size: 16px; font-weight: bold; color: #ffffff; text-decoration: none; -webkit-border-radius:  0px 6px 6px 0px; -moz-border-radius:  0px 6px 6px 0px; border-radius:  0px 6px 6px 0px; border: 1px solid #e81937; display: inline-block; line-height: 20px; font-family: DINWeb-Medium, Helvetica, Arial, sans-serif;"
+                                        >
+                                    Visit our website
+                                </a>
+                            </td>
+                        </tr>
+                    </table>
+                    <table
+                            align="left"
+                            valign="top"
+                            class="fl-email--actions-block--button-container__spacer"
+                            >
+                        <tr>
+                            <td style="min-width: 20px; height: 115px" ></td>
+                        </tr>
+                    </table>
+                    <table
+                            border="0"
+                            cellspacing="0"
+                            cellpadding="0"
+                            class="fl-email--actions-block--button-container--inner"
+                            width="250"
+                            align="left"
+                            style="width: 250px;"
+                            >
+                        <tr>
+                            <td
+                                    align="left"
+                                    valign="top"
+                                    style="-webkit-border-radius: 6px 0px 0px 6px; -moz-border-radius: 6px; border-radius: 6px 0px 0px 6px; padding: 22px 10px 22px 20px;"
+                                    bgcolor="#e81937"
+                                    >
+                                <!-- [developer comments] outlook dosent like padding on a-tags, use padding on td instead-->
+                                <a
+                                        href=""
+                                        target="_blank"
+                                        style="font-size: 16px; font-weight: bold; color: #ffffff; text-decoration: none; -webkit-border-radius: 6px 0px 0px 6px; -moz-border-radius: 6px 0px 0px 6px; border-radius: 6px 0px 0px 6px; border: 1px solid #e81937; display: inline-block;"
+                                        >
+                                    <!--[TODO] img-->
+                                    <img
+                                            src=""
+                                            border="0"
+                                            width="38"
+                                            height="46"
+                                            style="display: block; padding: 0; text-decoration: none; font-size: 16px;"
+                                            />
+                                </a>
+                            </td>
+                            <td
+                                    align="left"
+                                    valign="top"
+                                    style="-webkit-border-radius: 0px 6px 6px 0px; -moz-border-radius: 0px 6px 6px 0px; border-radius: 0px 6px 6px 0px; padding: 22px 10px 22px 0; min-width: 143px"
+                                    bgcolor="#e81937"
+                                    >
+                                <!-- [developer comments] outlook dosent like padding on a-tags, use padding on td instead-->
+                                <a
+                                        href=""
+                                        target="_blank"
+                                        style="font-size: 16px; font-weight: bold; color: #ffffff; text-decoration: none; -webkit-border-radius: 0px 6px 6px 0px; -moz-border-radius: 0px 6px 6px 0px; border-radius: 0px 6px 6px 0px; border: 1px solid #e81937; display: inline-block; font-family: DINWeb-Medium, Helvetica, Arial, sans-serif; line-height: 20px;"
+                                        >
+                                    Refund Policy
+                                </a>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td
+                        valign="top"
+                        class="fl-email--actions-block--button-container"
+                        >
+                    <table
+                            border="0"
+                            cellspacing="0"
+                            cellpadding="0"
+                            class="fl-email--actions-block--button-container--inner"
+                            width="250"
+                            align="left"
+                            style="width: 250px; padding-bottom: 20px;"
+                            >
+                        <tr>
+                            <td
+                                    align="left"
+                                    valign="top"
+                                    style="-webkit-border-radius: 6px 0px 0px 6px; -moz-border-radius: 6px 0px 0px 6px; border-radius: 6px 0px 0px 6px; padding: 24px 10px 22px 20px;"
+                                    bgcolor="#e81937"
+                                    >
+                                <!-- [developer comments] outlook dosent like padding on a-tags, use padding on td instead-->
+                                <a
+                                        href=""
+                                        target="_blank"
+                                        style="font-size: 16px; font-weight: bold; color: #ffffff; text-decoration: none; -webkit-border-radius: 6px 0px 0px 6px; -moz-border-radius: 6px 0px 0px 6px; border-radius: 6px 0px 0px 6px; border: 1px solid #e81937; display: inline-block;"
+                                        >
+                                    <!--[TODO] img-->
+                                    <img
+                                            src=""
+                                            width="68"
+                                            height="44"
+                                            border="0"
+                                            style="display: block; padding: 0; text-decoration: none; font-size: 16px;"
+                                            />
+                                </a>
+                            </td>
+                            <td
+                                    align="left"
+                                    valign="top"
+                                    style="-webkit-border-radius: 0px 6px 6px 0px; -moz-border-radius: 6px; border-radius:  0px 6px 6px 0px; padding: 22px 10px 22px 0; min-width: 110px"
+                                    bgcolor="#e81937"
+                                    >
+                                <!-- [developer comments] outlook dosent like padding on a-tags, use padding on td instead-->
+                                <a
+                                        href=""
+                                        target="_blank"
+                                        style="font-size: 16px; font-weight: bold; color: #ffffff; text-decoration: none; -webkit-border-radius:  0px 6px 6px 0px; -moz-border-radius:  0px 6px 6px 0px; border-radius:  0px 6px 6px 0px; border: 1px solid #e81937; display: inline-block; line-height: 20px; font-family: DINWeb-Medium, Helvetica, Arial, sans-serif;"
+                                        >
+                                    My Account
+                                </a>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <!-- END ACTIONS CONTENT -->
+    </td>
+</tr>
+<!--  END ACTIONS BLOCK -->

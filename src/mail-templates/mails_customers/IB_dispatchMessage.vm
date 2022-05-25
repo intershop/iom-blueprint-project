@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+#parse("./IB_master/variable.vm")
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta name="viewport" content="target-densitydpi=device-dpi; width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		
+		<title>Delivery Confirmation</title>
+		
+		#include("./IB_master/style.vm")
+		
+	</head>
+	
+	#include("./IB_master/body_top.vm")
+	
+	<!-- -------------------------------------------------- -->
+	<!-- START MAIN TEMPLATE CONTENT -->
+	<!-- -------------------------------------------------- -->
+	
+	<!-- parse/include header -->
+	#parse("./IB_en/header.vm")
+	
+	<!-- parse/include progress bar -->	
+	#set($progress_step_1 = 'Order Confirmed')
+	#set($progress_step_2 = 'Payment Confirmed')
+	#set($progress_step_3 = 'Order Shipped')
+	#set($progress_step_active_nb = 3)
+	#parse("./IB_master/progress_bar.vm")
+
+	## package tracking
+	#if(${userMailLO.getTrackingNo()} && ${userMailLO.getTrackingNo()}!='')
+	#if(${userMailLO.getTrackingUrl()} && ${userMailLO.getTrackingUrl()}!='')
+		#set($trackText = '<a href="'+${userMailLO.getTrackingUrl()}+${userMailLO.getTrackingNo()}+'" style="font-size: 14px; color: #e81937; line-height: 20px; font-family: DINWeb-Medium, Helvetica, Arial, sans-serif;text-decoration:none;" target="_blank">'+${userMailLO.getTrackingNo()}+'</a>')
+	#else
+		#set($trackText = ${userMailLO.getTrackingNo()})
+	#end
+	#else
+		#set($trackText = '')
+	#end
+	
+	<!-- ---------------------------------------------- -->
+	<!-- BEGIN INTRO TEXT BLOCK                         -->
+	<!-- You should always have an intro text           -->
+	<!-- ---------------------------------------------- -->
+	<tr>
+		<td
+			align="left"
+			valign="top"
+			style="padding-top: 0; padding-right: 12px; padding-bottom: 6px; padding-left: 12px;"
+			>
+			<!-- BEGIN INTRO TEXT CONTENT -->
+			<table
+				border="0"
+				cellpadding="0"
+				cellspacing="0"
+				width="100%"
+				>
+				<tr>
+					<td
+						align="left"
+						valign="top"
+						style="font-size: 14px; color: #353132; line-height: 20px; font-family: $font_family;"
+						>
+						
+						<!-- parse/include headline -->
+						#set($headline = 'Order Delivery')
+						#parse("./IB_master/headline.vm")
+						
+						<p style="margin-bottom: 24px; line-height: 20px;">
+						
+							Hi $escape.html($userMailLO.getBillingAddressLO().getFirstName()),
+							
+						</p>
+						<p style="margin-bottom: 20px; line-height: 20px;">
+							
+							Your items are on their way to you!<br /><br />
+							#if($trackText && $trackText!='')
+								Your track-and-trace number is ${trackText}.
+							#end
+							
+						</p>
+						
+						##<!-- include/parse one button bar-->
+						##set($btnbar1_button_text = 'Order status')
+						##set($btnbar1_button_width = $min_button_width)
+						##set($btnbar1_button_link = $link_visit_website)
+						##parse('./IB_master/one_button_bar.vm')
+						
+					</td>
+				</tr>
+			</table>
+			
+			<!-- END INTRO TEXT CONTENT -->
+			
+		</td>
+	</tr>
+	
+	<!-- // END INTRO TEXT BLOCK -->
+	
+	#parse("./IB_en/order_overview.vm")
+	
+	#parse("./IB_en/order_article_overview.vm")
+
+	<!-- include/parse two button bar-->
+	#set($btnbar2_button_1_text = 'Visit our shop')
+	#set($btnbar2_button_2_text = 'Return conditions')
+	#set($btnbar2_button_1_width = $min_button_width)
+	#set($btnbar2_button_2_width = $min_button_width)
+	#set($btnbar2_button_1_link = $link_visit_website)
+	#set($btnbar2_button_2_link = $link_return_conditions)
+	#parse('./IB_master/two_button_bar.vm')
+
+	#parse("./IB_en/footer.vm")
+	
+	<!-- -------------------------------------------------- -->
+	<!-- END MAIN TEMPLATE CONTENT                          -->
+	<!-- - you shouldn't need to edit the code below        -->
+	<!-- -------------------------------------------------- -->
+	
+	#include("./IB_master/body_bottom.vm")
+	
+</html>
