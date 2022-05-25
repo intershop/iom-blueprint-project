@@ -1,0 +1,31 @@
+<!-- [developer comments] min-width to prevent gmail app from rescaling the mail and breaking the layout (overwriten with media query)-->
+<!-- [developer comments] apples gmail app ignore the min-width, dont know why-->
+
+<body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0"
+	style="margin: 0; padding: 0; height: 100%; width: 100%; min-width: 600px; font-family: $font_family; color: #353132; background-color: #ffffff;">
+	<center>
+		<table
+			border="0"
+			cellpadding="0"
+			cellspacing="0"
+			width="100%"
+			height="100%"
+			align="center"
+			style="margin: 0; padding: 0; width: 100%; height: 100%; font-family: $font_family; color: #353132;">
+		<tr>
+			<td align="center" valign="top" bgcolor="#ffffff"
+				style="margin: 0; padding: 0; width: 100%; height: 100%;">
+				
+				<!-- [developer comments] special container for outlook and lotus notes-->
+				<!--[if gte mso 9 | IE]>
+				
+				<table border="0" cellpadding="0" cellspacing="0" class="outlook_container">
+		<tr>
+			<td align="center" valign="top">
+				
+				<![endif]-->
+				<!-- BEGIN MAIN TEMPLATE -->
+				
+				<table border="0" cellpadding="0" cellspacing="0" width="600"
+					class="email--template"
+					style="min-width: 320px !important; max-width: 600px !important;">

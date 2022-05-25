@@ -1,0 +1,95 @@
+#**
+	TWO BUTTON BAR
+	
+	... will print two buttons centered within a single row of a table row.
+	
+	Parameters:
+		$btnbar2_button_1_text	- text the button nb 1 should display
+		$btnbar2_button_1_link	- link that should be targeted from button nb 1
+		$btnbar2_button_1_width	- width that should be used to fit the given text in button nb 1
+		$btnbar2_button_2_text	- text the button nb 2 should display
+		$btnbar2_button_2_link	- link that should be targeted from button nb 1
+		$btnbar2_button_2_width	- width that should be used to fit the given text in button nb 1
+		
+	Public required parameters:
+		$font_family	- the font family that should be used for the button's texts
+		
+	How to use:
+		Ensure all parameters are set and 'parse' this template into another template.
+		The style definition 'mail--two-column-layout--item.row-space' of styles.vm will
+		ensure vertical alignment in case of break points.
+	
+*#
+
+<!-- BEGIN TWO BUTTON BAR -->
+
+#set($row_height = 50)
+#set($row_height_px = $row_height + 'px')
+
+<tr>
+	<td>
+		<table cellpadding="0" cellspacing="0" border="0" width="100%"
+			height="$row_height"
+			style="height:$row_height_px"
+			>
+			<tr>
+				<td align="left">
+					<table cellpadding="0" cellspacing="0" border="0" class="email--two-column-layout--item row-space" width="49%" align="left" style="width:49%;">
+						<tr>
+							<td>
+								<!--button--you need to adjust text, width and alignment-->
+								<table cellspacing="0" cellpadding="0" align="center">
+									<tr>
+										<td align="center" width="$btnbar2_button_1_width" height="29" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 3px; color: #ffffff; display: block;"
+											bgcolor="$button_color"
+											width="$btnbar2_button_1_width"
+											>
+											<a target="_blank" style="font-size:14px; font-weight: bold; text-decoration: none; line-height:29px; width:100%; display:inline-block;
+												font-family: $font_family;"
+												href="$btnbar2_button_1_link"
+												>
+												<span style="color: #FFFFFF">
+													
+													$btnbar2_button_1_text
+													
+												</span>
+											</a>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+					<table cellpadding="0" cellspacing="0" border="0" class="email--two-column-layout--item row-space" width="49%" align="left" style="width:49%;">
+						<tr>
+							<td>
+								<!--button--you need to adjust text, width and alignment-->
+								<table cellspacing="0" cellpadding="0" align="center">
+									<tr>
+										<td target="_blank" align="center" width="$btnbar2_button_2_width" height="29" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 3px; color: #ffffff; display: block;"
+											bgcolor="$button_color"
+											width="$btnbar2_button_2_width"
+											>
+											<a href="http://www.EXAMPLE.com/" style="font-size:14px; font-weight: bold; text-decoration: none; line-height:29px; width:100%; display:inline-block; 
+												font-family: $font_family;"
+												href="$btnbar2_button_2_link"
+												>
+												<span style="color: #FFFFFF">
+												
+													$btnbar2_button_2_text
+												
+												</span>
+											</a>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+
+<!-- END TWO BUTTON BAR -->

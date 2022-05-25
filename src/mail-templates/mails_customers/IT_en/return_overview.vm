@@ -1,0 +1,182 @@
+<!-- ---------------------------------------------- -->
+<!-- BEGIN ORDER DETAILS BLOCK                      -->
+<!-- This block is optional                         -->
+<!-- ---------------------------------------------- -->
+<tr>
+	<td valign="top" style="padding: 0 12px">
+		<table>
+		
+			<!-- BEGIN Order Overview Block Headline -->
+			
+			<tr>
+				<td align="left" valign="top">
+					<table border="0" cellpadding="0" cellspacing="0" width="100%">
+						<tr>
+							<td align="left" valign="top" class="email--order-overview--headline" style="padding: 0px;">
+								<h3 style="display: block; font-size: 24px; font-style: normal; font-weight: normal; letter-spacing: normal; margin: 0;font-family:$font_family;">
+								
+									Return Summary
+									
+								</h3>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			
+			<!-- END Order Overview Block Headline -->
+			
+		</table>
+	</td>
+</tr>
+<tr>
+	<td valign="top" style="padding: 10px 12px 34px 12px;">
+		<!--style="padding: 34px 38px 34px 38px;"-->
+		<!-- BEGIN ORDER DETAILS CONTENT -->
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td valign="top" style="font-family:$font_family; " class="email--order-details--item__first-row">
+					<!-- [developer comments] "tablestacking" for better responsive support on mobile devices-->
+					<!-- [developer comments] fixed width, because lotus notes doesnt support "tablestacking" with variable width-->
+					<!-- [developer comments] fixed width, changed in media queries (for mailclients which support media queries)-->
+					<!-- [developer comments] lotus notes 8.5 has higher priority on width, than on style="width". lotus notes 9.0 switch the priority-->
+					<table class="email--three-column-layout--item" cellpadding="0" cellspacing="0" border="0" width="32%" align="left" style="border:solid 1px #dedede; width:32%;">
+						<tr>
+							<th style="background-color:#f7f7f7">
+								<h3 style="display: block; font-size: 16px; font-weight: normal; margin: 5px; font-family:$font_family;">
+									Order Information
+								</h3>
+							</th>
+						</tr>
+						<tr>
+							<td valign="top" style="padding: 5px 0px 5px 5px;">
+								<table cellpadding="0" cellspacing="0" border="0">
+									<tr>
+										<td align="left" style="font-family:$font_family;">
+											<span style="display: block; font-size: 14px; font-weight: bold; margin: 5px font-family:$font_family; ">
+											<strong>Order number:</strong>
+											</span>
+											<p style="padding: 0; margin: 0; font-size: 14px; line-height: 20px;">
+												$orderId
+												<br><br>
+											</p>
+											<span style="display: block; font-size: 14px; font-weight: bold; margin: 5px font-family:$font_family; ">
+											<strong>Return number:</strong>
+											</span>
+											<p style="padding: 0; margin: 0; font-size: 14px; line-height: 20px;">
+												<!--[todo] -->[return id]
+												<br><br>
+											</p>
+											<span style="display: block; font-size: 14px; font-weight: bold; margin: 5px font-family:$font_family; ">
+											<strong>Order date:</strong>
+											</span>
+											<p style="padding: 0; margin: 0; font-size: 14px; line-height: 20px;">
+												$localeUtil.getFormattedDate(${userMailLO.getOrderEntryDate()}, 'en')
+												<br><br>
+											</p>
+											<span style="display: block; font-size: 14px; font-weight: bold; margin: 5px font-family:$font_family; ">
+											<strong>Shipping:</strong>
+											</span>
+											<p style="padding: 0; margin: 0; font-size: 14px; line-height: 20px;">
+												$userMailLO.getPositions().get(0).getProperties().get('AttributeValues').get('ShippingMethodDisplayName')
+												<br><br>
+											</p>
+											<span style="display: block; font-size: 14px; font-weight: bold; margin: 5px font-family:$font_family; ">
+											<strong>Payment:</strong>
+											</span>
+											<p style="padding: 0; margin: 0; font-size: 14px; line-height: 20px;">
+												#if($userMailLO.getPositions().get(0).getProperties().get('AttributeValues').get('PaymentMethodName'))
+                                                   $userMailLO.getPositions().get(0).getProperties().get('AttributeValues').get('PaymentMethodName')
+                                               #else
+                                                   $userMailLO.getPaymentMethodName()
+                                               #end
+											</p>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+					<!--spacing table works on all clients-->
+					<table border="0" align="left" cellspacing="0" cellpadding="0" width="1%" style="width:1%;" class="email--spacing-table">
+						<tr>
+							<td>
+								<span style="color: #ffffff; font-family: $font_family; font-size: 4px; line-height: 1px;">
+								_
+								</span>
+							</td>
+						</tr>
+					</table>
+					<table class="email--three-column-layout--item" cellpadding="0" cellspacing="0" border="0" width="32%" align="left" style="border:solid 1px #dedede; width: 32%;">
+						<tr>
+							<th style="background-color:#f7f7f7">
+								<h3 style="display: block; font-size: 16px; font-weight: normal; margin: 5px; font-family:$font_family;">
+									Billing Address
+								</h3>
+							</th>
+						</tr>
+						<tr>
+							<td valign="top" style="padding: 5px 0px 5px 5px;">
+								<table cellpadding="0" cellspacing="0" border="0">
+									<tr>
+										<td align="left">
+											<p style="padding: 0; margin: 0; font-size: 14px; line-height: 20px; font-family:$font_family;">
+												$customerBillingSalutation <br/>
+												$customerBillingName <br/>
+												#if($customerBillingCompanyName && $customerBillingCompanyName!='')$customerBillingCompanyName<br/>#end
+												#if($customerBillingAddressAddition && $customerBillingAddressAddition!='')$customerBillingAddressAddition<br/>#end
+												$customerBillingStreet <br/>
+												$customerBillingCity $customerBillingPostCode <br/><br/>
+												$userMailLO.getBillingAddressLO().getCountry()
+											</p>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+					<!--spacing table works on all clients-->
+					<table border="0" align="left" cellspacing="0" cellpadding="0" width="1%" style="width:1%;" class="email--spacing-table">
+						<tr>
+							<td>
+								<span style="color: #ffffff; font-family: $font_family; font-size: 4px; line-height: 1px;">
+								_
+								</span>
+							</td>
+						</tr>
+					</table>
+					<table class="email--three-column-layout--item" cellpadding="0" cellspacing="0" border="0" width="32%" align="left" style="border:solid 1px #dedede; width: 32%;">
+						<tr>
+							<th style="background-color:#f7f7f7">
+								<h3 style="display: block; font-size: 16px; font-weight: normal; margin: 5px; font-family:$font_family;">
+									Delivery Address
+								</h3>
+							</th>
+						</tr>
+						<tr>
+							<td valign="top" style="padding: 5px 0px 5px 5px;">
+								<table cellpadding="0" cellspacing="0">
+									<tr>
+										<td align="left">
+											<p style="padding: 0; margin: 0; font-size: 14px; line-height: 20px; font-family:$font_family;">
+												$customerDeliverySalutation <br/>
+												$customerDeliveryName <br/>
+												#if($customerDeliveryCompanyName && $customerDeliveryCompanyName!='')$customerDeliveryCompanyName<br/>#end
+												#if($customerDeliveryAddressAddition && $customerDeliveryAddressAddition!='')$customerDeliveryAddressAddition<br/>#end
+												$customerDeliveryStreet <br/>
+												$customerDeliveryCity, $customerDeliveryPostCode <br/><br/>
+												$userMailLO.getCustomerAddressLO().getCountry()
+											</p>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		<!-- END ORDER DETAILS CONTENT -->
+	</td>
+</tr>
+<!-- // END ORDER DETAILS -->

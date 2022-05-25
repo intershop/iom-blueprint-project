@@ -1,0 +1,73 @@
+<!-- ---------------------------------------------- -->
+<!-- BEGIN SOCIAL MEDIA BLOCK                       -->
+<!-- ---------------------------------------------- -->	
+
+<tr>
+	<td align="center" valign="top">
+		<p><br></p>
+		
+		<!-- BEGIN SOCIAL MEDIA CONTENT -->
+		
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+		
+			<!-- BEGIN Social Media Block Headline -->
+			
+			<tr>
+				<td align="center" valign="top">
+					<table border="0" cellpadding="0" cellspacing="0" width="100%">
+						<tr>
+							<td align="center" valign="top">
+								<h2 style="display: block; font-size: 16px; font-style: normal; font-weight: bold; letter-spacing: normal; margin: 0; font-family: $font_family;">
+								
+									Follow Us
+									
+								</h2>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			
+			<!-- //END Social Media Block Headline -->
+			
+			<!-- BEGIN Social Media Links -->
+			
+			<tr>
+				<td valign="top" style="padding: 18px 0px 16px 0px;" width="100%">
+					<table align="center" border="0" cellpadding="0" cellspacing="0" width="50%">
+						<tr>
+							<td align="center" valign="top" style="padding: 0 15px;" width="25%">
+								<a href="$link_facebook" target="_blank">
+								<img src="$imagePath/email-icon-social-facebook.png" alt="Facebook" width="45" height="45" border="0">
+								</a>
+							</td>
+							<td align="center" valign="top" style="padding: 0 15px;" width="25%">
+								<a href="$link_youtube" target="_blank">
+								<img src="$imagePath/email-icon-social-youtube.png" alt="Youtube" width="45" height="45" border="0">
+								</a>
+							</td>
+							<td align="center" valign="top" style="padding: 0 15px;" width="25%">
+								<a href="$link_instagram" target="_blank">
+								<img src="$imagePath/email-icon-social-instagram.png" alt="Instagram" width="45" height="45" border="0">
+								</a>
+							</td>
+							<td align="center" valign="top" style="padding: 0 15px;" width="25%">
+								<a href="$link_twitter" target="_blank">
+								<img src="$imagePath/email-icon-social-twitter.png" alt="Twitter" width="45" height="45" border="0">
+								</a>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			
+			<!-- // END Social Media Links -->
+			
+		</table>
+		
+		<!-- END SOCIAL MEDIA CONTENT -->
+		
+	</td>
+</tr>
+
+<!-- // END SOCIAL MEDIA BLOCK -->

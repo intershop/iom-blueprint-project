@@ -1,0 +1,33 @@
+<td align="center" valign="top">
+	<table class="elem" border="0" cellpadding="0" cellspacing="0" width="192">
+		<tr>
+			<td class="col" align="center" valign="middle" width="87" style="width: 87px;">
+				<table border="0" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<td height="6" bgcolor="$color_progress_active" width="87" style="line-height: 6px; font-size: 6px;">
+							<!-- [developer comments] dont use style="background-color: #xxxx;" on div outlook ignore it. Use bgcolor on td or table-->
+							<p style="margin: 0">
+								&nbsp;
+							</p>
+						</td>
+					</tr>
+				</table>
+			</td>
+			<td align="center" valign="middle" width="18">
+				<img src="$img_progress_step_active" alt="O" width="18" height="20" border="0" style="display: block; padding: 0; color: $color_progress_inactive; text-decoration: none; font-size: 20px;">
+			</td>
+			<td class="col" align="center" valign="middle" width="87" style="width: 87px;">
+				<table border="0" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<td height="6" bgcolor="$color_progress_inactive" width="87" style="line-height: 6px; font-size: 6px;">
+							<!-- [developer comments] dont use style="background-color: #xxxx;" on div outlook ignore it. Use bgcolor on td or table-->
+							<p style="margin: 0">
+								&nbsp;
+							</p>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</td>

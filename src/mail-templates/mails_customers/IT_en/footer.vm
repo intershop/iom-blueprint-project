@@ -1,0 +1,9 @@
+<!-- ---------------------------------------------- -->
+<!-- BEGIN FOOTER		                            -->
+<!-- ---------------------------------------------- -->
+
+#parse('./contact_bar.vm')
+#parse('./social_media_bar.vm')
+#parse('./copyright.vm')
+
+ <!-- // END FOOTER -->

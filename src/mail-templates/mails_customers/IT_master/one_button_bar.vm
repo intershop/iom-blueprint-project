@@ -1,0 +1,45 @@
+#**
+	ONE BUTTON BAR
+	
+	... will print a single button centered within a single row of a table row.
+	
+	Parameters:
+		$btnbar1_button_text	- text the button should display
+		$btnbar1_button_link	- link that should be targeted
+		$btnbar1_button_width	- width that should be used to fit the given text
+		
+	Public required parameters:
+		$font_family	- the font family that should be used for the button's text
+		
+	How to use:
+		Ensure all parameters are set and 'parse' this template into another template.
+		
+*#
+
+<!-- BEGIN ONE BUTTON BAR -->
+
+#set($row_height = 50)
+#set($row_height_px = $row_height + 'px')
+
+<!--button--you need to adjust text and width-->
+<table align="center" cellspacing="0" cellpadding="0">
+	<tr>
+		<td align="center" width="$btnbar1_button_width" height="29" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 3px; color: #ffffff; display: inline-block;"
+			width="$btnbar1_button_width"
+			bgcolor="$button_color"
+			>
+			<a target="_blank" style="font-size:14px; font-weight: bold; text-decoration: none; line-height:29px; width:100%; display:inline-block;
+				font-family: $font_family;"
+				href="$btnbar1_button_link"
+				>
+				<span style="color: #FFFFFF">
+				
+					$btnbar1_button_text
+				
+				</span>
+			</a>
+		</td>
+	</tr>
+</table>
+
+<!-- END ONE BUTTON BAR -->

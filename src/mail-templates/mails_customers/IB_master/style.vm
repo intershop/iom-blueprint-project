@@ -1,0 +1,327 @@
+<!-- [developer comments] special container for outlook and lotus notes-->
+<!--[if gte mso 9 | IE]>
+<style>
+	.outlook_container {
+	width: 600px !important;
+	max-width: 600px !important;
+	}
+</style>
+<![endif]-->
+<style>
+	
+	/*
+	* Based on mailchimp email blueprints:
+	*     - https://github.com/mailchimp/email-blueprints/
+	*/
+	
+	/* CLIENT SPECIFIC STYLES
+	*********************************************************************/
+	/* Force Outlook to provide a "view in browser" message */
+	#outlook a {
+	  padding: 0;
+	}
+		/* Force Hotmail to display emails at full width */
+	.ReadMsgBody {
+	  width: 100%;
+	}
+
+	.ExternalClass {
+	  width: 100%;
+	}
+	
+	/* Force Hotmail to display normal line spacing */
+	.ExternalClass,
+		.ExternalClass p,
+		.ExternalClass span,
+		.ExternalClass font,
+		.ExternalClass td,
+		.ExternalClass div {
+	  line-height: 100%;
+	}
+	
+	/* Prevent WebKit and Windows mobile changing default text sizes */
+	body,
+		table,
+		td,
+		p,
+		a,
+		li,
+		blockquote {
+	  -webkit-text-size-adjust: 100%;
+	  -ms-text-size-adjust: 100%;
+	}
+	
+	/* Remove spacing between tables in Outlook 2007 and up */
+	table,
+		td {
+	  mso-table-lspace: 0pt;
+	  mso-table-rspace: 0pt;
+	}
+	
+	/* Allow smoother rENDering of resized image in Internet Explorer */
+	img {
+	  -ms-interpolation-mode: bicubic;
+	}
+
+	#** obsolete!?
+	.no_phone a {
+	  color: inherit !important;
+	  text-decoration: none;
+	}
+
+	.phone a {
+		/* color: #ffffff !important; */
+	  color: #008c95 !important;
+	}
+	*#
+
+	p.MsoNormal {
+	  margin: 0;
+	}
+	/* RESET STYLES
+	*********************************************************************/
+	body {
+	  margin: 0;
+	  padding: 0;
+	}
+
+	img {
+	  border: 0;
+	  height: auto;
+	  line-height: 100%;
+	  outline: none;
+	  text-decoration: none;
+	}
+
+	table {
+	  border-collapse: collapse !important;
+		/* fixed layout here
+		long content mostly will not break the horizontal alignments */
+	  table-layout: fixed !important;
+	}
+
+	body {
+	  height: 100% !important;
+	  margin: 0;
+	  padding: 0;
+	  width: 100% !important;
+	  min-width: 100% !important;
+	}
+	
+	/* CLIENT SPECIFIC MOBILE STYLES
+	*********************************************************************/
+	@media only screen and (max-width: 600px) {
+	/* Prevent Webkit platforms from changing default text sizes */
+	  body,
+		table,
+		td,
+		p,
+		a,
+		li,
+		blockquote {
+		-webkit-text-size-adjust: none !important;
+	  }
+		/* Prevent iOS Mail from adding padding to the body */
+	  body {
+		width: 100% !important;
+		min-width: 100% !important;
+	  }
+	}
+	
+	/* CUSTOM MOBILE STYLES
+	*********************************************************************/
+	@media only screen and (max-width: 580px) {
+	  .email--header--certificates {
+		width: 0px !important;
+		height: auto !important;
+		display: none !important;
+	  }
+	}
+
+	@media only screen and (min-width: 481px) {
+	  .email--template {
+		width: 600px !important;
+	  }
+	  
+	  .email--progress-bar--step,
+		.email--progress-bar--step .col {
+		width: 33% !important;
+	  }
+
+	  .email--template--progress-graphic .col {
+		width: 46% !important;
+	  }
+
+	  .email--template--progress-graphic .elem {
+		width: 100% !important;
+	  }
+
+	  .email--three-column-layout--item {
+		width: 32% !important;
+	  }
+
+	  .email--two-column-layout--item {
+		width: 50% !important;
+	  }
+
+	  .email--actions-block--button-container--inner {
+		width: 47% !important;
+	  }
+	}
+
+	@media only screen and (max-width: 600px) {
+	  .email--template,
+		.outlook_container {
+		width: 100% !important;
+	  }
+	}
+
+	@media only screen and (max-width: 480px) {
+	  body {
+		width: 100% !important;
+		min-width: 100% !important;
+	  }
+
+	  #logo {
+		height: auto !important;
+		width: 120px !important;
+	  }
+	 
+	  .email--template--progress-graphic {
+		display: none !important;
+	  }
+	  
+	  #progress_bar > td {
+		padding: 0px 12px 0px 12px !important;
+		text-align: left !important;
+	  }
+
+	  .email--progress-bar--step,
+	  .email--progress-bar--step .col {
+		width: 100% !important;
+		display: block !important;
+		padding-bottom: 4px !important;
+	  }
+	  
+	  .email--progress-bar--step .col > span {
+			font-size: 14px !important;
+			text-align: left;
+	  }
+	  
+	  .email--order-details--block {
+		padding: 36px 20px 34px !important;
+	  }
+
+	  .email--spacing-table {
+		height: 5px !important;
+		width: 5px !important;
+	  }
+
+	  .email--spacing-table td {
+		display: none !important;
+	  }
+
+	  .email--two-column-layout--item {
+		width: 100% !important;
+	  }
+	  
+	  .email--three-column-layout--item {
+		width: 100% !important;
+	  }
+
+	  .email--two-column-layout--item.row-space {
+		margin: 10px;
+	  }
+
+	  .email--product-line--image {
+		padding-right: 16px !important;
+	  }
+
+	  .email--costs-overview {
+		padding-left: 0 !important;
+	  }
+
+	  .email--order-overview {
+		padding: 32px 20px 0 20px !important;
+	  }
+
+	  .email--order-overview--headline {
+		padding: 0 0 12px 0 !important;
+	  }
+
+	  .email--product-line--image,
+		.email--product-line--details {
+		padding-top: 16px !important;
+	  }
+
+	  .email--actions-block--button-container {
+		display: block !important;
+		width: 100% !important;
+		padding-left: 0 !important;
+	  }
+
+	  .email--actions-block--button-container__spacer td {
+		height: 20px !important;
+	  }
+
+	  .email--actions-block--button-container--inner {
+		width: 100% !important;
+		display: block !important;
+	  }
+	}
+
+	/* formally smallest break point was set to 481 */
+	@media only screen and (min-width: 481px) {
+		.email--contact--item,
+		.email--contact--item .col {
+		/* if media queries drop MSO hack of accepted table cell height */
+			line-height: 0px !important;
+			width: 33% !important;
+		}
+	}
+
+	/* formally smallest break point was set to 480 */
+	@media only screen and (max-width: 480px) {
+	  .email--header {
+		padding-top: 20px !important;
+		padding-bottom: 26px !important;
+	  }
+
+	  .email--header--contact {
+		display: block !important;
+		padding: 10px 0px 20px 20px !important;
+		height: auto !important;
+		width: 150px !important;
+	  }
+	  
+	  .email--header--contact td {
+		font-size: 10px !important;
+		line-height: 10px !important;
+	  }
+
+	  .email--contact--item,
+	  .email--contact--item .col {
+		width: 100% !important;
+	  }
+
+	  .email--contact--item {
+		border: none !important;
+		border-top: 1px solid #dedede !important;
+		height: 0px !important;
+	  }
+
+	  .email--contact--item.last-item {
+		border-bottom: 1px solid #dedede !important;
+	  }
+
+	  .email--contact--item img {
+		width: 20px !important;
+		height: 20px !important;
+	  }
+
+	  .email--contact--item td {
+		line-height: 0px !important;
+		padding: 5px 0px !important;
+	  }
+	}
+</style>
