@@ -28,6 +28,7 @@ FOREACH shopref in array shops_all LOOP
 	END IF;
 END LOOP;
 
+
 -- Shop Return Reasons
 FOREACH shopref IN ARRAY shops_all
 LOOP
@@ -53,35 +54,21 @@ LOOP
 END LOOP;
 
 
---Return Address
-
--- lazy upsert - delete everything
-DELETE FROM oms."SupplierReturnAddressDO";
-
-FOREACH shopref IN ARRAY shops_all
+-- Supplier Return Types
+FOREACH supplierref IN ARRAY suppliers_all
 LOOP
-	FOREACH supplierref IN ARRAY suppliers_all
-	LOOP
-		IF EXISTS (SELECT id FROM "Shop2SupplierDO" WHERE "shopRef" = shopref and "supplierRef" = supplierref) THEN
-			WITH RES AS (SELECT 'RCL' as reason_name UNION ALL
-			             SELECT 'INV' as reason_name UNION ALL
-			             SELECT 'RET' as reason_name UNION ALL
-			             SELECT 'DEF' as reason_name
-			            )
-			INSERT INTO "SupplierReturnAddressDO"(
-						"id", "addressLine1", "addressLine2", "addressLine3", "addressLine4", "addressLine5", "supplier2ReturnTypeDefRef", "shop2SupplierRef")
-
-				SELECT nextval('"SupplierReturnAddressDO_id_seq"'), 'inTRONICS Warehouse c/o Intershop Communications, Inc.' , '25 Lusk Street, Suite 210', 'San Francisco, CA 94107, United States', 'Tel.: +1 415 844-1500', 'Fax: +1 415 844-3800',
-								(select id from "Supplier2ReturnTypeDefDO" where "supplierRef" = supplierref and "supplierReturnTypeName" = reason_name),
-								(select id from "Shop2SupplierDO"          where "supplierRef" = supplierref and "shopRef" = shopref)
-								from RES ON CONFLICT DO NOTHING
-				;
-		END IF;
-	END LOOP;
+	INSERT INTO "Supplier2ReturnTypeDefDO"(id, "returnTypeDefRef", "supplierReturnTypeName", "supplierRef", "rmaNo", preselected)
+		SELECT nextval('"Supplier2ReturnTypeDefDO_id_seq"'), 1, 'CAN', supplierref, '', false UNION ALL
+		SELECT nextval('"Supplier2ReturnTypeDefDO_id_seq"'), 2, 'RCL', supplierref, '', false UNION ALL
+		SELECT nextval('"Supplier2ReturnTypeDefDO_id_seq"'), 3, 'INV', supplierref, '', false UNION ALL
+		SELECT nextval('"Supplier2ReturnTypeDefDO_id_seq"'), 4, 'RET', supplierref, '', true UNION ALL
+		SELECT nextval('"Supplier2ReturnTypeDefDO_id_seq"'), 5, 'DEF', supplierref, '', false
+		ON CONFLICT DO NOTHING
+		;
 END LOOP;
 
 
--- Supplier Return Reason
+-- Supplier Return Reasons
 FOREACH supplierref IN ARRAY suppliers_all
 LOOP
 	INSERT INTO "Supplier2ReturnReasonDefDO" (id, "returnReasonDefRef", "supplierReturnReasonName", "supplierRef", "preselected")
@@ -106,16 +93,30 @@ LOOP
 		;
 END LOOP;
 
-FOREACH supplierref IN ARRAY array[suppliers_all]
+
+-- Supplier Return Addresses (based on entries in Shop2SupplierDO and Supplier2ReturnTypeDefDO)
+DELETE FROM oms."SupplierReturnAddressDO";
+
+FOREACH shopref IN ARRAY shops_all
 LOOP
-	INSERT INTO "Supplier2ReturnTypeDefDO"(id, "returnTypeDefRef", "supplierReturnTypeName", "supplierRef", "rmaNo", preselected)
-		SELECT nextval('"Supplier2ReturnTypeDefDO_id_seq"'), 1, 'CAN', supplierref, '', false UNION ALL
-		SELECT nextval('"Supplier2ReturnTypeDefDO_id_seq"'), 2, 'RCL', supplierref, '', false UNION ALL
-		SELECT nextval('"Supplier2ReturnTypeDefDO_id_seq"'), 3, 'INV', supplierref, '', false UNION ALL
-		SELECT nextval('"Supplier2ReturnTypeDefDO_id_seq"'), 4, 'RET', supplierref, '', true UNION ALL
-		SELECT nextval('"Supplier2ReturnTypeDefDO_id_seq"'), 5, 'DEF', supplierref, '', false
-		ON CONFLICT DO NOTHING
-		;
+	FOREACH supplierref IN ARRAY suppliers_all
+	LOOP
+		IF EXISTS (SELECT id FROM "Shop2SupplierDO" WHERE "shopRef" = shopref and "supplierRef" = supplierref) THEN
+			WITH RES AS (SELECT 'RCL' as reason_name UNION ALL
+			             SELECT 'INV' as reason_name UNION ALL
+			             SELECT 'RET' as reason_name UNION ALL
+			             SELECT 'DEF' as reason_name
+			            )
+			INSERT INTO "SupplierReturnAddressDO"(
+						"id", "addressLine1", "addressLine2", "addressLine3", "addressLine4", "addressLine5", "supplier2ReturnTypeDefRef", "shop2SupplierRef")
+
+				SELECT nextval('"SupplierReturnAddressDO_id_seq"'), 'inTRONICS Warehouse c/o Intershop Communications, Inc.' , '25 Lusk Street, Suite 210', 'San Francisco, CA 94107, United States', 'Tel.: +1 415 844-1500', 'Fax: +1 415 844-3800',
+								(select id from "Supplier2ReturnTypeDefDO" where "supplierRef" = supplierref and "supplierReturnTypeName" = reason_name),
+								(select id from "Shop2SupplierDO"          where "supplierRef" = supplierref and "shopRef" = shopref)
+								from RES ON CONFLICT DO NOTHING
+				;
+		END IF;
+	END LOOP;
 END LOOP;
 
 

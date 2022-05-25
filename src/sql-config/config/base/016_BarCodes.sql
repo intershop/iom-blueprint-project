@@ -13,9 +13,8 @@ carrierRef int8;
 -- end variables block with 
 BEGIN
 
---FIXME
---carrierRef = carriers_all[0]; -- there's currently just one
-carrierRef = 11; --carrier_dhl;
+
+carrierRef = carriers_all[1]; -- there's currently just one
 
 IF (select count(*) from "BarCodeGenDO") < 1 THEN
 
