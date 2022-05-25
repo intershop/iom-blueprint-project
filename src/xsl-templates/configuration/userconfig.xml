@@ -43,8 +43,9 @@ the location of this file.
              This filter is not recommended as it doubles the data size -->
         <!-- <value>ascii-hex</value> -->
       </filterList>
-
+<!--
       <fonts>
+ -->     
         <!-- embedded fonts -->
         <!--
         This information must exactly match the font specified
@@ -68,7 +69,7 @@ the location of this file.
         (normal = 400, bold = 700)
         -->
 
-        <!--
+       <!--
         <font metrics-url="arial.xml" kerning="yes" embed-url="arial.ttf">
           <font-triplet name="Arial" style="normal" weight="normal"/>
           <font-triplet name="ArialMT" style="normal" weight="normal"/>
@@ -77,24 +78,22 @@ the location of this file.
           <font-triplet name="Arial" style="normal" weight="bold"/>
           <font-triplet name="ArialMT" style="normal" weight="bold"/>
         </font>
-        -->
-		<!-- Example 
-	<font metrics-url="fonts/PFCentroSansPro-Black.xml" kerning="yes" embed-url="fonts/PFCentroSansPro-Black.ttf">
+		 
+		    <font metrics-url="$OMS_HOME/xsl-templates/configuration/fonts/PFCentroSansPro-Black.xml" kerning="yes" embed-url="$OMS_HOME/xsl-templates/configuration/fonts/PFCentroSansPro-Black.ttf">
           <font-triplet name="PFCentroSansProBlack" style="normal" weight="normal"/>
         </font>
-		<font metrics-url="fonts/PFCentroSansPro-Bold.xml" kerning="yes" embed-url="fonts/PFCentroSansPro-Bold.ttf">
+		    <font metrics-url="$OMS_HOME/xsl-templates/configuration/fonts/PFCentroSansPro-Bold.xml" kerning="yes" embed-url="$OMS_HOME/xsl-templates/configuration/fonts/PFCentroSansPro-Bold.ttf">
           <font-triplet name="PFCentroSansProBold" style="normal" weight="normal"/>
         </font>
-        <font metrics-url="fonts/PFCentroSansPro-Light.xml" kerning="yes" embed-url="fonts/PFCentroSansPro-Light.ttf">
+        <font metrics-url="$OMS_HOME/xsl-templates/configuration/fonts/PFCentroSansPro-Light.xml" kerning="yes" embed-url="$OMS_HOME/xsl-templates/configuration/fonts/PFCentroSansPro-Light.ttf">
           <font-triplet name="PFCentroSansProLight" style="normal" weight="normal"/>
-        </font>        
+        </font>
         -->
-        
 		<!-- automatically detect operating system installed fonts -->
         <!-- auto-detect/-->
-        
+<!--        
       </fonts>
-
+-->
       <!-- This option lets you specify additional options on an XML handler -->
       <!--xml-handler namespace="http://www.w3.org/2000/svg">
         <stroke-text>false</stroke-text>
