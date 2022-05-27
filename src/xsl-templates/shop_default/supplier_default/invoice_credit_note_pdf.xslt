@@ -360,7 +360,7 @@
 									</fo:block>
 									<xsl:if test="$ISAGGREGATED = 'true'" >
 										<fo:block padding-top="5mm" xsl:use-attribute-sets="TinyText">
-											<xsl:text>Concerning Orders: </xsl:text>
+											<xsl:value-of select="cstm:localizeText('text_concerning_orders')"/>
 											<xsl:for-each select="/ns:Documents/ns:OrderDocuments/ns:DocumentsList/ns:InvoiceCreditNote/ns:Orders/@shopOrderNo">
 												<xsl:if test="position() > 1 ">, </xsl:if>
 												<xsl:value-of select="."/>
@@ -372,11 +372,12 @@
 										<xsl:for-each select="distinct-values(/ns:Documents/ns:OrderDocuments/ns:DocumentsList/ns:InvoiceCreditNote/ns:Orders/ns:InvoicePos/@referenceInvoiceNo)">
 											<xsl:if test="position() = 1 ">
 												<fo:block padding-top="5mm" xsl:use-attribute-sets="TinyText">
-													<xsl:text>Credit for: </xsl:text>
+													<xsl:value-of select="cstm:localizeText('text_credit_for')"/>
 												</fo:block>
 											</xsl:if>
 											<fo:block xsl:use-attribute-sets="TinyText">
-												<xsl:value-of select="concat('Invoice number ', .)" />
+												<xsl:value-of select="cstm:localizeText('text_invoiceNumber')"/>
+												<xsl:value-of select="concat(' ', .)" />
 											</fo:block>
 										</xsl:for-each>
 									</xsl:if>
@@ -404,7 +405,8 @@
 								</fo:table-cell>
 								<fo:table-cell>								
 									<fo:block xsl:use-attribute-sets="SmallText" text-align="right">
-										Price<xsl:choose>
+										<xsl:value-of select="cstm:localizeText('text_unitPrice')"/>
+										<xsl:choose>
 											<xsl:when test="$ISB2B = 'true'" > (<xsl:value-of select="cstm:localizeText('text_net')"/>)</xsl:when>
 											<xsl:otherwise> (<xsl:value-of select="cstm:localizeText('text_gross')"/>)</xsl:otherwise>
 										</xsl:choose>
@@ -580,19 +582,19 @@
 												<fo:inline>
 													<xsl:choose>
 														<xsl:when test="@type = 'tb.chargetype.deliverycharge'">
-															Delivery charge
+															<xsl:value-of select="cstm:localizeText('text_charge_delivery')"/>
 														</xsl:when>
 														<xsl:when test="@type = 'tb.chargetype.handlingcharge'">
-															Handling charge
+															<xsl:value-of select="cstm:localizeText('text_charge_handling')"/>
 														</xsl:when>
 														<xsl:when test="@type = 'tb.chargetype.paymentcharge'">
-															Payment charge
+															<xsl:value-of select="cstm:localizeText('text_charge_payment')"/>
 														</xsl:when>
 														<xsl:when test="@type = 'tb.chargetype.codcharge'">
-															COD charge
+															<xsl:value-of select="cstm:localizeText('text_charge_cod')"/>
 														</xsl:when>
 														<xsl:otherwise>
-															Charge
+															<xsl:value-of select="cstm:localizeText('text_charge_default')"/>
 														</xsl:otherwise>
 													</xsl:choose>
 												</fo:inline>
@@ -769,19 +771,19 @@
 																	<fo:inline>
 																		<xsl:choose>
 																			<xsl:when test="@type = 'tb.chargetype.deliverycharge'">
-																				Delivery charge
+																				<xsl:value-of select="cstm:localizeText('text_charge_delivery')"/>
 																			</xsl:when>
 																			<xsl:when test="@type = 'tb.chargetype.handlingcharge'">
-																				Handling charge
+																				<xsl:value-of select="cstm:localizeText('text_charge_handling')"/>
 																			</xsl:when>
 																			<xsl:when test="@type = 'tb.chargetype.paymentcharge'">
-																				Payment charge
+																				<xsl:value-of select="cstm:localizeText('text_charge_payment')"/>
 																			</xsl:when>
 																			<xsl:when test="@type = 'tb.chargetype.codcharge'">
-																				COD charge
+																				<xsl:value-of select="cstm:localizeText('text_charge_cod')"/>
 																			</xsl:when>
 																			<xsl:otherwise>
-																				Charge
+																				<xsl:value-of select="cstm:localizeText('text_charge_default')"/>
 																			</xsl:otherwise>
 																		</xsl:choose>
 																		incl.
