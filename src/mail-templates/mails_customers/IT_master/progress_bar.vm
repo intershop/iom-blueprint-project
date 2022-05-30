@@ -1,0 +1,163 @@
+#**
+	PROGRESS BAR
+	
+	... will print a three step horizontal progress bar and marks the current step
+	
+	Parameters:
+		$progress_step_1			- name of the first step
+		$progress_step_2			- name of the second step
+		$progress_step_3			- name of the third step
+		$progress_step_active_nb	- number of the current step; can be 1, 2 or 3
+		
+	Public required parameters:
+		$font_family	- the font family that should be used for the button's text
+
+	Note that texts will get a leading number of it's step
+	
+	How to use:
+		Ensure all parameters are set and 'parse' this template into another template.
+		The style definition of classes in styles.vm will ensure vertical alignment in case of break points.
+		
+*#
+
+<!-- ---------------------------------------------- -->
+<!-- BEGIN ORDER PROGRESS BAR BLOCK                 -->
+<!-- This block is optional                         -->
+<!-- ---------------------------------------------- -->
+
+## color of the text of a progress step
+#set($color_active = '#353132')
+#set($color_inactive = '#d7d6d6')
+
+## color of the bar between progress steps
+#set($color_progress_active = $major_color)
+#set($color_progress_inactive = '#cecfd1')
+
+## image locations of a progress step (bullet point)
+#set($img_progress_step_active = $imagePath + '/it-email-icon-progress-step-active.png')
+#set($img_progress_step_inactive = $imagePath + '/email-icon-progress-step.png')
+
+
+<tr id="progress_bar">
+	<td align="center" valign="top"
+		style="padding: 0px 12px 20px 12px;">
+		
+		<!-- BEGIN ORDER PROGRESS BAR CONTENT-->
+		
+		<table border="0" cellpadding="0" cellspacing="0">
+		
+			<!-- BEGIN Order Progress Bar Steps List -->
+			
+			<tr>
+				<td valign="top">
+				
+					<!-- [developer comments] "tablestacking" for better responsive support on mobile devices-->
+					<!-- [developer comments] fixed width, because lotus notes doesnt support "tablestacking" with variable width-->
+					<!-- [developer comments] fixed width, changed in media queries (for mailclients which support media queries)-->
+					<!-- [developer comments] lotus notes 8.5 has higher priority on width, than on style="width". lotus notes 9.0 switch the priority-->
+					
+					<table class="email--progress-bar--step" width="190" align="left" style="width: 190px;">
+						<tr>
+							<td class="col" 
+								cellpadding="0" cellspacing="0" border="0" 
+								align="center">
+								<span style="font-size: 16px; font-weight: bold; font-family: $font_family;
+									color: 
+									#if($progress_step_active_nb >= 1)
+										$color_active
+									#else
+										$color_inactive
+									#end
+									;">
+									
+									1. $progress_step_1
+								
+								</span>
+							</td>
+						</tr>
+					</table>
+					
+					<table class="email--progress-bar--step" width="190" align="left" style="width: 190px;">
+						<tr>
+							<td class="col"
+								cellpadding="0"	cellspacing="0" border="0"
+								align="center">
+								<span style="font-size: 16px; font-weight: bold; font-family: $font_family;
+									color: 
+									#if($progress_step_active_nb >= 2)
+										$color_active
+									#else
+										$color_inactive
+									#end
+									;">
+									
+									2. $progress_step_2
+								
+								</span>
+							</td>
+						</tr>
+					</table>
+					
+					<table class="email--progress-bar--step" width="190" align="left" style="width: 190px;">
+						<tr>
+							<td class="col"
+								cellpadding="0" cellspacing="0" border="0"
+								align="center">
+								<span style="font-size: 16px; font-weight: bold; font-family: $font_family;
+									color: 
+									#if($progress_step_active_nb >= 3)
+										$color_active
+									#else
+										$color_inactive
+									#end
+									;">
+									
+									3. $progress_step_3
+								
+								</span>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			
+			<!-- // END Order Progress Bar Steps List -->
+			
+			<tr>
+				<td align="center" valign="top" colspan="3" class="email--template--progress-graphic">
+					<table border="0" cellpadding="0" cellspacing="0">
+						<tr>
+						
+							#if($progress_step_active_nb == 1)
+							
+								#parse("./progress_bar_active_to_inactive.vm")
+								#parse("./progress_bar_inactive.vm")
+								#parse("./progress_bar_inactive.vm")
+								
+							#elseif($progress_step_active_nb == 2)
+							
+								#parse("./progress_bar_active.vm")
+								#parse("./progress_bar_active_to_inactive.vm")
+								#parse("./progress_bar_inactive.vm")
+								
+							#elseif($progress_step_active_nb == 3)
+							
+								#parse("./progress_bar_active.vm")
+								#parse("./progress_bar_active.vm")
+								#parse("./progress_bar_active_to_inactive.vm")
+								
+							#else
+							
+							#end
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		
+		<!-- // END ORDER PROGRESS BAR CONTENT -->
+		
+	</td>
+</tr>
+
+<!-- // END ORDER PROGRESS BAR BLOCK -->

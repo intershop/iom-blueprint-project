@@ -1,0 +1,113 @@
+## set requested language
+## ----------------------
+#set($language = $userMailLO.getLanguage())
+
+#set($imagePath = "https://intershop.github.io/iom-blueprint-project/src/mail-templates/mails_customers/mailImages")
+
+## set order numbers
+## -----------------
+#if($userMailLO.getShopCustomerOrderId() && $userMailLO.getShopCustomerOrderId().length() > 0)
+	#set($orderId = $userMailLO.getShopCustomerOrderId()) #else 
+	#set($orderId = $userMailLO.getShopOrderId())
+#end
+#if($userMailLO.getShopCustomerNo()) #set($customerNo = $userMailLO.getShopCustomerNo()) #end
+
+
+
+## set billing and delivery address
+## --------------------------------
+#if( $userMailLO.getBillingAddressLO().getSalutation() )
+	#set($customerBillingSalutation = $escape.html($userMailLO.getBillingAddressLO().getSalutation() ) )
+#else
+	#set($customerBillingSalutation = '')
+#end
+#set($customerBillingName = $escape.html("${userMailLO.getBillingAddressLO().getFirstName()} $userMailLO.getBillingAddressLO().getLastName()"))
+#set($customerBillingCompanyName = $escape.html($userMailLO.getBillingAddressLO().getCompanyName()))
+#if( $userMailLO.getBillingAddressLO().getAddressAddition() )
+	#set($customerBillingAddressAddition = $escape.html( $userMailLO.getBillingAddressLO().getAddressAddition().replace('null', '') ) )	
+#else
+	#set($customerBillingAddressAddition = $escape.html( $userMailLO.getBillingAddressLO().getAddressAddition() ) )
+#end
+#if($userMailLO.getBillingAddressLO().getStreet())
+	#set($customerBillingStreet = $escape.html($userMailLO.getBillingAddressLO().getStreet()))
+#else
+	#set($customerBillingStreet = '')
+#end
+#set($customerBillingCity = $escape.html($userMailLO.getBillingAddressLO().getCity()))
+#set($customerBillingPostCode = $escape.html($userMailLO.getBillingAddressLO().getPostCode()))
+#set($customerBillingDistrict = $escape.html($userMailLO.getBillingAddressLO().getDistrict()))
+#set($customerBillingCountryCode = $escape.html($userMailLO.getBillingAddressLO().getCountryCode()))
+#if( $userMailLO.getCustomerAddressLO().getSalutation() )
+	#set($customerDeliverySalutation = $escape.html($userMailLO.getCustomerAddressLO().getSalutation() ) )
+#else
+	#set($customerDeliverySalutation = '')
+#end
+#set($customerDeliveryName = $escape.html("${userMailLO.getCustomerAddressLO().getFirstName()} $userMailLO.getCustomerAddressLO().getLastName()"))
+#set($customerDeliveryCompanyName = $escape.html($userMailLO.getCustomerAddressLO().getCompanyName()))
+#if( $userMailLO.getBillingAddressLO().getAddressAddition() )
+	#set($customerDeliveryAddressAddition = $escape.html( $userMailLO.getCustomerAddressLO().getAddressAddition().replace('null', '') ) )	
+#else
+	#set($customerDeliveryAddressAddition = $escape.html($userMailLO.getCustomerAddressLO().getAddressAddition() ) )
+#end
+#if($userMailLO.getCustomerAddressLO().getStreet())
+	#set($customerDeliveryStreet = $escape.html($userMailLO.getCustomerAddressLO().getStreet()))
+#else
+	#set($customerDeliveryStreet = '')
+#end
+#set($customerDeliveryCity = $escape.html($userMailLO.getCustomerAddressLO().getCity()))
+#set($customerDeliveryPostCode = $escape.html($userMailLO.getCustomerAddressLO().getPostCode()))
+#set($customerDeliveryDistrict = $escape.html($userMailLO.getCustomerAddressLO().getDistrict()))
+#set($customerDeliveryCountryCode = $escape.html($userMailLO.getCustomerAddressLO().getCountryCode()))
+
+
+
+## ---
+#if($userMailLO.getPspReference())
+	#set($pspReference = $userMailLO.getPspReference())
+	#set($prepayRefNo = $pspReference.substring(0, 3).concat('-').concat($pspReference.substring(3, 7)).concat('-').concat($pspReference.substring(7, 11)).concat('-').concat($pspReference.substring(11, $pspReference.length())))
+#end
+
+
+## set phone number/ mail address
+## ----------------------------------------
+#set($phone = '0800-123456789')
+#set($mailTo = 'info@intershop.de')
+
+
+
+## master font family - change font family here for all templates
+## --------------------------------------------------------------
+#set($font_family = 'FF Din Bold, Arial')
+
+## master color
+##-------------
+#set($major_color = '#00abea')
+
+## master button properties
+## ------------------------
+## width should be overwritten if text is larger
+#set($min_button_width = 180)
+#set($button_color = $major_color)
+#set($link_color = $major_color)
+
+
+
+## master links used within buttons for example
+## --------------------------------------------
+#set($link_dummy = 'http://www.example.com')
+
+#set($link_visit_website = $escape.html($link_dummy))
+#set($link_return_conditions = $escape.html($link_dummy))
+#set($link_refund_policy = $escape.html($link_dummy))
+#set($link_my_account = $escape.html($link_dummy))
+
+#set($link_contact_faq = $escape.html($link_dummy))
+#set($link_contact_order_status = $escape.html($link_dummy))
+#set($link_contact_newsletter = $escape.html($link_dummy))
+
+#set($link_terms_and_conditions = $link_dummy)
+
+#set($link_facebook = $link_dummy)
+#set($link_youtube = $link_dummy)
+#set($link_instagram = $link_dummy)
+#set($link_twitter = $link_dummy)

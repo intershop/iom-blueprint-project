@@ -52,14 +52,6 @@ FOREACH shopref IN ARRAY shops_all LOOP
 END LOOP;
 
 
----- Shop2DeliveryFormDefDO for all shops
----- per shop (optional)
-FOREACH shopref IN ARRAY shops_all LOOP
-	INSERT INTO "Shop2DeliveryFormDefDO"("id", "deliveryFormDefRef", "shopDeliveryFormName", "shopRef")
-   SELECT nextval('"Shop2DeliveryFormDefDO_id_seq"'), 10, 'STD_GROUND', shopref
-	ON CONFLICT ("deliveryFormDefRef", "shopRef") DO UPDATE SET "shopDeliveryFormName" = EXCLUDED."shopDeliveryFormName";
-END LOOP;
-
 -- add missing shop entries in "PartnerReferrerDO"
  INSERT INTO oms."PartnerReferrerDO" ("id", "version", "shopRef")
  SELECT nextval('oms."PartnerReferrerDO_id_seq"'), 0, shop_ref

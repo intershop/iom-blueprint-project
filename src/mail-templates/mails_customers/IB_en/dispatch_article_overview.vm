@@ -1,0 +1,400 @@
+<!-- ---------------------------------------------- -->
+<!-- BEGIN ORDER OVERVIEW BLOCK                     -->
+<!-- ---------------------------------------------- -->
+
+<tr>
+	<td
+		align="left"
+		valign="top"
+		class="email--order-overview"
+		style="padding: 0px 12px 0 12px;"
+		>
+		
+		<!-- BEGIN ORDER OVERVIEW CONTENT -->
+		
+		<table
+			border="0"
+			cellpadding="0"
+			cellspacing="0"
+			width="100%"
+			>
+			
+			<!-- BEGIN ORDER OVERVIEW HEADER -->
+			
+			<tr>
+				<td align="left" valign="top">
+					<table border="0" cellpadding="0" cellspacing="0" width="100%">
+						<tbody>
+							<tr>
+								<td align="left" valign="top" class="email--order-overview--headline" style="padding: 0px;">
+									<h3 style="display: block; font-size: 24px; font-weight: normal; margin: 0; font-family:$font_family;">
+										Article Overview
+									</h3>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+			
+			<!-- END ORDER OVERVIEW HEADER -->
+			
+			<!-- BEGIN Order Overview Product Table Rows -->
+			
+			<tr>
+				<td
+					align="left"
+					valign="top"
+					width="100%"
+					>
+					<table
+						border="0"
+						cellpadding="0"
+						cellspacing="0"
+						width="100%"
+						>
+						<!-- BEGIN Product Item Line -->
+						
+						#foreach($line in $userMailLO.getPositions())
+						
+							<tr>
+							
+								<!-- BEGIN Product Item Image -->
+								
+								<td
+									align="left"
+									valign="top"
+									class="email--product-line--image"
+									style="border-bottom: 1px solid #dedede; width: 32%; padding: 0 20px 0 0;"
+									>
+									<img
+										#if( $line.getDispatchPosProperties() && $line.getDispatchPosProperties().get('product') && $line.getDispatchPosProperties().get('product').get('ThumbnailImgUrl') )
+											src="$line.getDispatchPosProperties().get('product').get('ThumbnailImgUrl')"
+										#else
+											src="#"
+										#end
+										alt="$escape.html($line.getShopArticleName())"
+										src="#"
+										alt="$escape.html($line.getShopArticleName())"
+										width="133"
+										height="133"
+										border="0"
+										style="display: block; padding: 0; text-decoration: none; font-size: 16px; width: 100%; max-width: 133px;"
+										/>
+								</td>
+								
+								<!-- // END Product Item Image -->
+								
+								<!-- BEGIN Product Item Description -->
+								
+								<td
+									align="left"
+									valign="top"
+									class="email--product-line--details"
+									style="border-bottom: 1px solid #dedede; width: 68%; padding: 20px 0 20px 0;"
+									>
+									<table
+										border="0"
+										cellpadding="0"
+										cellspacing="0"
+										width="100%"
+										>
+										
+										<!-- BEGIN Product Item Properties -->
+										
+										<tr>
+											<td
+												align="left"
+												valign="top"
+												>
+												<p style="padding: 0; margin: 0; font-size: 14px; font-weight: bold; line-height: 20px; font-family:$font_family;">
+												
+													$escape.html($line.getShopArticleName())
+													
+												</p>
+												<p style="padding: 0; margin: 0; font-size: 14px; line-height: 20px; font-family:$font_family;">
+												
+													Quantity: $line.getQuantity() <br/>
+													Size: ##$line.getDispatchPosProperties().get('Product').get('ProductSize') <br/>
+													SKU: $escape.html($line.getShopArticleNo()) <br/>
+													Color: ##$line.getDispatchPosProperties().get('AttributeValues').get('Attr_Color') <br/>
+													
+												</p>
+											</td>
+										</tr>
+										
+										<!-- // END Product Item Properties -->
+										
+										<!-- BEGIN Product Item Price -->
+										
+										<tr>
+											<td
+												align="right"
+												valign="top"
+												style="padding: 10px 0 0 0;"
+												>
+												<p style="margin: 0; padding: 0; font-size: 16px; font-weight: normal; font-family:$font_family;">
+												
+													#if($line.getPositionGross()) $localeUtil.getFormattedNumber($line.getPositionGross(),'en')#end $escape.html($userMailLO.getOrderCurrencyCode())
+													
+												</p>
+											</td>
+										</tr>
+										
+										<!-- // END Product Item Price -->
+										
+									</table>
+								</td>
+								
+								<!-- // END Product Item Description -->
+								
+							</tr>
+							
+						#end
+						
+					</table>
+				</td>
+			</tr>
+			
+			<!-- END Order Overview Product Table Rows -->
+			
+			<!-- BEGIN Order Overview Product Table Summary -->
+			
+			<tr>
+				<td
+					align="left"
+					valign="top"
+					class="email--costs-overview"
+					style="padding: 0 0 0 90px;"
+					>
+					<table
+						border="0"
+						cellpadding="0"
+						cellspacing="0"
+						width="100%"
+						>
+						<tr>
+							<td
+								align="left"
+								valign="top"
+								style="padding: 22px 0 20px 0;"
+								>
+								<table
+									border="0"
+									cellpadding="0"
+									cellspacing="0"
+									width="100%"
+									>
+									
+									<!-- BEGIN Cart Costs Summary Line -->
+									
+									<!-- SubTotal -->
+									#if($userMailLO.getPositionTotalGross())
+									
+										<tr>
+											<td align="left" valign="top" style="padding-bottom: 5px;">
+												&nbsp;
+											</td>
+											<td
+												align="left"
+												valign="top"
+												style="padding-bottom: 5px;"
+												>
+												<p style="padding: 0; margin: 0; font-size: 16px; font-weight: bold; font-family: $font_family;">
+												
+													Subtotal:
+													
+												</p>
+											</td>
+											<td
+												align="right"
+												valign="top"
+												style="padding-bottom: 5px;"
+												>
+												<p style="padding: 0; margin: 0; font-size: 16px; font-weight: bold; font-family: $font_family;">
+												
+													$localeUtil.getFormattedNumber($userMailLO.getPositionTotalGross(), 'en') $escape.html($userMailLO.getOrderCurrencyCode())
+													
+												</p>
+											</td>
+										</tr>
+									
+									#end
+									
+									<!-- Shipping -->
+									#if($userMailLO.getChargeByChargeTypeName('DELIVERYCHARGE'))
+									
+										<tr>
+											<!--
+												<td
+													align="left"
+													valign="middle"
+													style="width: 24px; padding: 0 24px 5px 0;"
+													>
+													<img
+														src="#"
+														width="24"
+														height="28"
+														border="0"
+														style="display: block; padding: 0; text-decoration: none; font-size: 10px;"
+														/>
+												</td>
+												-->
+											<!-- replaced by -->
+											<td align="left" valign="top" style="padding-bottom: 5px;">
+												&nbsp;
+											</td>
+											<td
+												align="left"
+												valign="middle"
+												style="padding-bottom: 5px;"
+												>
+												<p style="padding: 0; margin: 0; font-size: 16px; font-family: $font_family;">
+												
+													Shipping
+													
+												</p>
+											</td>
+											<td
+												align="right"
+												valign="middle"
+												style="padding-bottom: 5px;"
+												>
+												<p style="padding: 0; margin: 0; font-size: 16px; font-family: $font_family;">
+												
+													$localeUtil.getFormattedNumber($userMailLO.getChargeByChargeTypeName('DELIVERYCHARGE').getGross(), 'en') $escape.html($userMailLO.getOrderCurrencyCode())
+													
+												</p>
+											</td>
+										</tr>
+									
+									#end
+									
+									<!-- Discounts -->
+									###if($userMailLO.getDiscount() && $userMailLO.getDiscount() > 0)
+									##	
+									##	<tr>
+									##		<td
+									##			align="left"
+									##			valign="middle"
+									##			style="width: 24px; padding: 0 24px 5px 0;"
+									##			>
+									##		</td>
+									##		<td
+									##			align="left"
+									##			valign="middle"
+									##			style="padding-bottom: 5px;"
+									##			>
+									##			<p style="padding: 0; margin: 0; font-size: 14px; font-family: $font_family;">
+									##			
+									##				Discount
+									##				
+									##			</p>
+									##		</td>
+									##		<td
+									##			align="right"
+									##			valign="middle"
+									##			style="padding-bottom: 5px;"
+									##			>
+									##			<p style="padding: 0; margin: 0; font-size: 14px; font-family: $font_family;">
+									##			
+									##				$localeUtil.getFormattedNumber($userMailLO.getDiscount(),'en') $escape.html($userMailLO.getOrderCurrencyCode())
+									##				
+									##			</p>
+									##		</td>
+									##	</tr>
+									##	
+									###end
+									
+									<!-- CODCHARGE -->
+									#if($userMailLO.getChargeByChargeTypeName('CODCHARGE'))
+									
+										<tr>
+											<td
+												align="left"
+												valign="middle"
+												style="width: 24px; padding: 0 24px 10px 0;"
+												>
+											</td>
+											<td
+												align="left"
+												valign="middle"
+												style="padding-bottom: 10px;"
+												>
+												<p style="padding: 0; margin: 0; font-size: 14px; font-family: $font_family;">
+												
+													COD
+													
+												</p>
+											</td>
+											<td
+												align="right"
+												valign="middle"
+												style="padding-bottom: 10px;"
+												>
+												<p style="padding: 0; margin: 0; font-size: 14px; font-family: $font_family;">
+												
+													#if($userMailLO.getChargeByChargeTypeName('HANDLINGCHARGE'))
+														$localeUtil.getFormattedNumber($userMailLO.getChargeByChargeTypeName('CODCHARGE').getGross().add($userMailLO.getChargeByChargeTypeName('HANDLINGCHARGE').getGross()), 'en') $escape.html($userMailLO.getOrderCurrencyCode())
+													#else
+														$localeUtil.getFormattedNumber($userMailLO.getChargeByChargeTypeName('CODCHARGE').getGross(),'en') $escape.html($userMailLO.getOrderCurrencyCode())
+													#end
+													
+												</p>
+											</td>
+										</tr>
+										
+									#end
+									
+									<!-- // END Cart Costs Summary Line -->
+									
+									<!-- BEGIN Cart Costs Summary Line -->
+									
+									<!-- Total -->
+									<tr>
+										<td align="left" valign="top" style="padding-bottom: 5px;">
+											&nbsp;
+										</td>
+										<td
+											align="left"
+											valign="top"
+											style="padding-bottom: 5px;"
+											>
+											<p style="padding: 0; margin: 0; font-size: 16px; font-weight: bold; font-family: $font_family;">
+											
+												Total:
+												
+											</p>
+										</td>
+										<td
+											align="right"
+											valign="top"
+											style="padding-bottom: 5px;"
+											>
+											<p style="padding: 0; margin: 0; font-size: 16px; font-weight: bold; font-family: $font_family;">
+											
+												$localeUtil.getFormattedNumber($userMailLO.getTotalGross(), 'en') $escape.html($userMailLO.getOrderCurrencyCode())
+												
+											</p>
+										</td>
+									</tr>
+									
+									<!-- // END Cart Costs Summary Line -->
+									
+								</table>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			
+			<!-- END Order Overview Product Table Summary -->
+			
+		</table>
+		
+		<!-- END ORDER OVERVIEW CONTENT -->
+		
+	</td>
+</tr>
+
+<!-- // END ORDER OVERVIEW BLOCK -->

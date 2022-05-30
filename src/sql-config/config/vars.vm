@@ -26,13 +26,14 @@ supplier_wh_losangeles int8 = 20030;
 supplier_wh_detroit int8 = 20040;
 supplier_retailer_losangeles int8 = 20050;
 
+suppliers_intronics_b2c int8[] = ARRAY[supplier_retailer_losangeles, supplier_wh_detroit, supplier_wh_texas];
+suppliers_intronics_b2b int8[] = ARRAY[supplier_wh_losangeles, supplier_wh_texas, supplier_wh_arizona];
+
 -- all suppliers
 suppliers_all int8[] = ARRAY[supplier_wh_texas, supplier_wh_arizona, supplier_wh_losangeles, supplier_wh_detroit, supplier_retailer_losangeles];
 
 -- payment provider
 --pp_paypal int8 = 100;
-
-
 
 ')
 

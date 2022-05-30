@@ -17,19 +17,19 @@ If _devenv-4-iom_ is already installed and you are looking for a short overview 
     devenv-cli.sh -h
 ```
 
-# Release Information 2.0.0
+# Release Information 2.0.2
 
 ## Compatibility
 
 At the time of release of _devenv-4-iom_, it is compatible with the latest version of IOM. As long as there is no new release of _devenv-4-iom_, it is ensured, that new releases of IOM are compatible with _devenv-4-iom_. If a new version of IOM requires an update of _devenev-4-iom_, the release notes of IOM will contain an according statement.
 
-At the time of writing, _devenv-4-iom 2.0.0_ is compatible with all IOM versions between 3.0 and 4.0 (inclusive).
+At the time of writing, _devenv-4-iom 2.0.2_ is compatible with all IOM versions between 3.0 and 4.1 (inclusive).
 
 ## New Features
 
 ### Support for Single Image Distribution of IOM <!-- 71327 -->
 
-IOM 4.0 has changed the distribution model. Instead of providing IOM in form of two _Docker_ images (_iom-app_, _iom-config_), IOM 4.0 now consists of a single image only (plus the _iom-dbaccout_ image, which is not directly part of the IOM release).
+IOM 4.0 has changed the distribution model. Instead of providing IOM in form of two _Docker_ images (_iom-app_, _iom-config_), IOM 4.0 now consists of a single image only (plus the _iom-dbaccount_ image, which is not directly part of the IOM release).
 
 To define the (single) IOM image to be used, the new configuration variable `IOM_IMAGE` was added. The two configuration variables `IOM_CONFIG_IMAGE` and `IOM_APP_IMAGE` still exist and must be used when using _devenv-4-iom_ with IOM prior version 4.
 
@@ -95,6 +95,8 @@ Documentation and release communication are now part of the source repository. C
 
 ## Fixed Bugs
 
+* Property for mail-image-URL was not set properly <!-- 76952 -->
+* Information about services was missing in output of *info*-commands <!-- 76951 -->
 * Error if `CUSTOM_*_DIR` contains .. <!-- 71396 -->
 * Error if `CUSTOM_SHARE_DIR` does not exist <!-- 71396 -->
 * Error executing "apply sql-config" when IOM image is provided by a private Docker-registry <!-- 74659 -->

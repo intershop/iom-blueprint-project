@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- en localization file for invoice document -->
+<root>
+	<key name="text_invoiceNumber" xml:space="preserve">Rechnungsnummer</key>
+	<key name="text_creditNumber" xml:space="preserve">Rechnungsnummer</key>
+	<key name="text_customerNumber" xml:space="preserve">Kundennummer</key>
+	<key name="text_orderNumber" xml:space="preserve">Bestellnummer</key>
+	<key name="text_dateOfInvoice" xml:space="preserve">Rechnungsdatum</key>
+	<key name="text_dateOfCreditNote" xml:space="preserve">Gutschriftsdatum</key>
+	<key name="text_paymentTerm" xml:space="preserve">Payment term</key>
+	<key name="text_aggregated" xml:space="preserve">Aggregated</key>
+	<key name="text_concerning_orders" xml:space="preserve">Betreffende Bestellung: </key>
+	<key name="text_credit_for" xml:space="preserve">Gutschrift für: </key>
+
+	<key name="text_page" xml:space="preserve">Seite</key>
+	<key name="text_of" xml:space="preserve">von</key>
+
+	<key name="text_capital_invoice" xml:space="preserve">RECHNUNG</key>
+	<key name="text_capital_credit" xml:space="preserve">GUTSCHRIFT</key>
+
+	<key name="text_qty" xml:space="preserve">ANZ</key>
+	<key name="text_product" xml:space="preserve">Produkt</key>
+	<key name="text_unitPrice" xml:space="preserve">Preis</key>
+	<key name="text_gross" xml:space="preserve">brutto</key>
+	<key name="text_net" xml:space="preserve">netto</key>
+	<key name="text_discount" xml:space="preserve">Rabatt</key>
+	<key name="text_description" xml:space="preserve">Beschreibung</key>
+	<key name="text_Tax" xml:space="preserve">Steuer inkl.</key>
+	<key name="text_VAT" xml:space="preserve">(VAT)</key>
+	<key name="text_totalPriceItem" xml:space="preserve">Total</key>
+
+	<key name="text_deliveryCharge" xml:space="preserve">Versandtkosten </key>
+	<key name="text_totalVAT" xml:space="preserve">Steuer inkl.</key>
+	<key name="text_totalGross" xml:space="preserve">Total (brutto)</key>
+
+	<key name="text_charge_delivery" xml:space="preserve">Liefergebühren</key>
+	<key name="text_charge_handling" xml:space="preserve">Bearbeitungsgebühr</key>
+	<key name="text_charge_payment" xml:space="preserve">Gebühren der Zahlmethode</key>
+	<key name="text_charge_cod" xml:space="preserve">Nachnamegebühren</key>
+	<key name="text_charge_default" xml:space="preserve">Gebühren</key>
+
+	<key name="text_2_pm" xml:space="preserve">Bitte überweisen sie den vollständigen Betrag unter angabe der Rechnungsnummer.</key>
+	<key name="text_3_pm" xml:space="preserve">Wir haben ihre Kreditkarten-Zahlung bereits erhalten. Ihre Bestellung wird in den nächsten Tagen versendet.</key>
+	<key name="text_5_pm" xml:space="preserve">Bitte überweisen sie den vollständigen Betrag unter angabe der Rechnungsnummer.</key>
+	<key name="text_10_pm" xml:space="preserve">Wir haben ihre PayPal-Zahlung bereits erhalten. Ihre Bestellung wird in den nächsten Tagen versendet.</key>
+	
+	<key name="text_2_pm_credit" xml:space="preserve">Falls sie ihre Zahlung bereits geleistet haben, schreiben wir ihnen den Betrag ihrem Kundenkonto gut.</key>
+	<key name="text_3_pm_credit" xml:space="preserve">Der Betrag wird ihrem Kundenkonto gutgeschrieben.</key>
+	<key name="text_4_pm_credit" xml:space="preserve">Falls sie ihre Zahlung bereits geleistet haben, schreiben wir ihnen den Betrag ihrem Kundenkonto gut.</key>
+	<key name="text_5_pm_credit" xml:space="preserve">Falls sie ihre Zahlung bereits geleistet haben, schreiben wir ihnen den Betrag ihrem Kundenkonto gut.</key>
+	<key name="text_9_pm_credit" xml:space="preserve">Der Betrag wird ihrem Kundenkonto gutgeschrieben.</key>
+	<key name="text_10_pm_credit" xml:space="preserve">Der Betrag wird ihrem Kundenkonto gutgeschrieben.</key>
+	<key name="text_21_pm_credit" xml:space="preserve">Der Betrag wird ihrem Kundenkonto gutgeschrieben.</key>
+
+	<key name="text_footer_cmpName" xml:space="preserve">Intershop Communications AG</key>
+	<key name="text_footer_cmpAddress" xml:space="preserve">Steinweg 10, 07743 Jena, Germany</key>
+	<key name="text_footer_cmpPhone" xml:space="preserve">T: +49 3641 50-0</key>
+	<key name="text_footer_cmpEmail" xml:space="preserve">E: info@intershop.de</key>
+	<key name="text_footer_cmpInternet" xml:space="preserve">I: www.intershop.de</key>
+
+	<key name="text_footer_termsAndConditions" xml:space="preserve">Our general terms and conditions apply to all offers, deliveries and sales of our company, as well as the resulting or related agreements. These terms and conditions can be downloaded at www.intershop.de. Upon request, we will send you a free copy of these terms and conditions.</key>
+</root>
