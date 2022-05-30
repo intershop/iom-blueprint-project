@@ -2,7 +2,7 @@
 ## ----------------------
 #set($language = $userMailLO.getLanguage())
 
-#set($imagePath = $mailResourcesBaseUrl)
+#set($imagePath = "https://intershop.github.io/iom-blueprint-project/src/mail-templates/mails_customers/mailImages/")
 
 ## set order numbers
 ## -----------------
