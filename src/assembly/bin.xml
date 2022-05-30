@@ -60,7 +60,6 @@
             <includes>
                 <include>**/*.vm</include>
                 <include>**/*.css</include>
-				<include>**/*.png</include><!-- images -->
             </includes>
         </fileSet>
         <!-- xslt - text data (*.xslt) -->
