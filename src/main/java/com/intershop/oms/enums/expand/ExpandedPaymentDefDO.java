@@ -73,18 +73,21 @@ public enum ExpandedPaymentDefDO implements PaymentDefDOEnumInterface
         return this.payment;
     }
 
+    /**
+    * @return the id of the payment method group
+    */
     @Override
-    @Column(name = "`paymentGroupRef`")
+    @Column( name = "`paymentGroupRef`" )
     public Integer getPaymentGroupRef()
     {
-        return this.getPaymentGroup().getId();
+	    return ( paymentGroup == null ? null : paymentGroup.getId() );
     }
 
     @Override
-    @Transient //starting with 4.1.0, this name is persisted as  @Column(name = "`paymentName`",  nullable = false)
+    @Column(name = "`paymentName`", length = 100, nullable = false)
     public String getFieldName()
     {
-        return this.name();
+	    return this.name();
     }
 
 }
