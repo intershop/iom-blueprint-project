@@ -22,8 +22,3 @@ extends:
     ACRServiceConnection:               order-iomci-ISH-ENG-IOM
     ACRName:                            iomci
     ACRHost:                            iomci.azurecr.io
-    ACRRepoCI:                          ci/
-    ACRRepoSnapshot:                    snapshot/
-    ACRRepoRelease:                     ''
-    AKSServiceConnection:               order-iom-aks-ci-blueprint
-    AKSNamespace:                       blueprint
