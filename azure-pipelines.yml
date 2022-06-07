@@ -16,6 +16,7 @@ trigger:
 extends:
   template: template.yml@IOMDevopsRepo
   parameters:
+    agentPool:                          ubuntu-20.4-DS4_v2-adopt-adoptium-jdk-ora
     ArtifactsFeed:                      order-iom-blueprint
     DockerRepoIOMServiceConnection:     order-iom-docker.intershop.de.dockerhub
     DockerRepoIOMName:                  docker.intershop.de/intershophub/
