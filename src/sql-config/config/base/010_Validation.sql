@@ -17,7 +17,7 @@ BEGIN
 		FOR rec IN (
 			select 4  as rule_id,   FALSE as synchron	union all 
 			select 5,           	FALSE          		union all 
-			select 6,           	TRUE           		union all 
+			select 6,           	TRUE           		union all
 			select 11,          	FALSE          		union all 
 			select 13,          	TRUE           		union all 
 			select 10000,       	TRUE           		-- custom rule syncrounous
