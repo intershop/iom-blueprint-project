@@ -22,3 +22,4 @@ extends:
     DockerRepoIOM:                      docker.intershop.de/intershophub
     ACRServiceConnection:               order-iomci-ISH-ENG-IOM
     ACR:                                iomci.azurecr.io/
+    ProjectEnvName:                     dev
