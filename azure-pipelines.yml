@@ -21,5 +21,4 @@ extends:
     DockerRepoIOMServiceConnection:     order-iom-docker.intershop.de.dockerhub
     DockerRepoIOM:                      docker.intershop.de/intershophub/
     ACRServiceConnection:               order-iomci-ISH-ENG-IOM
-    ACRName:                            iomci
-    ACRHost:                            iomci.azurecr.io
+    ACR:                                iomci.azurecr.io/
