@@ -1,0 +1,25 @@
+# see https://docs.microsoft.com/en-us/azure/devops/pipelines/process/resources?view=azure-devops&tabs=schema#define-a-repositories-resource
+resources:
+  repositories:
+    - repository: IOMDevopsRepo
+      type: git
+      name: order-iom-partner-devops
+      ref: task/76533-ci-pipeline
+
+trigger:
+  branches:
+    include:
+      - '*'
+
+# see https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops#extend-from-a-template
+# see https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops#use-other-repositories
+extends:
+  template: template.yml@IOMDevopsRepo
+  parameters:
+    AgentPool:                          ubuntu-20.4-DS4_v2-adopt-adoptium-jdk-ora
+    ArtifactsFeed:                      order-iom-blueprint
+    DockerRepoIOMServiceConnection:     order-iom-docker.intershop.de.dockerhub
+    DockerRepoIOM:                      docker.intershop.de/intershophub
+    ACRServiceConnection:               order-iomInternalACR-ISH-ENG-IOM
+    ACR:                                iominternalacr.azurecr.io/
+    ProjectEnvName:                     dev
