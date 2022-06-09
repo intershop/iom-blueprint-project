@@ -20,6 +20,6 @@ extends:
     ArtifactsFeed:                      order-iom-blueprint
     DockerRepoIOMServiceConnection:     order-iom-docker.intershop.de.dockerhub
     DockerRepoIOM:                      docker.intershop.de/intershophub
-    ACRServiceConnection:               order-iomci-ISH-ENG-IOM
-    ACR:                                iomci.azurecr.io/
+    ACRServiceConnection:               order-iomInternalACR-ISH-ENG-IOM
+    ACR:                                iominternalacr.azurecr.io/
     ProjectEnvName:                     dev
