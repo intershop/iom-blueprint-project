@@ -16,10 +16,10 @@ trigger:
 extends:
   template: template.yml@IOMDevopsRepo
   parameters:
-    AgentPool:                          ubuntu-20.4-DS4_v2-adopt-adoptium-jdk-ora
-    ArtifactsFeed:                      order-iom-blueprint
-    DockerRepoIOMServiceConnection:     order-iom-docker.intershop.de.dockerhub
-    DockerRepoIOM:                      docker.intershop.de/intershophub
+    agentPool:                          ubuntu-20.4-DS4_v2-adopt-adoptium-jdk-ora
+    artifactsFeed:                      order-iom-blueprint
+    dockerRepoIOMServiceConnection:     order-iom-docker.intershop.de.dockerhub
+    dockerRepoIOM:                      docker.intershop.de/intershophub
     ACRServiceConnection:               order-iomInternalACR-ISH-ENG-IOM
     ACR:                                iominternalacr.azurecr.io/
-    ProjectEnvName:                     dev
+    projectEnvName:                     dev
