@@ -17,7 +17,7 @@ extends:
   template: template.yml@IOMDevopsRepo
   parameters:
     agentPool:                          ubuntu-20.4-DS4_v2-adopt-adoptium-jdk-ora
-    artifactsFeed:                      order-iom-blueprint
+    artifactsFeed:                      order-iom-releases
     dockerRepoIOMServiceConnection:     order-iom-docker.intershop.de.dockerhub
     dockerRepoIOM:                      docker.intershop.de/intershophub
     acrServiceConnection:               order-iomInternalACR-ISH-ENG-IOM
