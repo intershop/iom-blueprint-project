@@ -28,8 +28,8 @@
 
     <repositories>
         <repository>
-            <id>order-iom-blueprint</id>
-            <url>https://pkgs.dev.azure.com/intershop-com/Products/_packaging/order-iom-blueprint/maven/v1</url>
+            <id>order-iom-releases</id>
+            <url>https://pkgs.dev.azure.com/intershop-com/Products/_packaging/order-iom-releases/maven/v1</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
