@@ -22,9 +22,9 @@ spec:
   nodeAffinity:
     required:
       nodeSelectorTerms:
-      # consider that there is only one node (master) in the cluster
+      # consider that there is only one node (control-plane) in the cluster
       - matchExpressions:
-        - key: node-role.kubernetes.io/master
+        - key: node-role.kubernetes.io/control-plane
           operator: Exists
       # - matchExpressions:
       #   - key: kubernetes.io/hostname

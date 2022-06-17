@@ -149,8 +149,6 @@ ${DumpsDirYml____}          mountPath: /opt/oms/dumps
             value: 'mailhog-service'
           - name: OMS_SMTP_PORT
             value: '${PORT_MAILHOG_SMTP_SERVICE}'
-          - name: OMS_MAIL_RESOURCES_BASE_URL
-            value: 'http://${HostIom}:${PORT_IOM_SERVICE}/mailimages/customers'
         lifecycle:
           postStart:
             exec:
