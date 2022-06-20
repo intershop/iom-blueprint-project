@@ -2,9 +2,10 @@ package com.intershop.oms.blueprint.upload;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -28,7 +29,8 @@ import com.intershop.oms.utils.configuration.IOMSharedFileSystem;
 )
 public class ProductUpload extends HttpServlet
 {
-    private static final Path TARGET_UPLOAD_DIRECTORY = IOMSharedFileSystem.OMS_SHARE.resolve("productupload");
+    private final Path TARGET_UPLOAD_DIRECTORY = IOMSharedFileSystem.IMPORTARTICLE_IN.toPath();
+    private final String FORM_PREFIX_SSR = "ssr_";
 
     @EJB(lookup = ShopLogicService.LOGIC_SHOPLOGICBEAN)
     private ShopLogicService shopLogicService;
@@ -99,7 +101,7 @@ public class ProductUpload extends HttpServlet
             SupplierDO supplierDO = shop2SupplierDO.getSupplierDO();
             if (supplierDO.getId().intValue() > 1) // only real suppliers
             {
-                dom.append(putToCheckBox(shopDO.getId().toString() + ":" + supplierDO.getId().toString(),
+                dom.append(putToCheckBox("ssr_" + shopDO.getId().toString() + "_" + supplierDO.getId().toString(),
                                 supplierDO.getName(), checked));
             }
         }
@@ -116,7 +118,7 @@ public class ProductUpload extends HttpServlet
      */
     private String putToCheckBox(String id, String displayname, String checked)
     {
-        return "<input type=\"checkbox\" id=\"" + id + "\" name=\"" + displayname + "\" value=\"" + id + "\" " + checked
+        return "<input type=\"checkbox\" id=\"" + id + "\" name=\"" + id + "\" value=\"" + id + "\" " + checked
                         + "><label for=\"" + id + "\">" + displayname + "</label><br>";
     }
 
@@ -127,23 +129,58 @@ public class ProductUpload extends HttpServlet
     {
         // get input
 
-        // run transformer and put files to configured standard import API
+        // get stock
+        String stockLevel = request.getParameter("stock");
 
-        // if not existing yet, create target directory
-        if (!Files.isDirectory(TARGET_UPLOAD_DIRECTORY))
-        {
-            Files.createDirectory(TARGET_UPLOAD_DIRECTORY);
-        }
+        // call transformer and put files to configured standard import API
+        // have 3 files per shop-supplier-relation to store with the following names
+        // to product import directory
 
-        // get file from form
+        // given file
         Part filePart = request.getPart("file");
         String fileName = filePart.getSubmittedFileName();
 
-        // write to share
-        for (Part part : request.getParts())
+        Map params = request.getParameterMap();
+        Iterator i = params.keySet().iterator();
+
+        while(i.hasNext())
         {
-            part.write(TARGET_UPLOAD_DIRECTORY.resolve(fileName).toString());
+            String key = (String)i.next();
+            String value = ((String[])params.get(key))[0];
+
+            // it's a checkbox with a supplier
+            if (key.contains(FORM_PREFIX_SSR))
+            {
+                response.getWriter().print("<p>found checked shop-supplier-checkbox</p>");
+
+                // write to share
+                for (Part part : request.getParts())
+                {
+                    part.write(TARGET_UPLOAD_DIRECTORY.resolve(key + fileName).toString());
+                }
+
+            }
+
+            response.getWriter().print("<p>" + key + " | " + value + "</p>");
         }
+
+        // import file
+        // Part filePart = request.getPart("file");
+        // String fileName = filePart.getSubmittedFileName();
+
+        // run transformer and put files to configured standard import API
+
+        // if not existing yet, create target directory
+        // if (!Files.isDirectory(TARGET_UPLOAD_DIRECTORY))
+        // {
+        // Files.createDirectory(TARGET_UPLOAD_DIRECTORY);
+        // }
+
+        // write to share
+        // for (Part part : request.getParts())
+        // {
+        // part.write(TARGET_UPLOAD_DIRECTORY.resolve(fileName).toString());
+        // }
         response.getWriter().print("<html><head></head><body>");
         response.getWriter().print("File '" + fileName + "' uploaded sucessfully ...");
         response.getWriter().print(
