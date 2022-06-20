@@ -17,13 +17,13 @@ If _devenv-4-iom_ is already installed and you are looking for a short overview 
     devenv-cli.sh -h
 ```
 
-# Release Information 2.0.3
+# Release Information 2.0.4
 
 ## Compatibility
 
 At the time of release of _devenv-4-iom_, it is compatible with the latest version of IOM. As long as there is no new release of _devenv-4-iom_, it is ensured, that new releases of IOM are compatible with _devenv-4-iom_. If a new version of IOM requires an update of _devenev-4-iom_, the release notes of IOM will contain an according statement.
 
-At the time of writing, _devenv-4-iom 2.0.3_ is compatible with all IOM versions between 3.0 and 4.1 (inclusive).
+At the time of writing, _devenv-4-iom 2.0.4_ is compatible with all IOM versions between 3.0 and 4.1 (inclusive).
 
 ## New Features
 
@@ -101,3 +101,4 @@ Documentation and release communication are now part of the source repository. C
 * Error executing "apply sql-config" when IOM image is provided by a private Docker-registry <!-- 74659 -->
 * Error using persistent storage with current version of Docker-Desktop <!-- 77223 -->
 * Replaced outdated documentation references <!-- 77268 -->
+* Error applying environment specific SQL-config <!-- 77554 -->
