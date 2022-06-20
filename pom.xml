@@ -120,6 +120,12 @@
             <scope>provided</scope>
             <version>${platform.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.intershop</groupId>
+            <artifactId>oms.utils</artifactId>
+            <scope>provided</scope>
+            <version>${platform.version}</version>
+        </dependency>
 
         <!-- TEST dependencies -->
         <dependency>
