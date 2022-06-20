@@ -1,4 +1,4 @@
-DEVENV4IOM_VERSION=2.0.3
+DEVENV4IOM_VERSION=2.0.4
 
 ################################################################################
 # Defaults
@@ -368,12 +368,14 @@ if [ -z "$IOM_IMAGE" ]; then
     IomTemplate="iom.yml.template"
     ConfigBinDir=/opt
     ConfigBaseDir=/opt
+    ConfigCustomDir=caas-config
     IsIomSingleDist='false'
 else
     IomJobImage="$IOM_IMAGE"
     IomTemplate="iom-single.yml.template"
     ConfigBinDir=/opt/oms/bin
     ConfigBaseDir=/opt/oms
+    ConfigCustomDir=project-config
     IsIomSingleDist='true'
 fi
 

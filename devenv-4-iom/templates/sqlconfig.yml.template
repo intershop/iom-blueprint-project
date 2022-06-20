@@ -33,10 +33,12 @@ spec:
             value: '${OMS_LOGLEVEL_SCRIPTS}'
           - name: CAAS_ENV_NAME
             value: '${PROJECT_ENV_NAME}'
-        command: [ '${ConfigBinDir}/apply_sql_config.sh', '--dir=${ConfigBaseDir}/caas-config/sql-config' ]
+          - name: PROJECT_ENV_NAME
+            value: '${PROJECT_ENV_NAME}'
+        command: [ '${ConfigBinDir}/apply_sql_config.sh', '--dir=${ConfigBaseDir}/${ConfigCustomDir}/sql-config' ]
         volumeMounts:
 ${SqlconfDirYml__}        - name: sqlconf
-${SqlconfDirYml__}          mountPath: ${ConfigBaseDir}/caas-config/sql-config
+${SqlconfDirYml__}          mountPath: ${ConfigBaseDir}/${ConfigCustomDir}/sql-config
       restartPolicy: Never
       volumes:
 ${SqlconfDirYml__}      - name: sqlconf
