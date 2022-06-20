@@ -22,6 +22,7 @@
         <servlet-name>ProductUpload</servlet-name>
         <servlet-class>com.intershop.oms.blueprint.upload.ProductUpload</servlet-class>
     </servlet>
+    
     <servlet-mapping>
         <servlet-name>Heartbeat</servlet-name>
         <url-pattern>/Heartbeat/*</url-pattern>
@@ -42,5 +43,5 @@
         <servlet-name>ProductUpload</servlet-name>
         <url-pattern>/ProductUpload</url-pattern>
     </servlet-mapping>
-
+    
 </web-app>
