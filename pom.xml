@@ -82,6 +82,11 @@
             <version>${org.apache.commons-lang.version}</version>
         </dependency>
         <dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-csv</artifactId>
+		    <version>1.8</version>
+		</dependency>
+        <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
             <version>0.10.2</version>
@@ -267,7 +272,32 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <version>2.5.0</version>
+                <executions>
+                    <execution>
+                        <id>xjc_ubl</id>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                        <configuration>
+                            <laxSchemaValidation>true</laxSchemaValidation>
+                            <target>2.2</target>
+                            <sources>
+                                <source>src/main/resources/xsd/catalog.xsd</source>
+                            </sources>
+                            <failOnNoSchemas>true</failOnNoSchemas>
+                            <generateEpisode>true</generateEpisode>
+                            <outputDirectory>${project.build.directory}/generated-sources/xjc_enfinity</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>	
+
         </plugins>
+
         <pluginManagement>
             <plugins>
                 <plugin>
