@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +25,7 @@ import bakery.persistence.dataobject.configuration.supplier.Shop2SupplierDO;
 import bakery.persistence.dataobject.configuration.supplier.SupplierDO;
 
 import com.intershop.oms.blueprint.upload.transform.BlueprintProductTransformer;
-import com.intershop.oms.utils.configuration.IOMSharedFileSystem;
+// import com.intershop.oms.utils.configuration.IOMSharedFileSystem;
 
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 1, // 1 MB
                 maxFileSize = 1024 * 1024 * 10, // 10 MB
@@ -31,9 +33,10 @@ import com.intershop.oms.utils.configuration.IOMSharedFileSystem;
 )
 public class ProductUpload extends HttpServlet
 {
-    private final Path TARGET_UPLOAD_DIRECTORY = IOMSharedFileSystem.OMS_SHARE.resolve("tmp");
+    // private final Path TARGET_UPLOAD_DIRECTORY = IOMSharedFileSystem.OMS_SHARE.resolve("tmp");
     // private final Path TARGET_IMPORT_IN = IOMSharedFileSystem.IMPORTARTICLE_IN.toPath();
-    private final String FORM_PREFIX_SSR = "ssr_";
+    private final String FORM_ID_SEPARATOR = "_";
+    private final String FORM_PREFIX_SSR = "ssr" + FORM_ID_SEPARATOR;
 
     @EJB(lookup = ShopLogicService.LOGIC_SHOPLOGICBEAN)
     private ShopLogicService shopLogicService;
@@ -106,7 +109,8 @@ public class ProductUpload extends HttpServlet
             SupplierDO supplierDO = shop2SupplierDO.getSupplierDO();
             if (supplierDO.getId().intValue() > 1) // only real suppliers
             {
-                dom.append(createCheckbox("ssr_" + shopDO.getId().toString() + "_" + supplierDO.getId().toString(),
+                dom.append(createCheckbox(
+                                "ssr" + FORM_ID_SEPARATOR + shopDO.getId() + FORM_ID_SEPARATOR + supplierDO.getId(),
                                 supplierDO.getName(), checked));
             }
         }
@@ -123,8 +127,8 @@ public class ProductUpload extends HttpServlet
      */
     private String createCheckbox(String id, String displayname, String checked)
     {
-        return "<input type=\"checkbox\" id=\"" + id + "\" name=\"" + id + "\" value=\"" + id + "\" " + checked
-                        + "><label for=\"" + id + "\">" + displayname + "</label><br>";
+        return "<input type=\"checkbox\" name=\"" + id + "\" value=\"" + id + "\" " + checked + "><label for=\"" + id
+                        + "\">" + displayname + "</label><br>";
     }
 
     /**
@@ -132,71 +136,31 @@ public class ProductUpload extends HttpServlet
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-        // get form input
+        getStock(request);
+        getShopAndSuppliers(request);
 
-        // get stock
-        int stock = getStock(request);
-
-        // call transformer and put files to configured standard import API
-        // have 3 files per shop-supplier-relation to store with the following names
-        // to product import directory
-
-        // given file
+        // get file to transform/import
         Part filePart = request.getPart("file");
         String fileName = filePart.getSubmittedFileName();
-
-        // if not existing yet, create target directory
-        if (!Files.isDirectory(TARGET_UPLOAD_DIRECTORY))
+        // write to share
+        for (Part part : request.getParts())
         {
-            Files.createDirectory(TARGET_UPLOAD_DIRECTORY);
-        }
-
-        Map params = request.getParameterMap();
-        Iterator i = params.keySet().iterator();
-
-        while(i.hasNext())
-        {
-            String key = (String)i.next();
-            String value = ((String[])params.get(key))[0];
-
-            // it's a checkbox with a supplier
-            if (key.contains(FORM_PREFIX_SSR))
-            {
-                response.getWriter().print("<p>found checked shop-supplier-checkbox</p>");
-
-                // write to share
-                for (Part part : request.getParts())
-                {
-                    part.write(TARGET_UPLOAD_DIRECTORY.resolve(key + fileName).toString());
-                }
-
-            }
-
-            response.getWriter().print("<p>" + key + " | " + value + "</p>");
+            // part.write(TARGET_UPLOAD_DIRECTORY.resolve(key + fileName).toString());
         }
 
         /**
-         * 
-         * ICM2IOMTransformer
-         * 
+         * Transform
          */
-
         BlueprintProductTransformer transformer = new BlueprintProductTransformer();
-        // transformer.transform(parameters, dirStructure, state, index);
+        // params: getShopAndSuppliers(request), getStock(request), filePart
 
-        // import file
-        // Part filePart = request.getPart("file");
-        // String fileName = filePart.getSubmittedFileName();
-
-        // run transformer and put files to configured standard import API
-
-        // write to share
-        // for (Part part : request.getParts())
-        // {
-        // part.write(TARGET_UPLOAD_DIRECTORY.resolve(fileName).toString());
-        // }
+        /**
+         * Servlet response
+         */
         response.getWriter().print("<html><head></head><body>");
         response.getWriter().print("File '" + fileName + "' uploaded sucessfully ...");
+        response.getWriter().print("Desired stock '" + getStock(request) + ".");
+        response.getWriter().print("Desired suppliers '" + getShopAndSuppliers(request) + ".");
         response.getWriter().print(
                         "<br><br> ... want to do one more import? -> <a href=\"ProductUpload\">one more upload</a>");
         response.getWriter().print("</body></html");
@@ -219,6 +183,53 @@ public class ProductUpload extends HttpServlet
         {
             return 250;
         }
+    }
+
+    /**
+     * Determines the desired suppliers (and their leading shop) from the html-form parameters.
+     * 
+     * @param request
+     * @return
+     */
+    private Map<Long, List<Long>> getShopAndSuppliers(HttpServletRequest request)
+    {
+        Map<Long, List<Long>> shopSuppliersMap = new HashMap<>();
+        Map params = request.getParameterMap();
+        Iterator i = params.keySet().iterator();
+
+        while(i.hasNext())
+        {
+            String key = (String)i.next();
+
+            // it's a checkbox with a supplier (and a shop) -> prefix_shopId_supplierId
+            if (key.startsWith(FORM_PREFIX_SSR))
+            {
+                String[] ids = key.split(FORM_ID_SEPARATOR); // -> prefix_shopId_supplierId
+                Long shopId = Long.valueOf(ids[1]);
+                Long supplierId = Long.valueOf(ids[2]);
+
+                if (shopSuppliersMap.containsKey(shopId))
+                {
+                    // put additional supplier
+                    List<Long> supplierIds = shopSuppliersMap.get(shopId);
+                    if (!supplierIds.contains(supplierId))
+                    {
+                        supplierIds.add(supplierId);
+                        shopSuppliersMap.put(shopId, supplierIds);
+                    }
+
+                }
+                else
+                {
+                    // put (first) shop and first supplier
+                    List<Long> supplierIds = new ArrayList<Long>();
+                    supplierIds.add(supplierId);
+                    shopSuppliersMap.put(shopId, supplierIds);
+                }
+            }
+        }
+
+        return shopSuppliersMap;
     }
 
 }

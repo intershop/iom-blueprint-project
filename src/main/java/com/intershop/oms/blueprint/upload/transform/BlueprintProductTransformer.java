@@ -14,6 +14,7 @@ import java.util.Set;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.servlet.http.Part;
 import javax.xml.bind.JAXBElement;
 
 import org.apache.commons.csv.CSVFormat;
@@ -21,6 +22,7 @@ import org.apache.commons.csv.CSVPrinter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.intershop.oms.utils.configuration.IOMSharedFileSystem;
 // import com.intershop.oms.blueprint.atp.model.ProductCustomAttributes;
 import com.intershop.xml.ns.enfinity._7_1.xcs.impex.ComplexTypeCustomAttribute;
 import com.intershop.xml.ns.enfinity._7_1.xcs.impex.ComplexTypeCustomAttributes;
@@ -86,6 +88,33 @@ public class BlueprintProductTransformer extends EnfinityProductTransformer
                         .forEach(s2s -> supplierMapping.put(s2s.getShopSupplierName(), s2s.getSupplierDO().getId()));
 
         transformDir = dirStructure.getTransformDir().toPath();
+    }
+
+    protected void initialize(Long shopId, List<Long> supplierIds, int stock, Part stream)
+    {
+        // initialize supplier mapping for this shop based on given html-form
+        supplierMapping = new HashMap<>();
+
+        this.shopId = shopId;
+        ShopDO shopDO;
+        try
+        {
+            shopDO = shopPersistenceService.getShopDO(shopId);
+        }
+        catch(DatabaseException | NoObjectException e)
+        {
+            throw new TechnicalException("error while getting shop", e);
+        }
+
+        shopDO.getSupplierList().stream().filter(s2s -> supplierIds.contains(s2s.getSupplierDO().getId())) // was
+                                                                                                           // selected
+                                                                                                           // in the
+                                                                                                           // form
+                        .forEach(s2s -> supplierMapping.put(s2s.getShopSupplierName(), s2s.getSupplierDO().getId()));
+
+        // Import In
+        // transformDir = dirStructure.getTransformDir().toPath();
+        transformDir = IOMSharedFileSystem.IMPORTARTICLE_IN.toPath();
     }
 
     @Override
