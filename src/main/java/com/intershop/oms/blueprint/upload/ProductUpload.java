@@ -1,6 +1,7 @@
 package com.intershop.oms.blueprint.upload;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -136,29 +137,24 @@ public class ProductUpload extends HttpServlet
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-        getStock(request);
-        getShopAndSuppliers(request);
-
-        // get file to transform/import
-        Part filePart = request.getPart("file");
-        String fileName = filePart.getSubmittedFileName();
-        // write to share
-        for (Part part : request.getParts())
-        {
-            // part.write(TARGET_UPLOAD_DIRECTORY.resolve(key + fileName).toString());
-        }
+        Part uploadedFile = request.getPart("file");
 
         /**
          * Transform
          */
         BlueprintProductTransformer transformer = new BlueprintProductTransformer();
-        // params: getShopAndSuppliers(request), getStock(request), filePart
-
+        
+        for (Long shopId : getShopAndSuppliers(request).keySet()) 
+        {
+            transformer.transform(shopId,  getShopAndSuppliers(request).get(shopId), getStock(request), uploadedFile.getInputStream());
+        }
+      
         /**
          * Servlet response
          */
+        request.getPart("file");
         response.getWriter().print("<html><head></head><body>");
-        response.getWriter().print("File '" + fileName + "' uploaded sucessfully ...");
+        response.getWriter().print("File '" + uploadedFile.getSubmittedFileName() + "' uploaded sucessfully ...");
         response.getWriter().print("Desired stock '" + getStock(request) + ".");
         response.getWriter().print("Desired suppliers '" + getShopAndSuppliers(request) + ".");
         response.getWriter().print(

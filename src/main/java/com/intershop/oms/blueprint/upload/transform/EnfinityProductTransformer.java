@@ -3,12 +3,14 @@ package com.intershop.oms.blueprint.upload.transform;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -24,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.intershop.oms.ps.util.CustomizationUtilityStatic;
+import com.intershop.oms.utils.configuration.IOMSharedFileSystem;
 import com.intershop.xml.ns.enfinity._7_1.xcs.impex.ComplexTypeProduct;
 import com.intershop.xml.ns.enfinity._7_1.xcs.impex.Enfinity;
 
@@ -38,44 +41,23 @@ import bakery.persistence.job.file.Retry;
 import bakery.util.exception.MissingConfigurationException;
 import bakery.util.exception.TechnicalException;
 
-public abstract class EnfinityProductTransformer implements Transformer
+public abstract class EnfinityProductTransformer // implements Transformer
 {
     private static final Logger log = LoggerFactory.getLogger(EnfinityProductTransformer.class);
+    
+    private final Path TARGET_IMPORT_IN = IOMSharedFileSystem.IMPORTARTICLE_IN.toPath();
 
-    @Override
-    public void transform(List<TransformerProcessesParameterDO> parameters,
-                    FileTransferTransformationDirectories dirStructure, JobRunState state, int index)
-                    throws Retry, MissingConfigurationException
+    public void transform(Long shopId, List<Long> supplierIds, int stockLevel, InputStream inputStream)
     {
-        state.setExitCodeDefDO(ExitCodeDefDO.OK);
-        state.setJobStateDefDO(JobStateDefDO.SUCCEEDED);
-
         SimpleDateFormat sdfFilename = new SimpleDateFormat("yyyyMMddHHmmss");
-        Long importStartDate = state.getStartDate() != null ? state.getStartDate().getTime()
-                        : System.currentTimeMillis();
-        initialize(parameters, dirStructure);
-        log.debug("Start of transfomation");
+        Long importStartDate = System.currentTimeMillis();
+
+        initialize(shopId, supplierIds, TARGET_IMPORT_IN);
+
+        log.debug("Starting transformation");
 
         boolean hasErrors = false;
         StringBuilder errorText = new StringBuilder();
-        Path doneDir = dirStructure.getDoneDir().toPath();
-        Path errorDir = dirStructure.getErrorDir().toPath();
-
-        /*
-         * check for paramter list
-         */
-        if (parameters == null || parameters.isEmpty())
-        {
-            throw new MissingConfigurationException("Transformer is not configured");
-        }
-
-        String xmlFileRegex = this.getFileNameFromParameters(parameters,
-                        TransformerProcessParameterKeyDefDO.SOURCE_FILENAME);
-
-        if (xmlFileRegex == null)
-        {
-            throw new MissingConfigurationException("xml export file type is mandatory!");
-        }
 
         JAXBContext jaxbContext;
         Unmarshaller um;
@@ -92,20 +74,18 @@ public abstract class EnfinityProductTransformer implements Transformer
 
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance();
 
-        List<File> importFiles = this.getImportFiles(Arrays.asList(dirStructure.getTransformDir().listFiles()),
-                        xmlFileRegex, errorText);
         int fileCount = 0;
-        for (File importFile : importFiles)
-        {
+
+        // foreach file to transform...
+
             String datePrefix = sdfFilename.format(new Date(importStartDate + TimeUnit.SECONDS.toMillis(fileCount++)));
             log.info("date prefix: {}", datePrefix);
             preFileHook(datePrefix);
 
-            Path importFilePath = importFile.toPath();
-
-            try (FileReader fr = new FileReader(importFile))
+            // try (FileReader fr = new FileReader(inputStream))
+            try
             {
-                XMLStreamReader reader = xmlFactory.createXMLStreamReader(fr);
+                XMLStreamReader reader = xmlFactory.createXMLStreamReader(inputStream);
                 while(reader.hasNext())
                 {
                     reader.next();
@@ -115,13 +95,12 @@ public abstract class EnfinityProductTransformer implements Transformer
                         JAXBElement<ComplexTypeProduct> prodElem = um.unmarshal(reader, ComplexTypeProduct.class);
                         ComplexTypeProduct prod = prodElem.getValue();
                         hasErrors = !processProduct(prod);
-
                     }
                 }
 
                 reader.close();
             }
-            catch(XMLStreamException | JAXBException | IOException e)
+            catch(XMLStreamException | JAXBException e)
             {
                 hasErrors = true;
                 log.error("unexpected error", e);
@@ -131,36 +110,22 @@ public abstract class EnfinityProductTransformer implements Transformer
 
             if (hasErrors)
             {
-                state.setError(ExitCodeDefDO.ERROR, JobStateDefDO.PROCESS_ERROR, errorText.toString());
-                state.setJobStateDefDO(JobStateDefDO.PROCESS_ERROR);
-                CustomizationUtilityStatic.moveProcessedFile(importFilePath, errorDir);
+                // state.setError(ExitCodeDefDO.ERROR, JobStateDefDO.PROCESS_ERROR, errorText.toString());
+                // state.setJobStateDefDO(JobStateDefDO.PROCESS_ERROR);
+                // CustomizationUtilityStatic.moveProcessedFile(importFilePath, errorDir);
+                log.error("Error while importing product file", errorText.toString());
             }
             else
             {
-                CustomizationUtilityStatic.moveProcessedFile(importFilePath, doneDir);
+                // CustomizationUtilityStatic.moveProcessedFile(importFilePath, doneDir);
+                log.info("Successfully imported product file");
             }
 
-        }
+        // former loop
 
         destroy();
 
         log.debug("End of transformations");
-
-    }
-
-    private String getFileNameFromParameters(List<TransformerProcessesParameterDO> parameters,
-                    TransformerProcessParameterKeyDefDO transformerProcessParameterKeyDefDO)
-    {
-        for (TransformerProcessesParameterDO transformerProcessesParameterDO : parameters)
-        {
-            if (transformerProcessesParameterDO.getTransformerProcessesParameterKeyDefDO()
-                            .equals(transformerProcessParameterKeyDefDO)
-                            && (null != transformerProcessesParameterDO.getParameterValue()))
-            {
-                return transformerProcessesParameterDO.getParameterValue();
-            }
-        }
-        return null;
     }
 
     private List<File> getImportFiles(List<File> importFiles, String regex, StringBuilder errorText)
@@ -192,12 +157,12 @@ public abstract class EnfinityProductTransformer implements Transformer
 
     /**
      * pre execution hook to initialize product data transformers with necessary parameters
-     *
-     * @param parameters
-     * @param dirStructure
+     * @param shopId
+     * @param supplierIds
+     * @param stockLevel
+     * @param toParse
      */
-    protected abstract void initialize(List<TransformerProcessesParameterDO> parameters,
-                    FileTransferTransformationDirectories dirStructure);
+    protected abstract void initialize(Long shopId, List<Long> supplierIds, Path toParse);
 
     /**
      * hook executed before every input file

@@ -35,8 +35,10 @@ import com.intershop.xml.ns.enfinity._7_1.xcs.impex.ComplexTypeProductProductLin
 
 import bakery.logic.job.file.FileTransferTransformationDirectories;
 import bakery.persistence.dataobject.configuration.shop.ShopDO;
+import bakery.persistence.dataobject.job.JobRunState;
 import bakery.persistence.dataobject.transformer.TransformerProcessParameterKeyDefDO;
 import bakery.persistence.dataobject.transformer.TransformerProcessesParameterDO;
+import bakery.persistence.job.file.Retry;
 import bakery.persistence.service.configuration.ShopPersistenceService;
 import bakery.util.exception.DatabaseException;
 import bakery.util.exception.MissingConfigurationException;
@@ -46,13 +48,10 @@ import bakery.util.exception.TechnicalException;
 @Stateless
 public class BlueprintProductTransformer extends EnfinityProductTransformer
 {
-    // private static final String CUSTOM_ATTRIBUTE_DEPOT_STOCKED = "depot-stocked";
     private static final Logger log = LoggerFactory.getLogger(BlueprintProductTransformer.class);
     private static final char ESCAPE_CHAR = '\u0015';
-    // private static final String PRODUCT_LINK_TYPE_CASE = "MSG_Case";
-    // private static final String CUSTOM_ATTRIBUTE_EACH_PER_CASE = "number-of-pack-units";
 
-    @EJB(lookup = ShopPersistenceService.PERSISTENCE_SHOPPERSISTENCEBEAN)
+    @EJB(lookup = ShopPersistenceService.PERSISTENCE_SHOPPERSISTENCEBEAN) // NPE
     private ShopPersistenceService shopPersistenceService;
 
     private String currentFilePrefix = "";
@@ -60,62 +59,34 @@ public class BlueprintProductTransformer extends EnfinityProductTransformer
     private Map<String, Long> supplierMapping = null;
     private Path transformDir = null;
     private Long shopId;
-
+    
     @Override
-    protected void initialize(List<TransformerProcessesParameterDO> parameters,
-                    FileTransferTransformationDirectories dirStructure)
+    protected void initialize(Long shopId, List<Long> supplierIds, Path targetDirectory)
     {
-        // initialize supplier mapping for this shop based on
-        // s2s.shopSupplierName
+        // initialize supplier mapping for this shop based on s2s.shopSupplierName
         supplierMapping = new HashMap<>();
-        Long shopId = parameters.stream()
-                        .filter(par -> par.getTransformerProcessesParameterKeyDefDO()
-                                        .equals(TransformerProcessParameterKeyDefDO.SHOP_ID))
-                        .map(TransformerProcessesParameterDO::getParameterValue).map(Long::parseLong).findAny()
-                        .orElseThrow(() -> new MissingConfigurationException("ShopId is mandatory"));
+        
         this.shopId = shopId;
-        ShopDO shopDO;
-        try
-        {
-            shopDO = shopPersistenceService.getShopDO(shopId);
-        }
-        catch(DatabaseException | NoObjectException e)
-        {
-            throw new TechnicalException("error while getting shop", e);
-        }
+        
+//        ShopDO shopDO;
+//        try
+//        {
+//            shopDO = shopPersistenceService.getShopDO(shopId);
+//        }
+//        catch(DatabaseException | NoObjectException e)
+//        {
+//            throw new TechnicalException("error while getting shop", e);
+//        }
+//
+//        shopDO.getSupplierList()
+//                        .stream().filter(s2s -> supplierIds.contains(s2s.getSupplierDO().getId())) // only checked suppliers
+//                        .forEach(s2s -> supplierMapping.put(s2s.getShopSupplierName(), s2s.getSupplierDO().getId()));
 
-        shopDO.getSupplierList()
-                        .forEach(s2s -> supplierMapping.put(s2s.getShopSupplierName(), s2s.getSupplierDO().getId()));
-
-        transformDir = dirStructure.getTransformDir().toPath();
+        supplierIds.forEach(s -> supplierMapping.put(s.toString(), s)); // was formerly String, Long but because of NPE using the ID for both
+        
+        transformDir = targetDirectory;
     }
 
-    protected void initialize(Long shopId, List<Long> supplierIds, int stock, Part stream)
-    {
-        // initialize supplier mapping for this shop based on given html-form
-        supplierMapping = new HashMap<>();
-
-        this.shopId = shopId;
-        ShopDO shopDO;
-        try
-        {
-            shopDO = shopPersistenceService.getShopDO(shopId);
-        }
-        catch(DatabaseException | NoObjectException e)
-        {
-            throw new TechnicalException("error while getting shop", e);
-        }
-
-        shopDO.getSupplierList().stream().filter(s2s -> supplierIds.contains(s2s.getSupplierDO().getId())) // was
-                                                                                                           // selected
-                                                                                                           // in the
-                                                                                                           // form
-                        .forEach(s2s -> supplierMapping.put(s2s.getShopSupplierName(), s2s.getSupplierDO().getId()));
-
-        // Import In
-        // transformDir = dirStructure.getTransformDir().toPath();
-        transformDir = IOMSharedFileSystem.IMPORTARTICLE_IN.toPath();
-    }
 
     @Override
     protected void preFileHook(String datePrefix)
@@ -191,19 +162,6 @@ public class BlueprintProductTransformer extends EnfinityProductTransformer
         return true;
     }
 
-    // private void handleProductLinks(ComplexTypeProductProductLinks links, ProductCustomAttributes ca)
-    // {
-    // for (ComplexTypeProductProductLink productLink : links.getProductLink())
-    // {
-    // if (productLink.getProductLinkType() != null
-    // && PRODUCT_LINK_TYPE_CASE.equals(productLink.getProductLinkType().getName()))
-    // {
-    // ca.setCrateArticleLink(productLink.getSku());
-    // return;
-    // }
-    // }
-    // }
-
     private static String buildFilename(String shopId, String supplierId, String creationDate)
     {
         StringBuilder sb = new StringBuilder(shopId);
@@ -217,7 +175,6 @@ public class BlueprintProductTransformer extends EnfinityProductTransformer
 
     private CSVPrinter createPrinter(Long supplierId)
     {
-
         String fileName = buildFilename(shopId.toString(), supplierId.toString(), currentFilePrefix);
 
         try
@@ -233,45 +190,6 @@ public class BlueprintProductTransformer extends EnfinityProductTransformer
             throw new TechnicalException(e);
         }
     }
-
-    // private void handleCustomAttributes(ComplexTypeCustomAttributes value, CSVRecord<BasicDataCSV> rec,
-    // Set<String> supplierNames, ProductCustomAttributes mappedAttributes)
-    // {
-    // for (ComplexTypeCustomAttribute ca : value.getCustomAttribute())
-    // {
-    // switch(ca.getName())
-    // {
-    // case CUSTOM_ATTRIBUTE_DEPOT_STOCKED:
-    // for (Serializable ser : ca.getContent())
-    // {
-    // String supplierName = mapSerializableCA(ser);
-    // if (isNotBlank(supplierName))
-    // {
-    // supplierNames.add(supplierName.toUpperCase());
-    // }
-    // }
-    // break;
-    // case CUSTOM_ATTRIBUTE_EACH_PER_CASE:
-    // if (ca.getContent() != null && ca.getContent().size() > 0)
-    // {
-    // try
-    // {
-    // String eaPerCaseStr = mapSerializableCA(ca.getContent().get(0));
-    // if (isNotBlank(eaPerCaseStr))
-    // {
-    // mappedAttributes.setCrateQuantity(Integer.valueOf(eaPerCaseStr));
-    // }
-    // }
-    // catch(NumberFormatException nfe)
-    // {
-    // log.warn("invalid number format for EACH_PER_CASE attribute", nfe);
-    // }
-    // }
-    // break;
-    // }
-    // }
-
-    // }
 
     @SuppressWarnings("unchecked")
     private String mapSerializableCA(Serializable ser)
