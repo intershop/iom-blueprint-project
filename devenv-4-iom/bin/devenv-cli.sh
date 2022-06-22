@@ -3690,43 +3690,38 @@ DEVENV_DIR="$(realpath "$(dirname "$BASH_SOURCE")/..")"
 # read command line arguments
 ################################################################################
 
-# handle 1. level of command line arguments
+# returns COMMAND if INPUT is somewhere between PREFIX and COMMAND, otherwise false is
+# given back.
+isCommand() {
+    # remove everything from INPUT, that cannot be accepted
+    INPUT=$(echo "$1" | sed 's/[^a-zA-Z-]//g')
+    PREFIX="$2"
+    COMMAND="$3"
+
+    if echo "$INPUT" | grep -qi "^$PREFIX" && echo "$COMMAND" | grep -qi "^$INPUT"; then
+        echo "$COMMAND"
+    else
+        false
+    fi
+}
+
+# Handle 1. level of command line arguments
 LEVEL0=
-case $1 in
-    i*)
-        LEVEL0=info
-        ;;
-    c*)
-        LEVEL0=create
-        ;;
-    de*)
-        LEVEL0=delete
-        ;;
-    a*)
-        LEVEL0=apply
-        ;;
-    du*)
-        LEVEL0=dump
-        ;;
-    g*)
-        LEVEL0=get
-        ;;
-    l*)
-        LEVEL0=log
-        ;;
-    --help)
+
+LEVEL0=$(isCommand "$1" i  info   ||
+         isCommand "$1" c  create ||
+         isCommand "$1" de delete ||
+         isCommand "$1" a  apply  ||
+         isCommand "$1" du dump   ||
+         isCommand "$1" g  get    ||
+         isCommand "$1" l  log)   ||
+    if [ "$1" = '--help' -o "$1" = '-h' ]; then
         help
         exit 0
-        ;;
-    -h)
-        help
-        exit 0
-        ;;
-    *)
+    else
         syntax_error
         exit 1
-        ;;
-esac
+    fi
 
 # handle next command line argument
 shift
@@ -3734,218 +3729,97 @@ shift
 # handle 2. level of command line arguments
 LEVEL1=
 if [ "$LEVEL0" = "info" ]; then
-    case $1 in
-        i*)
-            LEVEL1=iom
-            ;;
-        p*)
-            LEVEL1=postgres
-            ;;
-        m*)
-            LEVEL1=mailserver
-            ;;
-        s*)
-            LEVEL1=storage
-            ;;
-        cl*)
-            LEVEL1=cluster
-            ;;
-        co*)
-            LEVEL1=config
-            ;;
-        --help)
+    LEVEL1=$(isCommand "$1" i  iom        ||
+             isCommand "$1" p  postgres   ||
+             isCommand "$1" m  mailserver ||
+             isCommand "$1" s  storage    ||
+             isCommand "$1" cl cluster    ||
+             isCommand "$1" co config)    ||
+        if [ "$1" = '--help' -o "$1" = '-h' ]; then
             help-info
-            exit 1
-            ;;
-        -h)
-            help-info
-            exit 1
-            ;;
-        *)
+            exit 0
+        else
             syntax_error info
             exit 1
-            ;;
-    esac
+        fi
 elif [ "$LEVEL0" = "create" ]; then
-    case $1 in
-        s*)
-            LEVEL1=storage
-            ;;
-        n*)
-            LEVEL1=namespace
-            ;;
-        m*)
-            LEVEL1=mailserver
-            ;;
-        p*)
-            LEVEL1=postgres
-            ;;
-        i*)
-            LEVEL1=iom
-            ;;
-        c*)
-            LEVEL1=cluster
-            ;;
-        --help)
+    LEVEL1=$(isCommand "$1" s storage    ||
+             isCommand "$1" n namespace  ||
+             isCommand "$1" m mailserver ||
+             isCommand "$1" p postgres   ||
+             isCommand "$1" i iom        ||
+             isCommand "$1" c cluster)   ||
+        if [ "$1" = '--help' -o "--help" = '-h' ]; then
             help-create
             exit 0
-            ;;
-        -h)
-            help-create
-            exit 0
-            ;;
-        *)
+        else
             syntax_error create
             exit 1
-            ;;
-    esac
+        fi
 elif [ "$LEVEL0" = "delete" ]; then
-    case $1 in
-        s*)
-            LEVEL1=storage
-            ;;
-        n*)
-            LEVEL1=namespace
-            ;;
-        m*)
-            LEVEL1=mailserver
-            ;;
-        p*)
-            LEVEL1=postgres
-            ;;
-        i*)
-            LEVEL1=iom
-            ;;
-        c*)
-            LEVEL1=cluster
-            ;;
-        --help)
+    LEVEL1=$(isCommand "$1" s storage    ||
+             isCommand "$1" n namespace  ||
+             isCommand "$1" m mailserver ||
+             isCommand "$1" p postgres   ||
+             isCommand "$1" i iom        ||
+             isCommand "$1" c cluster)   ||
+        if [ "$1" = '--help' -o "$1" = '-h' ]; then
             help-delete
-            exit 1
-            ;;
-        -h)
-            help-delete
-            exit 1
-            ;;
-        *)
+            exit 0
+        else
             syntax_error delete
             exit 1
-            ;;
-    esac
+        fi
 elif [ "$LEVEL0" = "apply" ]; then
-    case $1 in
-        de*)
-            LEVEL1=deployment
-            ;;
-        m*)
-            LEVEL1=mail-templates
-            ;;
-        x*)
-            LEVEL1=xsl-templates
-            ;;
-        sql-s*)
-            LEVEL1=sql-scripts
-            ;;
-        sql-c*)
-            LEVEL1=sql-config
-            ;;
-        j*)
-            LEVEL1=json-config
-            ;;
-        db*)
-            LEVEL1=dbmigrate
-            ;;
-        --help)
+    LEVEL1=$(isCommand "$1" de    deployment     ||
+             isCommand "$1" m     mail-templates ||
+             isCommand "$1" x     xsl-templates  ||
+             isCommand "$1" sql-s sql-scripts    ||
+             isCommand "$1" sql-c sql-config     ||
+             isCommand "$1" j     json-config    ||
+             isCommand "$1" db    dbmigrate)     ||
+        if [ "$1" = '--help' -o "$1" = '-h' ]; then
             help-apply
             exit 0
-            ;;
-        -h)
-            help-apply
-            exit 0
-            ;;
-        *)
+        else
             syntax_error apply
             exit 1
-            ;;
-    esac
+        fi
 elif [ "$LEVEL0" = "dump" ]; then
-    case $1 in
-        c*)
-            LEVEL1=create
-            ;;
-        l*)
-            LEVEL1=load
-            ;;
-        --help)
+    LEVEL1=$(isCommand "$1" c create ||
+             isCommand "$1" l load)  ||
+        if [ "$1" = '--help' -o "$1" = '-h' ]; then
             help-dump
             exit 0
-            ;;
-        -h)
-            help-dump
-            exit 0
-            ;;
-        *)
+        else
             syntax_error dump
             exit 1
-            ;;
-    esac
+        fi
 elif [ "$LEVEL0" = 'get' ]; then
-    case $1 in
-        co*)
-            LEVEL1=config
-            ;;
-        g*)
-            LEVEL1=geb-props
-            ;;
-        w*)
-            LEVEL1=ws-props
-            ;;
-        s*)
-            LEVEL1=soap-props
-            ;;
-        --help)
+    LEVEL1=$(isCommand "$1" co config      ||
+             isCommand "$1" g  geb-props   ||
+             isCommand "$1" w  ws-props    ||
+             isCommand "$1" s  soap-props) ||
+        if [ "$1" = '--help' -o "$1" = '-h' ]; then
             help-get
             exit 0
-            ;;
-        -h)
-            help-get
-            exit 0
-            ;;
-        *)
+        else
             syntax_error get
             exit 1
-            ;;
-    esac
+        fi
 elif [ "$LEVEL0" = 'log' ]; then
-    case $1 in
-        d*)
-            LEVEL1=dbaccount
-            ;;
-        c*)
-            LEVEL1=config
-            ;;
-        i*)
-            LEVEL1=iom
-            ;;
-        ap*)
-            LEVEL1=app
-            ;;
-        ac*)
-            LEVEL1=access
-            ;;
-        --help)
+    LEVEL1=$(isCommand "$1" d  dbaccount ||
+             isCommand "$1" c  config    ||
+             isCommand "$1" i  iom       ||
+             isCommand "$1" ap app       ||
+             isCommand "$1" ac access)   ||
+        if [ "$1" = '--help' -o "$1" = '-h' ]; then
             help-log
             exit 0
-            ;;
-        -h)
-            help-log
-            exit 0
-            ;;
-        *)
+        else
             syntax_error log
             exit 1
-            ;;
-    esac
+        fi
 fi
 
 # handle next command line argument
