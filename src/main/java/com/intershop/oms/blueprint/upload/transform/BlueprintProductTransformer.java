@@ -68,20 +68,6 @@ public class BlueprintProductTransformer extends EnfinityProductTransformer
         
         this.shopId = shopId;
         
-//        ShopDO shopDO;
-//        try
-//        {
-//            shopDO = shopPersistenceService.getShopDO(shopId);
-//        }
-//        catch(DatabaseException | NoObjectException e)
-//        {
-//            throw new TechnicalException("error while getting shop", e);
-//        }
-//
-//        shopDO.getSupplierList()
-//                        .stream().filter(s2s -> supplierIds.contains(s2s.getSupplierDO().getId())) // only checked suppliers
-//                        .forEach(s2s -> supplierMapping.put(s2s.getShopSupplierName(), s2s.getSupplierDO().getId()));
-
         supplierIds.forEach(s -> supplierMapping.put(s.toString(), s)); // was formerly String, Long but because of NPE using the ID for both
         
         transformDir = targetDirectory;
@@ -100,7 +86,8 @@ public class BlueprintProductTransformer extends EnfinityProductTransformer
     {
         Set<String> supplierNames = new HashSet<>();
         CSVRecord<BasicDataCSV> rec = new CSVRecord<>(BasicDataCSV.class);
-        // ProductCustomAttributes ca = new ProductCustomAttributes();
+        String sku = "skuToFind";        
+                        // ProductCustomAttributes ca = new ProductCustomAttributes();
 
         for (JAXBElement<?> elem : product.getAvailableOrNameOrShortDescription())
         {
@@ -110,8 +97,10 @@ public class BlueprintProductTransformer extends EnfinityProductTransformer
             switch(elem.getName().getLocalPart())
             {
                 case "sku":
-                    rec.setNotBlank(BasicDataCSV.supplierArticleNo, (String)elem.getValue());
-                    rec.setNotBlank(BasicDataCSV.manufacturerArticleNo, (String)elem.getValue());
+                    sku = (String)elem.getValue(); 
+                    rec.setNotBlank(BasicDataCSV.supplierArticleNo, sku);
+                    rec.setNotBlank(BasicDataCSV.manufacturerArticleNo, sku);
+                    sku = (String)elem.getValue();                    
                     break;
                 case "name":
                     rec.setNotBlank(BasicDataCSV.articleName,
@@ -133,9 +122,10 @@ public class BlueprintProductTransformer extends EnfinityProductTransformer
         }
 
         // rec.setNotBlank(BasicDataCSV.supplierArticleIdentifier, ca.toString());
-        rec.setNotBlank(BasicDataCSV.supplierArticleIdentifier, "TODO");
+        rec.setNotBlank(BasicDataCSV.supplierArticleIdentifier, sku); // use same sku as found before
 
-        for (String supplierName : supplierNames)
+        // for (String supplierName : supplierNames) -> comes from custom-attributes above. If this iteration is not entered nothing will be printed to csv. Using selected suppliers.
+        for (String supplierName : supplierMapping.keySet())
         {
             Long supplierId = supplierMapping.get(supplierName);
             if (supplierId == null)

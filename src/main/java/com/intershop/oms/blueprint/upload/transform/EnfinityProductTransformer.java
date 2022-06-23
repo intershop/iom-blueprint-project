@@ -47,7 +47,7 @@ public abstract class EnfinityProductTransformer // implements Transformer
     
     private final Path TARGET_IMPORT_IN = IOMSharedFileSystem.IMPORTARTICLE_IN.toPath();
 
-    public void transform(Long shopId, List<Long> supplierIds, int stockLevel, InputStream inputStream)
+    public void transform(Long shopId, List<Long> supplierIds, InputStream inputStream)
     {
         SimpleDateFormat sdfFilename = new SimpleDateFormat("yyyyMMddHHmmss");
         Long importStartDate = System.currentTimeMillis();
@@ -74,92 +74,54 @@ public abstract class EnfinityProductTransformer // implements Transformer
 
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance();
 
-        int fileCount = 0;
+        String datePrefix = sdfFilename.format(new Date(importStartDate + TimeUnit.SECONDS.toMillis(0)));
+        log.info("date prefix: {}", datePrefix);
+        preFileHook(datePrefix);
 
-        // foreach file to transform...
-
-            String datePrefix = sdfFilename.format(new Date(importStartDate + TimeUnit.SECONDS.toMillis(fileCount++)));
-            log.info("date prefix: {}", datePrefix);
-            preFileHook(datePrefix);
-
-            // try (FileReader fr = new FileReader(inputStream))
-            try
+        // read the input
+        try
+        {
+            XMLStreamReader reader = xmlFactory.createXMLStreamReader(inputStream);
+            while(reader.hasNext())
             {
-                XMLStreamReader reader = xmlFactory.createXMLStreamReader(inputStream);
-                while(reader.hasNext())
+                reader.next();
+                if (reader.isStartElement()
+                                && (reader.getLocalName().equals("product") || reader.getLocalName().equals("offer")))
                 {
-                    reader.next();
-                    if (reader.isStartElement() && (reader.getLocalName().equals("product")
-                                    || reader.getLocalName().equals("offer")))
-                    {
-                        JAXBElement<ComplexTypeProduct> prodElem = um.unmarshal(reader, ComplexTypeProduct.class);
-                        ComplexTypeProduct prod = prodElem.getValue();
-                        hasErrors = !processProduct(prod);
-                    }
+                    JAXBElement<ComplexTypeProduct> prodElem = um.unmarshal(reader, ComplexTypeProduct.class);
+                    ComplexTypeProduct prod = prodElem.getValue();
+                    hasErrors = !processProduct(prod);
                 }
-
-                reader.close();
-            }
-            catch(XMLStreamException | JAXBException e)
-            {
-                hasErrors = true;
-                log.error("unexpected error", e);
             }
 
-            postFileHook();
+            reader.close();
+        }
+        catch(XMLStreamException | JAXBException e)
+        {
+            hasErrors = true;
+            log.error("unexpected error", e);
+        }
 
-            if (hasErrors)
-            {
-                // state.setError(ExitCodeDefDO.ERROR, JobStateDefDO.PROCESS_ERROR, errorText.toString());
-                // state.setJobStateDefDO(JobStateDefDO.PROCESS_ERROR);
-                // CustomizationUtilityStatic.moveProcessedFile(importFilePath, errorDir);
-                log.error("Error while importing product file", errorText.toString());
-            }
-            else
-            {
-                // CustomizationUtilityStatic.moveProcessedFile(importFilePath, doneDir);
-                log.info("Successfully imported product file");
-            }
+        postFileHook();
 
-        // former loop
+        if (hasErrors)
+        {
+            log.error("Error while importing product file", errorText.toString());
+        }
+        else
+        {
+            log.info("Successfully imported product file");
+        }
 
         destroy();
 
         log.debug("End of transformations");
     }
 
-    private List<File> getImportFiles(List<File> importFiles, String regex, StringBuilder errorText)
-    {
-        List<File> matchingFiles = new ArrayList<>();
-        Pattern pattern = Pattern.compile(regex);
-        for (File currentImportFile : importFiles)
-        {
-            if (pattern.matcher(currentImportFile.getName()).matches())
-            {
-                if (!currentImportFile.exists())
-                {
-                    errorText.append("Encountered file doesn't exist: " + currentImportFile.getName() + "\n");
-                    continue;
-                }
-
-                if (!currentImportFile.canRead())
-                {
-                    errorText.append("Encountered file without \"read\" permissions: " + currentImportFile.getName()
-                                    + "\n");
-                    continue;
-                }
-
-                matchingFiles.add(currentImportFile);
-            }
-        }
-        return matchingFiles;
-    }
-
     /**
      * pre execution hook to initialize product data transformers with necessary parameters
      * @param shopId
      * @param supplierIds
-     * @param stockLevel
      * @param toParse
      */
     protected abstract void initialize(Long shopId, List<Long> supplierIds, Path toParse);

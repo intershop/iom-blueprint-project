@@ -19,6 +19,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import bakery.logic.service.configuration.Shop2SupplierLogicService;
 import bakery.logic.service.configuration.ShopLogicService;
 import bakery.persistence.dataobject.configuration.shop.ShopDO;
@@ -26,7 +29,6 @@ import bakery.persistence.dataobject.configuration.supplier.Shop2SupplierDO;
 import bakery.persistence.dataobject.configuration.supplier.SupplierDO;
 
 import com.intershop.oms.blueprint.upload.transform.BlueprintProductTransformer;
-// import com.intershop.oms.utils.configuration.IOMSharedFileSystem;
 
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 1, // 1 MB
                 maxFileSize = 1024 * 1024 * 10, // 10 MB
@@ -34,8 +36,8 @@ import com.intershop.oms.blueprint.upload.transform.BlueprintProductTransformer;
 )
 public class ProductUpload extends HttpServlet
 {
-    // private final Path TARGET_UPLOAD_DIRECTORY = IOMSharedFileSystem.OMS_SHARE.resolve("tmp");
-    // private final Path TARGET_IMPORT_IN = IOMSharedFileSystem.IMPORTARTICLE_IN.toPath();
+    private static final Logger log = LoggerFactory.getLogger(ProductUpload.class);
+    
     private final String FORM_ID_SEPARATOR = "_";
     private final String FORM_PREFIX_SSR = "ssr" + FORM_ID_SEPARATOR;
 
@@ -75,11 +77,9 @@ public class ProductUpload extends HttpServlet
 
         out.append("<fieldset><legend>Select the file to upload products.</legend>");
         out.append("<br>");
-        out.append("<input type = \"file\" name = \"file\" style:\"width:120px;\" />");
+        out.append("<input type = \"file\" name = \"file\" accept=\"text/xml\"; style:\"width:120px;\" />");
         out.append("<br><br>");
-        out.append("<input type = \"text\" name = \"stock\" value=\"250\" style:\"width:120px;\" /><label for=\"stock\"> stock level</label>");
-        out.append("<br><br>");
-        out.append("<input type = \"submit\" value = \"Import Products\" style:\"width:120px;background-color:light-blue;\" />");
+        out.append("<input type = \"submit\" value = \"Import Products\" style:\"width:120px;\" />");
         out.append("<br>");
         out.append("</fieldset></form></div></body></html>");
 
@@ -120,7 +120,7 @@ public class ProductUpload extends HttpServlet
     }
 
     /**
-     * Returns an html-checkbox with if and displayname to select.
+     * Returns an html-checkbox.
      * 
      * @param id
      * @param displayname
@@ -146,39 +146,27 @@ public class ProductUpload extends HttpServlet
         
         for (Long shopId : getShopAndSuppliers(request).keySet()) 
         {
-            transformer.transform(shopId,  getShopAndSuppliers(request).get(shopId), getStock(request), uploadedFile.getInputStream());
+            try
+            {
+                // call for all selected suppliers of the shop
+                transformer.transform(shopId, getShopAndSuppliers(request).get(shopId), uploadedFile.getInputStream());
+            }
+            catch(IOException e)
+            {
+                log.error("Error while getting input stream.", e);
+            }
         }
       
         /**
          * Servlet response
          */
-        request.getPart("file");
         response.getWriter().print("<html><head></head><body>");
-        response.getWriter().print("File '" + uploadedFile.getSubmittedFileName() + "' uploaded sucessfully ...");
-        response.getWriter().print("Desired stock '" + getStock(request) + ".");
-        response.getWriter().print("Desired suppliers '" + getShopAndSuppliers(request) + ".");
+        response.getWriter().print("File '" + uploadedFile.getSubmittedFileName() + "' uploaded sucessfully.<br>");
+        response.getWriter().print("Initial stock will be set immediately after the import by a randomizer.<br>");
+        response.getWriter().print("Selected suppliers '" + getShopAndSuppliers(request) + ".<br>");
         response.getWriter().print(
-                        "<br><br> ... want to do one more import? -> <a href=\"ProductUpload\">one more upload</a>");
+                        "<br><br> ... one more file to upload? Click <a href=\"ProductUpload\">one more upload</a>");
         response.getWriter().print("</body></html");
-    }
-
-    /**
-     * Determines the desired stock from the html-form parameters. If empty or failed, return 250.
-     * 
-     * @param request
-     * @return
-     */
-    private int getStock(HttpServletRequest request)
-    {
-        String stock = request.getParameter("stock");
-        try
-        {
-            return Integer.parseInt(stock);
-        }
-        catch(NumberFormatException e)
-        {
-            return 250;
-        }
     }
 
     /**
