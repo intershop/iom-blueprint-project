@@ -18,7 +18,7 @@ PERFORM create_or_update_shop2supplier(
 	-- shopsuppliername, suppliershopname
 	'inTRONICS Texas Warehouse', 'inTRONICS',
 	-- returnCarrier, create article mapping, shop article no prefix
-	carrier_dhl, FALSE, NULL
+	carrier_dhl, TRUE, ''
 );
 
 -- shop_intronics_b2b -> supplier_wh_texas
@@ -28,7 +28,7 @@ PERFORM create_or_update_shop2supplier(
 	-- shopsuppliername, suppliershopname
 	'inTRONICS Texas Warehouse', 'inTRONICS Business',
 	-- returnCarrier, create article mapping, shop article no prefix
-	carrier_dhl, FALSE, NULL
+	carrier_dhl, TRUE, ''
 );
 
 -- shop_intronics_b2b -> supplier_wh_arizona
@@ -38,7 +38,7 @@ PERFORM create_or_update_shop2supplier(
 	-- shopsuppliername, suppliershopname
 	'inTRONICS Arizona Warehouse', 'inTRONICS Business',
 	-- returnCarrier, create article mapping, shop article no prefix
-	carrier_dhl, FALSE, NULL
+	carrier_dhl, TRUE, ''
 );
 
 -- shop_intronics_b2b -> supplier_wh_losangeles
@@ -48,7 +48,7 @@ PERFORM create_or_update_shop2supplier(
 	-- shopsuppliername, suppliershopname
 	'inTRONICS Los Angeles Warehouse', 'inTRONICS Business',
 	-- returnCarrier, create article mapping, shop article no prefix
-	carrier_dhl, FALSE, NULL
+	carrier_dhl, TRUE, ''
 );
 
 -- shop_intronics_b2c -> supplier_wh_detroit
@@ -58,7 +58,7 @@ PERFORM create_or_update_shop2supplier(
 	-- shopsuppliername, suppliershopname
 	'inTRONICS Detroit Warehouse', 'inTRONICS',
 	-- returnCarrier, create article mapping, shop article no prefix
-	carrier_dhl, FALSE, NULL
+	carrier_dhl, TRUE, ''
 );
 
 -- shop_intronics_b2c -> supplier_retailer_losangeles
@@ -68,7 +68,7 @@ PERFORM create_or_update_shop2supplier(
 	-- shopsuppliername, suppliershopname
 	'inTRONICS Los Angeles Retailer', 'inTRONICS',
 	-- returnCarrier, create article mapping, shop article no prefix
-	carrier_dhl, FALSE, NULL
+	carrier_dhl, TRUE, ''
 );
 
 

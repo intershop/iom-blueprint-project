@@ -11,22 +11,24 @@ DELETE from product."ImportConfigurationDO";
 
 FOREACH supplierref IN ARRAY array[suppliers_all]
 LOOP	
-	--BASICDATA
+	
+	--BASICDATA (ABC)
 	INSERT INTO product."ImportConfigurationDO"(
 	            "id", "availabilityStoredProcedure", "copyStoredProcedure", "csvDelimiter", --1
 				"csvHeader", 
-				"storedProcedureGroup", "supplierRef",  "tableNameGroup", --4
+				"priceComparisonProviderDefRef", "storedProcedureGroup", "supplierRef",  "tableNameGroup", --4
 				"checkMissingInLastDatapack", "importDatapackFileTypeDefRef", "canDatapackBeEmpty", "parentImportConfigurationRef", "convertToCSV", "createContentAssignment", --5
 	            "internalMediaPath", "splitCount", "variationProcedure", "identifyOnBakeryArticleRef", "supplementArticleParent", --6
 				"assortmentSupplier", "updateArticleType", "createManufacturer", "createSupplierAssortmentSystem", "csvQuote") --7
-	    		SELECT nextval('"ImportConfigurationDO_id_seq"'), '', '', '''|''', --1
+	    		SELECT nextval('"ImportConfigurationDO_id_seq"'), 'random_availability', '', '''|''', --1
 					'supplierArticleNo|manufacturer|manufacturerArticleNo|ISBN|EAN|articleName|length|height|width|weight|assortmentName|assortmentIdentifier|deliveryForm|customsTariffNo|parentSupplierArticleNo|articleForm|immaterialUid|articleLanguage|supplierSalesCode|supplierArticleIdentifier|articleType|edition|packagingUnit|packagingUnitValue', 
-					'import_standard_a_v10', supplierref, 'Import_Standard_Basic_V10', --4
-					FALSE, 1, TRUE, NULL, FALSE, FALSE, --5
+					NULL, 'import_standard_a_v10', supplierref, 'Import_Standard_Basic_V10', --4
+					FALSE, 6, TRUE, NULL, FALSE, FALSE, --5
 		            '', 6, NULL, FALSE, TRUE, --6
 					supplierref, FALSE, TRUE, TRUE, E'\30'; --7
 
-	-- SKU Mapping 		
+
+	-- SKU Mapping (N)	
 	INSERT INTO "ImportConfigurationDO" (
 				id,	"availabilityStoredProcedure", "copyStoredProcedure","csvDelimiter", --1
 				"csvHeader", --2

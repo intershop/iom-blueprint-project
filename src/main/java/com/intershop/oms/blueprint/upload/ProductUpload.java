@@ -1,10 +1,7 @@
 package com.intershop.oms.blueprint.upload;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -31,11 +28,12 @@ import bakery.persistence.dataobject.configuration.supplier.SupplierDO;
 import com.intershop.oms.blueprint.upload.transform.BlueprintProductTransformer;
 
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 1, // 1 MB
-                maxFileSize = 1024 * 1024 * 10, // 10 MB
+                maxFileSize = 1024 * 1024 * 20, // 20 MB
                 maxRequestSize = 1024 * 1024 * 100 // 100 MB
 )
 public class ProductUpload extends HttpServlet
 {
+    private static final long serialVersionUID = 1L;
     private static final Logger log = LoggerFactory.getLogger(ProductUpload.class);
     
     private final String FORM_ID_SEPARATOR = "_";
