@@ -59,7 +59,7 @@ public class ProductUpload extends HttpServlet
         // ServletResponse response;
         PrintWriter out = resp.getWriter();
         out.append("<html><head>");
-        out.append("<title>Product Upload (non-standard)</title><link rel=\"shortcut icon\" type=\"image/png\" href=\"/omt/static/oms/img/favicon.ico\"></head>");
+        out.append(createHead());
         out.append("<body><div><h1>Upload your product files</h1><span style=\"color:red\">Note, that this code is not part of the IOM Blueprint Project.</span>");
         out.append("<form action = \"ProductUpload\" method = \"post\" enctype = \"multipart/form-data\">");
 
@@ -158,10 +158,16 @@ public class ProductUpload extends HttpServlet
         /**
          * Servlet response
          */
-        response.getWriter().print("<html><head></head><body>");
+        response.getWriter().print("<html>");
+        response.getWriter().print(createHead());
+        response.getWriter().print("<body>");
         response.getWriter().print("File '" + uploadedFile.getSubmittedFileName() + "' uploaded sucessfully.<br>");
         response.getWriter().print("Initial stock will be set immediately after the import by a randomizer.<br>");
         response.getWriter().print("Selected suppliers '" + getShopAndSuppliers(request) + ".<br>");
+        response.getWriter().print("<strong>The import is completed in no more than 2 minutes.</strong><br>");
+
+        response.getWriter().print(
+                        "<br><br> ... want to check for products in OMT? Click <a href=\"../omt/app/articleSearch/showResult\" target=\"_blank\">product search</a>");
         response.getWriter().print(
                         "<br><br> ... one more file to upload? Click <a href=\"ProductUpload\">one more upload</a>");
         response.getWriter().print("</body></html");
@@ -212,6 +218,11 @@ public class ProductUpload extends HttpServlet
         }
 
         return shopSuppliersMap;
+    }
+
+    private String createHead()
+    {
+        return "<title>Product pload (non-standard) | Intershop Order Management</title><link rel=\"shortcut icon\" type=\"image/png\" href=\"/omt/static/oms/img/favicon.ico\"></head>";
     }
 
 }
