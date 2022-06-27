@@ -35,7 +35,7 @@ public class ProductUpload extends HttpServlet
 {
     private static final long serialVersionUID = 1L;
     private static final Logger log = LoggerFactory.getLogger(ProductUpload.class);
-    
+
     private final String FORM_ID_SEPARATOR = "_";
     private final String FORM_PREFIX_SSR = "ssr" + FORM_ID_SEPARATOR;
 
@@ -141,8 +141,8 @@ public class ProductUpload extends HttpServlet
          * Transform
          */
         BlueprintProductTransformer transformer = new BlueprintProductTransformer();
-        
-        for (Long shopId : getShopAndSuppliers(request).keySet()) 
+
+        for (Long shopId : getShopAndSuppliers(request).keySet())
         {
             try
             {
@@ -154,7 +154,7 @@ public class ProductUpload extends HttpServlet
                 log.error("Error while getting input stream.", e);
             }
         }
-      
+
         /**
          * Servlet response
          */
@@ -222,7 +222,7 @@ public class ProductUpload extends HttpServlet
 
     private String createHead()
     {
-        return "<title>Product pload (non-standard) | Intershop Order Management</title><link rel=\"shortcut icon\" type=\"image/png\" href=\"/omt/static/oms/img/favicon.ico\"></head>";
+        return "<title>Product upload (non-standard) | Intershop Order Management</title><link rel=\"shortcut icon\" type=\"image/png\" href=\"/omt/static/oms/img/favicon.ico\"></head>";
     }
 
 }
