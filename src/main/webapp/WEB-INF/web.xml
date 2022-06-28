@@ -3,30 +3,36 @@
     version="3.1">
     <display-name>iom-blueprint-project</display-name>
     <servlet>
-        <display-name>Heartbeat</display-name>
-        <servlet-name>Heartbeat</servlet-name>
-        <servlet-class>com.intershop.oms.ps.servlet.Heartbeat</servlet-class>
-    </servlet>
-    <servlet>
-        <display-name>Testservlet</display-name>
-        <servlet-name>Testservlet</servlet-name>
-        <servlet-class>com.intershop.oms.ps.servlet.Testservlet</servlet-class>
+        <display-name>MockEndpoint</display-name>
+        <servlet-name>MockEndpoint</servlet-name>
+        <servlet-class>com.intershop.oms.ps.servlet.MockEndpoint</servlet-class>
     </servlet>
     <servlet>
         <display-name>ImportStatus</display-name>
         <servlet-name>ImportStatus</servlet-name>
         <servlet-class>com.intershop.oms.ps.servlet.ImportStatus</servlet-class>
     </servlet>
+    <servlet>
+        <display-name>ProductUpload</display-name>
+        <servlet-name>ProductUpload</servlet-name>
+        <servlet-class>com.intershop.oms.blueprint.upload.ProductUpload</servlet-class>
+    </servlet>
+    
     <servlet-mapping>
-        <servlet-name>Heartbeat</servlet-name>
-        <url-pattern>/Heartbeat/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Testservlet</servlet-name>
-        <url-pattern>/Testservlet</url-pattern>
+        <servlet-name>MockEndpoint</servlet-name>
+        <url-pattern>/MockEndpoint/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ImportStatus</servlet-name>
         <url-pattern>/ImportStatus</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ImportErrors</servlet-name>
+        <url-pattern>/ImportErrors</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ProductUpload</servlet-name>
+        <url-pattern>/ProductUpload</url-pattern>
+    </servlet-mapping>
+    
 </web-app>

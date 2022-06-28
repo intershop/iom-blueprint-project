@@ -17,8 +17,10 @@ PERFORM create_or_update_shop2supplier(
 	TRUE, shop_intronics_b2c, supplier_wh_texas,
 	-- shopsuppliername, suppliershopname
 	'inTRONICS Texas Warehouse', 'inTRONICS',
-	-- returnCarrier, create article mapping, shop article no prefix
-	carrier_dhl, FALSE, NULL
+	-- returnCarrier,
+	carrier_dhl,
+	-- create article mapping (if true, creates automatically an N-file after A/ABC-file to be imported), shop article no prefix
+	TRUE, ''
 );
 
 -- shop_intronics_b2b -> supplier_wh_texas
@@ -27,8 +29,10 @@ PERFORM create_or_update_shop2supplier(
 	TRUE, shop_intronics_b2b, supplier_wh_texas,
 	-- shopsuppliername, suppliershopname
 	'inTRONICS Texas Warehouse', 'inTRONICS Business',
-	-- returnCarrier, create article mapping, shop article no prefix
-	carrier_dhl, FALSE, NULL
+	-- returnCarrier,
+	carrier_dhl,
+	-- create article mapping (if true, creates automatically an N-file after A/ABC-file import to be imported), shop article no prefix
+	TRUE, ''
 );
 
 -- shop_intronics_b2b -> supplier_wh_arizona
@@ -37,8 +41,10 @@ PERFORM create_or_update_shop2supplier(
 	TRUE, shop_intronics_b2b, supplier_wh_arizona,
 	-- shopsuppliername, suppliershopname
 	'inTRONICS Arizona Warehouse', 'inTRONICS Business',
-	-- returnCarrier, create article mapping, shop article no prefix
-	carrier_dhl, FALSE, NULL
+	-- returnCarrier,
+	carrier_dhl,
+	-- create article mapping (if true, creates automatically an N-file after A/ABC-file to be imported), shop article no prefix
+	TRUE, ''
 );
 
 -- shop_intronics_b2b -> supplier_wh_losangeles
@@ -47,8 +53,10 @@ PERFORM create_or_update_shop2supplier(
 	TRUE, shop_intronics_b2b, supplier_wh_losangeles,
 	-- shopsuppliername, suppliershopname
 	'inTRONICS Los Angeles Warehouse', 'inTRONICS Business',
-	-- returnCarrier, create article mapping, shop article no prefix
-	carrier_dhl, FALSE, NULL
+	-- returnCarrier,
+	carrier_dhl,
+	-- create article mapping (if true, creates automatically an N-file after A/ABC-file to be imported), shop article no prefix
+	TRUE, ''
 );
 
 -- shop_intronics_b2c -> supplier_wh_detroit
@@ -57,8 +65,10 @@ PERFORM create_or_update_shop2supplier(
 	TRUE, shop_intronics_b2c, supplier_wh_detroit,
 	-- shopsuppliername, suppliershopname
 	'inTRONICS Detroit Warehouse', 'inTRONICS',
-	-- returnCarrier, create article mapping, shop article no prefix
-	carrier_dhl, FALSE, NULL
+	-- returnCarrier,
+	carrier_dhl,
+	-- create article mapping (if true, creates automatically an N-file after A/ABC-file to be imported), shop article no prefix
+	TRUE, ''
 );
 
 -- shop_intronics_b2c -> supplier_retailer_losangeles
@@ -67,8 +77,10 @@ PERFORM create_or_update_shop2supplier(
 	TRUE, shop_intronics_b2c, supplier_retailer_losangeles,
 	-- shopsuppliername, suppliershopname
 	'inTRONICS Los Angeles Retailer', 'inTRONICS',
-	-- returnCarrier, create article mapping, shop article no prefix
-	carrier_dhl, FALSE, NULL
+	-- returnCarrier,
+	carrier_dhl,
+	-- create article mapping (if true, creates automatically an N-file after A/ABC-file to be imported), shop article no prefix
+	TRUE, ''
 );
 
 
@@ -80,8 +92,10 @@ PERFORM create_or_update_shop2supplier(
 	TRUE, shop_intronics_b2c, supplier_int,
 	-- shopsuppliername, suppliershopname
 	NULL, NULL,
-	-- returnCarrier, create article mapping, shop article no prefix
-	NULL, TRUE, ''
+	-- returnCarrier,
+	carrier_dhl,
+	-- create article mapping (if true, creates automatically an N-file after A/ABC-file to be imported), shop article no prefix
+	TRUE, ''
 );
 
 
@@ -91,8 +105,10 @@ PERFORM create_or_update_shop2supplier(
 	TRUE, shop_intronics_b2b, supplier_int,
 	-- shopsuppliername, suppliershopname
 	NULL, NULL,
-	-- returnCarrier, create article mapping, shop article no prefix
-	NULL, TRUE, ''
+	-- returnCarrier,
+	carrier_dhl,
+	-- create article mapping (if true, creates automatically an N-file after A/ABC-file to be imported), shop article no prefix
+	TRUE, ''
 );
 
 -- enable cash on delivery (COD) for 3 suppliers only
