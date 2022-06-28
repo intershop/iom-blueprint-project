@@ -51,28 +51,24 @@ public class BlueprintProductTransformer extends EnfinityProductTransformer
     private static final Logger log = LoggerFactory.getLogger(BlueprintProductTransformer.class);
     private static final char ESCAPE_CHAR = '\u0015';
 
-    @EJB(lookup = ShopPersistenceService.PERSISTENCE_SHOPPERSISTENCEBEAN) // NPE
-    private ShopPersistenceService shopPersistenceService;
-
     private String currentFilePrefix = "";
     private Map<Long, CSVPrinter> basicDataPrinters = null;
     private Map<String, Long> supplierMapping = null;
     private Path transformDir = null;
     private Long shopId;
-    
+
     @Override
     protected void initialize(Long shopId, List<Long> supplierIds, Path targetDirectory)
     {
         // initialize supplier mapping for this shop based on s2s.shopSupplierName
         supplierMapping = new HashMap<>();
-        
+
         this.shopId = shopId;
-        
-        supplierIds.forEach(s -> supplierMapping.put(s.toString(), s)); // was formerly String, Long but because of NPE using the ID for both
-        
+
+        supplierIds.forEach(s -> supplierMapping.put(s.toString(), s));
+
         transformDir = targetDirectory;
     }
-
 
     @Override
     protected void preFileHook(String datePrefix)
@@ -84,10 +80,9 @@ public class BlueprintProductTransformer extends EnfinityProductTransformer
     @Override
     protected boolean processProduct(ComplexTypeProduct product)
     {
-        Set<String> supplierNames = new HashSet<>();
         CSVRecord<BasicDataCSV> rec = new CSVRecord<>(BasicDataCSV.class);
-        String sku = "skuToFind";        
-                        // ProductCustomAttributes ca = new ProductCustomAttributes();
+        String sku = "skuToFind";
+        // ProductCustomAttributes ca = new ProductCustomAttributes();
 
         for (JAXBElement<?> elem : product.getAvailableOrNameOrShortDescription())
         {
@@ -97,34 +92,26 @@ public class BlueprintProductTransformer extends EnfinityProductTransformer
             switch(elem.getName().getLocalPart())
             {
                 case "sku":
-                    sku = (String)elem.getValue(); 
+                    sku = (String)elem.getValue();
                     rec.setNotBlank(BasicDataCSV.supplierArticleNo, sku);
                     rec.setNotBlank(BasicDataCSV.manufacturerArticleNo, sku);
-                    sku = (String)elem.getValue();                    
+                    sku = (String)elem.getValue();
                     break;
                 case "name":
                     rec.setNotBlank(BasicDataCSV.articleName,
                                     ((ComplexTypeGenericAttributeString)elem.getValue()).getValue());
                     break;
-                // case "custom-attributes":
-                // handleCustomAttributes((ComplexTypeCustomAttributes)elem.getValue(), rec, supplierNames, ca);
-                // break;
                 case "manufacturer":
                     rec.setNotBlank(BasicDataCSV.manufacturer,
                                     ((ComplexTypeProductManufacturer)elem.getValue()).getManufacturerName());
                     break;
-                // case "product-links":
-                // handleProductLinks((ComplexTypeProductProductLinks)elem.getValue(), ca);
-
                 default:
                     break;
             }
         }
 
-        // rec.setNotBlank(BasicDataCSV.supplierArticleIdentifier, ca.toString());
         rec.setNotBlank(BasicDataCSV.supplierArticleIdentifier, sku); // use same sku as found before
 
-        // for (String supplierName : supplierNames) -> comes from custom-attributes above. If this iteration is not entered nothing will be printed to csv. Using selected suppliers.
         for (String supplierName : supplierMapping.keySet())
         {
             Long supplierId = supplierMapping.get(supplierName);

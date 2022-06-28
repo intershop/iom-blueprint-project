@@ -41,10 +41,10 @@ import bakery.persistence.job.file.Retry;
 import bakery.util.exception.MissingConfigurationException;
 import bakery.util.exception.TechnicalException;
 
-public abstract class EnfinityProductTransformer // implements Transformer
+public abstract class EnfinityProductTransformer
 {
     private static final Logger log = LoggerFactory.getLogger(EnfinityProductTransformer.class);
-    
+
     private final Path TARGET_IMPORT_IN = IOMSharedFileSystem.IMPORTARTICLE_IN.toPath();
 
     public void transform(Long shopId, List<Long> supplierIds, InputStream inputStream)
@@ -120,6 +120,7 @@ public abstract class EnfinityProductTransformer // implements Transformer
 
     /**
      * pre execution hook to initialize product data transformers with necessary parameters
+     * 
      * @param shopId
      * @param supplierIds
      * @param toParse
