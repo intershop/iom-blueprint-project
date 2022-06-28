@@ -25,7 +25,7 @@
     </repositories>
 
     <properties>
-        <platform.version>3.7.0.0</platform.version>
+        <platform.version>4.1.1</platform.version>
     </properties>
 
     <!-- Please note: war and ear artifacts should be included as pom -->
