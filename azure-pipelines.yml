@@ -21,5 +21,5 @@ extends:
     dockerRepoIOMServiceConnection:     order-iom-docker.intershop.de.dockerhub
     dockerRepoIOM:                      docker.intershop.de/intershophub
     acrServiceConnection:               order-iomInternalACR-ISH-ENG-IOM
-    acr:                                iominternalacr.azurecr.io/
+    acr:                                iominternalacr.azurecr.io
     projectEnvName:                     dev
