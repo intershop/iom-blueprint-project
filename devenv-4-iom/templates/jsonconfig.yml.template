@@ -33,10 +33,12 @@ spec:
             value: '${OMS_LOGLEVEL_SCRIPTS}'
           - name: CAAS_ENV_NAME
             value: '${PROJECT_ENV_NAME}'
-        command: [ '${ConfigBinDir}/apply_json_config.sh', '--dir=${ConfigBaseDir}/caas-config/json-config' ]
+          - name: PROJECT_ENV_NAME
+            value: '${PROJECT_ENV_NAME}'
+        command: [ '${ConfigBinDir}/apply_json_config.sh', '--dir=${ConfigBaseDir}/${ConfigCustomDir}/json-config' ]
         volumeMounts:
 ${JsonconfDirYml_}        - name: jsonconf
-${JsonconfDirYml_}          mountPath: ${ConfigBaseDir}/caas-config/json-config
+${JsonconfDirYml_}          mountPath: ${ConfigBaseDir}/${ConfigCustomDir}/json-config
       restartPolicy: Never
       volumes:
 ${JsonconfDirYml_}      - name: jsonconf

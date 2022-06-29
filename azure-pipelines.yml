@@ -1,0 +1,25 @@
+# see https://docs.microsoft.com/en-us/azure/devops/pipelines/process/resources?view=azure-devops&tabs=schema#define-a-repositories-resource
+resources:
+  repositories:
+    - repository: IOMDevopsRepo
+      type: git
+      name: order-iom-partner-devops
+      ref: develop
+
+trigger:
+  branches:
+    include:
+      - '*'
+
+# see https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops#extend-from-a-template
+# see https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops#use-other-repositories
+extends:
+  template: template.yml@IOMDevopsRepo
+  parameters:
+    agentPool:                          ubuntu-20.4-DS4_v2-adopt-adoptium-jdk-ora
+    artifactsFeed:                      order-iom-releases
+    dockerRepoIOMServiceConnection:     order-iom-docker.intershop.de.dockerhub
+    dockerRepoIOM:                      docker.intershop.de/intershophub
+    acrServiceConnection:               order-iomInternalACR-ISH-ENG-IOM
+    acr:                                iominternalacr.azurecr.io
+    projectEnvName:                     dev

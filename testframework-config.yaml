@@ -1,0 +1,7 @@
+testframework:
+  order-service:
+    default:
+      version: "V2_2"
+  supplier-service:
+    default:
+      version: "V2_11"

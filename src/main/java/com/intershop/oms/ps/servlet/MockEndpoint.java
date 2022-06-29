@@ -3,25 +3,21 @@ package com.intershop.oms.ps.servlet;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.io.IOException;
-import java.util.UUID;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class Heartbeat extends HttpServlet
+/**
+ * Can be used to mock endpoints for development.
+ */
+public class MockEndpoint extends HttpServlet
 {
     private static final long serialVersionUID = 1L;
 
     public static final String RESPONSE_CODE_PARAM = "responseCode";
     public static final String RESPONSE_TEXT_PARAM = "responseText";
-
-    public static final String RMA_DUMMY = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                    + "<p:ReturnAnnouncementResponse xmlns:p=\"http://oms.intershop.com/elefant/rma/model\" xmlns:p1=\"http://types.theberlinbakery.com/v1_0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://oms.intershop.com/elefant/rma/model ReturnAnnouncementResponse-v1.0.xsd \">"
-                    + "  <p:RMANumber>%s</p:RMANumber>" + "  <p:Property key=\"some_property\" value=\"some_value\"/>"
-                    + "  <p:Property key=\"another_property\" value=\"another value xyz\"/>"
-                    + "</p:ReturnAnnouncementResponse>";
 
     public static final String RMA_LOGIN_DUMMY = "{\"token\":\"%s\"}";
 
@@ -70,20 +66,7 @@ public class Heartbeat extends HttpServlet
             }
         }
         resp.setStatus(responseCode);
-        if (req.getRequestURI().contains("rma-dummy"))
-        {
-            if (req.getRequestURI().contains("unauthenticated"))
-            {
-                resp.setContentType("application/json");
-                responseBody = String.format(RMA_LOGIN_DUMMY, UUID.randomUUID().toString());
-            }
-            else
-            {
-                resp.setContentType("application/xml");
-                responseBody = String.format(RMA_DUMMY, UUID.randomUUID().toString());
-            }
-        }
-        else if (req.getRequestURI().contains("dpd-dummy"))
+        if (req.getRequestURI().contains("dpd-dummy"))
         {
             if (req.getRequestURI().contains("user"))
             {

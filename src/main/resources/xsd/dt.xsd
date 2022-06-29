@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema
+	targetNamespace="http://www.intershop.com/xml/ns/enfinity/6.5/core/impex-dt"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+	<xsd:attribute name="dt">
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:enumeration value="int" />
+				<xsd:enumeration value="double" />
+				<xsd:enumeration value="string" />
+				<xsd:enumeration value="long" />
+				<xsd:enumeration value="boolean" />
+				<xsd:enumeration value="date" />
+				<xsd:enumeration value="decimal" />
+				<xsd:enumeration value="money" />
+				<xsd:enumeration value="quantity" />
+				<xsd:enumeration value="text" />
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:attribute>
+</xsd:schema>
