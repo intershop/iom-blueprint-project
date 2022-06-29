@@ -1,0 +1,18 @@
+testframework:
+  default-endpoint:
+    version: "V1"
+    username: "admin"
+    password: "!InterShop00!"
+    endpoint:
+      host: "localhost"
+      port: 8130
+      protocol: "http"
+  database:
+    default:
+      version: "V1"
+      endpoint:
+        host: "localhost:5482"
+      username: "oms_user"
+      password: "oms_pw"
+      parameters:
+        dbName: "oms_db"
