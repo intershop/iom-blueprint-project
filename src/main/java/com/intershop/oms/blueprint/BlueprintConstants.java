@@ -9,7 +9,6 @@ public interface BlueprintConstants
     static final String RETURN_PROPERTY_GROUP_RETURN = "return";
 
     static final String DISPATCH_PROPERTY_KEY_CREATE_INVOICE = "createInvoice";
-    static final String DISPATCH_PROPERTY_KEY_INVOICE_EMAIL = "invoiceEmail";
 
     static final String PROPERTY_KEY_EMAIL = "email";
     static final String PROPERTY_VALUE_FALSE = "false";
