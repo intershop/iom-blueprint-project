@@ -238,6 +238,16 @@ BEGIN
 	FROM "RoleDO" WHERE "name" IN(  user_admin_role_name)
 	ON CONFLICT ("organizationRef", "roleRef", "userRef") DO NOTHING;
 	
+	-- Ensure that the role FullPlatformAdmin  present in the initial database has all existing rights 
+	-- NOT RECOMMENED FOR PRODUCTIVE SYSTEMS
+	
+	WITH ADMINROLE as (select id from "RoleDO" WHERE  name='FullPlatformAdmin')
+		INSERT INTO "Role2RightDO" ("rightDefRef",	"roleRef")
+		SELECT r.id, adminRole.id
+		FROM "RightDefDO" r JOIN ADMINROLE ON true
+		EXCEPT -- already in
+		SELECT "rightDefRef",	"roleRef" FROM "Role2RightDO"
+	WHERE "roleRef" = (select id from ADMINROLE);
 	
 		
 END;
