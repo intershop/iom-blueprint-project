@@ -67,6 +67,7 @@ eb_erp int = 1000;
 -- decision beans
 db_mail int = 1000;
 db_invoicing int = 10001;
+db_send_email int = 50000;
 ')
 
 #set($vars_payment_methods = '

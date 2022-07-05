@@ -119,7 +119,8 @@ LOOP
 		-- Mail Event Registry Configuration
 		/*
 			mailEventDefRef = 1     (MailEventDefDO.SEND_SHOP_CUSTOMER_MAIL_PC)
-			decisionBeanDefRef = 50 (ExpandedDecisionBeanDefDO.SEND_EMAIL_DECIDER_BEAN) -> SendEmailDeciderBean.java
+			(core) decisionBeanDefRef = 50 (DecisionBeanDefDO.SEND_EMAIL_DECIDER_BEAN) -> SendEmailDeciderBean.java
+			(custom) decisionBeanDefRef = 50000 (ExpandedDecisionBeanDefDO.SEND_EMAIL_DECISION_BEAN) -> SendEmailDecisionBean.java
 			transmissionTypeDefRef = transmissionType_id (see TransmissionTypeDefDO)
 		*/
 		INSERT INTO "MailEventRegistryEntryDO"(
@@ -129,7 +130,7 @@ LOOP
 				SELECT
 				nextval('"MailEventRegistryEntryDO_id_seq"'), 0, now(), now(), true,
 				eventRegistryEntry_id,
-				1, 50, transmissionType_id -- "mailEventDefRef", "decisionBeanDefRef", "transmissionTypeDefRef"
+				1, db_send_email, transmissionType_id -- "mailEventDefRef", "decisionBeanDefRef", "transmissionTypeDefRef"
 				WHERE NOT EXISTS
 				(
 					SELECT * FROM "MailEventRegistryEntryDO" 

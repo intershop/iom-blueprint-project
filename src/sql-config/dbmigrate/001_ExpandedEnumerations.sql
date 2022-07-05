@@ -14,7 +14,8 @@ BEGIN
 		(20000, 'codPaymentDecisionBean'),
 		(20001, 'maxOrderValueDecisionBean'),
 		(40000, 'orderTransmissionDecisionBean'),
-		(41000, 'supplierTransmissionDecisionBean')
+		(41000, 'supplierTransmissionDecisionBean'),
+		(50000, 'sendEmailDecisionBean')
 	ON CONFLICT (id) DO NOTHING;
 
 
