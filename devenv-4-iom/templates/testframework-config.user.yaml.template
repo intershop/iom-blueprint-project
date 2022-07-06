@@ -1,0 +1,16 @@
+testframework:
+  default-endpoint:
+    version: "V1"
+    endpoint:
+      host: "${HostIom}"
+      port: ${PORT_IOM_SERVICE}
+      protocol: "http"
+  database:
+    default:
+      version: "V1"
+      endpoint:
+        host: "${PgHostExtern}:${PgPortExtern}"
+      username: "${OMS_DB_USER}"
+      password: "${OMS_DB_PASS}"
+      parameters:
+        dbName: "${OMS_DB_NAME}"
