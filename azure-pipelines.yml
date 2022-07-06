@@ -4,8 +4,7 @@ resources:
     - repository: IOMDevopsRepo
       type: git
       name: order-iom-partner-devops
-      #ref: develop
-      ref: task/77872-test-framework
+      ref: develop
 
 trigger:
   branches:
