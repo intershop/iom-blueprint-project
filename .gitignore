@@ -62,3 +62,4 @@ filebeat-kubernetes.yaml
 .idea/
 *.iml
 devenv.user.properties
+testframework-config.user.yaml

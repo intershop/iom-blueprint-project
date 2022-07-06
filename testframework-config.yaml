@@ -1,4 +1,7 @@
 testframework:
+  default-endpoint:
+    username: "admin"
+    password: "!InterShop00!"
   order-service:
     default:
       version: "V2_2"
