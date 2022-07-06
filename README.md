@@ -16,6 +16,23 @@ If _devenv-4-iom_ is already installed and you are looking for a short overview 
 ```
     devenv-cli.sh -h
 ```
+# Release Information 2.1.0
+
+## Compatibility
+
+At the time of release of _devenv-4-iom_, it is compatible with the latest version of IOM. As long as there is no new release of _devenv-4-iom_, it is ensured, that new releases of IOM are compatible with _devenv-4-iom_. If a new version of IOM requires an update of _devenev-4-iom_, the release notes of IOM will contain an according statement.
+
+At the time of writing, _devenv-4-iom 2.1.0_ is compatible with all IOM versions between 3.0 and 4.1 (inclusive).
+
+## New Features
+
+### Support for bash completion <!-- 77729 -->
+
+_devenv-4-iom_ now supports bash completion. In order to use this new feature, the according completion script has to be installed, see [documentation of installation](doc/00_installation.md).
+
+### Support for IOM Test-Framework <!-- 75996 -->
+
+When starting the IOM application server (`create iom`), a file _testframework-config.user.yaml_ is created within the project root directory, containing all necessary information to run local tests based on [IOM Test-Framework](https://github.com/intershop/iom-test-framework). Along with support for this file, one new configuration properties was added: _CREATE_TEST_CONFIG_, which controls the creation of the configuration file.
 
 # Release Information 2.0.5
 

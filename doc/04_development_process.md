@@ -221,6 +221,12 @@ PDF documents are stored within the shared file system of IOM. To get easy acces
 
 After that, you will have direct access to IOMs shared file system through the directory you have set for `CUSTOM_SHARE_DIR`.
 
+## Testing in Context of IOM Project Development
+
+Projects, that are based on [IOM Project Archetype](https://github.com/intershop/iom-project-archetype), are providing a very good intergration of [IOM Test-Framework](https://github.com/intershop/iom-test-framework). This test-framework provides automatic testing of REST APIs.
+
+In order to pass all required information for [IOM Test-Framework](https://github.com/intershop/iom-test-framework), _devenv-4-iom_ creates a file _testframework-config.user.yaml_ whenever the IOM application server is started (`create iom`). This configuration file provides information how to connect the IOM application server and the according PostgreSQL database. 
+
 ## Testing in Context of IOM Product Development
 
 The processes described in this section are specific for IOM product development. Nevertheless, the concept can be adapted in context of projects as well. The tasks of _devenv-4-iom_ in context of testing are very simple:
