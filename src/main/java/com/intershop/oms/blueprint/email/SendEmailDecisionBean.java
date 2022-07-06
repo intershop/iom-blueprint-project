@@ -40,30 +40,38 @@ public class SendEmailDecisionBean extends AbstractExecutionDecider<MailEventReg
 
     @Override
     public boolean isExecutionRequired(OrderDO orderDO, MailEventRegistryEntryDO eventRegistry)
-    {   
-        // has email and not contains the custom property     
-        return hasEmailAddress(orderDO) && (!hasCustomProperty(orderDO, BlueprintConstants.ORDER_PROPERTY_GROUP_ORDER, BlueprintConstants.PROPERTY_KEY_EMAIL, BlueprintConstants.PROPERTY_VALUE_FALSE));
+    {
+        // has email and not contains the custom property
+        return hasEmailAddress(orderDO) && (!hasCustomProperty(orderDO, BlueprintConstants.ORDER_PROPERTY_GROUP_ORDER,
+                        BlueprintConstants.PROPERTY_KEY_EMAIL, BlueprintConstants.PROPERTY_VALUE_FALSE));
     }
 
     @Override
     public boolean isExecutionRequired(DispatchDO dispatchDO, MailEventRegistryEntryDO eventRegistry)
     {
-        // has email and not contains the custom property     
-        return hasEmailAddress(dispatchDO.getOrderDO()) && (!hasCustomProperty(dispatchDO, BlueprintConstants.DISPATCH_PROPERTY_GROUP_DISPATCH, BlueprintConstants.PROPERTY_KEY_EMAIL, BlueprintConstants.PROPERTY_VALUE_FALSE));
+        // has email and not contains the custom property
+        return hasEmailAddress(dispatchDO.getOrderDO()) && (!hasCustomProperty(dispatchDO,
+                        BlueprintConstants.DISPATCH_PROPERTY_GROUP_DISPATCH, BlueprintConstants.PROPERTY_KEY_EMAIL,
+                        BlueprintConstants.PROPERTY_VALUE_FALSE));
     }
 
     @Override
-    public boolean isExecutionRequired(ReturnAnnouncementDO returnAnnouncementDO, MailEventRegistryEntryDO eventRegistry)
+    public boolean isExecutionRequired(ReturnAnnouncementDO returnAnnouncementDO,
+                    MailEventRegistryEntryDO eventRegistry)
     {
-        // has email and not contains the custom property     
-        return hasEmailAddress(returnAnnouncementDO.getOrder()) && (!hasCustomProperty(returnAnnouncementDO, BlueprintConstants.RMA_PROPERTY_GROUP_RMA, BlueprintConstants.PROPERTY_KEY_EMAIL, BlueprintConstants.PROPERTY_VALUE_FALSE));
+        // has email and not contains the custom property
+        return hasEmailAddress(returnAnnouncementDO.getOrder()) && (!hasCustomProperty(returnAnnouncementDO,
+                        BlueprintConstants.RMA_PROPERTY_GROUP_RMA, BlueprintConstants.PROPERTY_KEY_EMAIL,
+                        BlueprintConstants.PROPERTY_VALUE_FALSE));
     }
 
     @Override
     public boolean isExecutionRequired(ReturnDO returnDO, MailEventRegistryEntryDO eventRegistry)
     {
-        // has email and not contains the custom property     
-        return hasEmailAddress(returnDO.getOrderDO()) && (!hasCustomProperty(returnDO, BlueprintConstants.RETURN_PROPERTY_GROUP_RETURN, BlueprintConstants.PROPERTY_KEY_EMAIL, BlueprintConstants.PROPERTY_VALUE_FALSE));
+        // has email and not contains the custom property
+        return hasEmailAddress(returnDO.getOrderDO()) && (!hasCustomProperty(returnDO,
+                        BlueprintConstants.RETURN_PROPERTY_GROUP_RETURN, BlueprintConstants.PROPERTY_KEY_EMAIL,
+                        BlueprintConstants.PROPERTY_VALUE_FALSE));
     }
 
     @Override
@@ -72,14 +80,14 @@ public class SendEmailDecisionBean extends AbstractExecutionDecider<MailEventReg
         // has email ?
         if (StringUtils.isEmpty(invoicingDO.getEmailAddress()))
         {
-            logger.debug("For customer number '{}' with invoice number '{}' no email address exists. Couldn't send email.", 
-                invoicingDO.getShopCustomerNo(), invoicingDO.getInvoiceNo());
+            logger.debug("For customer number '{}' with invoice number '{}' no email address exists. Couldn't send email.",
+                            invoicingDO.getShopCustomerNo(), invoicingDO.getInvoiceNo());
             return false;
         }
 
         // consider type of invoice vs. credit note
-		InvoicingTypeDefDO invoicingTypeDefDO = invoicingDO.getInvoicingTypeDefDO();
-		EnumSet<TransmissionTypeDefDO> transmissionTypes = null;
+        InvoicingTypeDefDO invoicingTypeDefDO = invoicingDO.getInvoicingTypeDefDO();
+        EnumSet<TransmissionTypeDefDO> transmissionTypes = null;
 
 		switch (invoicingTypeDefDO)
         {
@@ -95,7 +103,8 @@ public class SendEmailDecisionBean extends AbstractExecutionDecider<MailEventReg
                 }
                 else
                 {
-                    transmissionTypes = EnumSet.of(TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_CREDITNOTE,
+                    transmissionTypes = EnumSet.of(
+                            TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_CREDITNOTE,
                             TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_RETURN_CREDITNOTE,
                             TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_RETURN_CAN_CREDITNOTE,
                             TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_RETURN_DEF_CREDITNOTE,
@@ -111,12 +120,13 @@ public class SendEmailDecisionBean extends AbstractExecutionDecider<MailEventReg
                 break;
             default:
                 logger.error("Invoicing type " + invoicingTypeDefDO.name() + " is not implemented yet.");
-		}
+        }
 
         // transmission type is configured ?
-        if(!transmissionTypes.contains(eventRegistry.getTransmissionTypeDefDO()))
+        if (!transmissionTypes.contains(eventRegistry.getTransmissionTypeDefDO()))
         {
-            logger.debug("Transmission type '{}' is not configured for emails. Couldn't send email.", eventRegistry.getTransmissionTypeDefDO());
+            logger.debug("Transmission type '{}' is not configured for emails. Couldn't send email.",
+                            eventRegistry.getTransmissionTypeDefDO());
             return false;
         }
 
@@ -157,34 +167,40 @@ public class SendEmailDecisionBean extends AbstractExecutionDecider<MailEventReg
     /**
      * Whether the customer has an email address or not.
      *
-     * @param orderDO the OrderDO to check
-     * @return returns true if order has a receiver email address, otherwise false
+     * @param orderDO the order to check
+     * @return
      */
     private boolean hasEmailAddress(OrderDO orderDO)
     {
         String receiverEmailAddress = orderHelperLogicService.getReceiverEmailAddress4OrderOrCustomer(orderDO);
-        
+
         if (!StringUtils.isEmpty(receiverEmailAddress))
         {
             return true;
         }
 
         logger.debug("For customer number '{}' with order number '{}' no email address exists. Couldn't send email.",
-            orderDO.getShopCustomerNo(), orderDO.getId());
+                        orderDO.getShopCustomerNo(), orderDO.getId());
 
         return false;
     }
 
+    /**
+     * Whether the customer has an email address or not.
+     * 
+     * @param orderDOs, a list of orders
+     * @return
+     */
     private boolean hasEmailAddress(List<OrderDO> orderDOs)
     {
-		for (OrderDO orderDO : orderDOs)
+        for (OrderDO orderDO : orderDOs)
         {
-			if (hasEmailAddress(orderDO))
+            if (hasEmailAddress(orderDO))
             {
-				return true;
-			}
-		}
-		return false;
-	}
+                return true;
+            }
+        }
+        return false;
+    }
     
 }
