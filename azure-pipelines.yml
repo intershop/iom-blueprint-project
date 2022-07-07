@@ -11,15 +11,6 @@ trigger:
     include:
       - '*'
 
-# jobs:
-  
-# - job: PreRun
-#   pool: ubuntu-20.4-DS4_v2-adopt-adoptium-jdk-ora
-#   steps:
-#     - script: |
-#         host docker.tools.intershop.com
-#       displayName: "Test"
-    
 # see https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops#extend-from-a-template
 # see https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops#use-other-repositories
 extends:
