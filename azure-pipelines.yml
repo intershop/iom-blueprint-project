@@ -11,24 +11,24 @@ trigger:
     include:
       - '*'
 
-jobs:
+# jobs:
   
-- job: PreRun
-  pool: ubuntu-20.4-DS4_v2-adopt-adoptium-jdk-ora
-  steps:
-    - script: |
-        host docker.tools.intershop.com
-      displayName: "Test"
+# - job: PreRun
+#   pool: ubuntu-20.4-DS4_v2-adopt-adoptium-jdk-ora
+#   steps:
+#     - script: |
+#         host docker.tools.intershop.com
+#       displayName: "Test"
     
 # see https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops#extend-from-a-template
 # see https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops#use-other-repositories
-# extends:
-#   template: template.yml@IOMDevopsRepo
-#   parameters:
-#     agentPool:                          ubuntu-20.4-DS4_v2-adopt-adoptium-jdk-ora
-#     artifactsFeed:                      order-iom-releases
-#     dockerRepoIOMServiceConnection:     order-iom-docker.tools.intershop.com
-#     dockerRepoIOM:                      docker.tools.intershop.com/iom/intershophub
-#     acrServiceConnection:               order-iomInternalACR-ISH-ENG-IOM
-#     acr:                                iominternalacr.azurecr.io
-#     projectEnvName:                     dev
+extends:
+  template: template.yml@IOMDevopsRepo
+  parameters:
+    agentPool:                          ubuntu-20.4-DS4_v2-adopt-adoptium-jdk-ora
+    artifactsFeed:                      order-iom-releases
+    dockerRepoIOMServiceConnection:     order-iom-docker.tools.intershop.com
+    dockerRepoIOM:                      docker.tools.intershop.com/iom/intershophub
+    acrServiceConnection:               order-iomInternalACR-ISH-ENG-IOM
+    acr:                                iominternalacr.azurecr.io
+    projectEnvName:                     dev
