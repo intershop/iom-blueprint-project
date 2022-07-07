@@ -21,6 +21,7 @@ public enum ExpandedDecisionBeanDefDO implements EnumInterface
 
     // general 1xxxx
     GENERAL_DECISION_BEAN(Integer.valueOf(-10000), "java:global/iom-blueprint-project/TBD"),
+    
     INVOICING_DECISION_BEAN(Integer.valueOf(10001), "java:global/iom-blueprint-project/InvoicingDecisionBean"),
 
     // order approval 2xxxx
@@ -32,7 +33,10 @@ public enum ExpandedDecisionBeanDefDO implements EnumInterface
 
     // export|transmissions 4xxxx
     ORDER_TRANSMISSION_DECISION_BEAN(Integer.valueOf(40000), "java:global/iom-blueprint-project/OrderTransmissionDecisionBean"),
-    SUPPLIER_TRANSMISSION_DECISION_BEAN(Integer.valueOf(41000), "java:global/iom-blueprint-project/SupplierTransmissionDecisionBean")
+    SUPPLIER_TRANSMISSION_DECISION_BEAN(Integer.valueOf(41000), "java:global/iom-blueprint-project/SupplierTransmissionDecisionBean"),
+
+    // emails 5xxxx
+    SEND_EMAIL_DECISION_BEAN(Integer.valueOf(50000), "java:global/iom-blueprint-project/SendEmailDecisionBean")
     ;
 
     private Integer id;
