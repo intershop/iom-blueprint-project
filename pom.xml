@@ -14,7 +14,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <platform.version>4.1.2</platform.version>
-        <intershop.docker.repo>docker-internal.rnd.intershop.de/intershophub/</intershop.docker.repo>
+        <intershop.docker.repo>docker.tools.intershop.com/iom/intershophub/</intershop.docker.repo>
         <image.base.name>iom-blueprint-project</image.base.name>
         <image.version.suffix></image.version.suffix>
         <image.version>${project.version}${image.version.suffix}</image.version>
