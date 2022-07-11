@@ -211,16 +211,16 @@ According to section [Delete a Configuration](02_configuration.md#delete_config
 
 ### Search and Delete Orphaned _Kubernetes_ Namespaces
 
-All _Kubernetes_ resources, belonging to a configuration, are assigned to one _Kubernetes_ namespace. The name of this namespace is derived from the `ID` defined in the configuration file. To create a valid name for the namespace, all non-alphanumerical characters are stripped from the `ID` and the remaining characters are transformed to lowercase. E.g., if you had used _CustomerProject IOM 4.0.0_ as `ID`, the derived namespace is _customerprojectiom400_.
+All _Kubernetes_ resources, belonging to a configuration, are assigned to one _Kubernetes_ namespace. The name of this namespace is derived from the `ID` defined in the configuration file. To create a valid name for the namespace, all non-alphanumerical characters are stripped from the `ID` and the remaining characters are transformed to lowercase. E.g., if you had used _CustomerProject IOM 4.1.0_ as `ID`, the derived namespace is _customerprojectiom410_.
 
 _Kubernetes_ uses namespaces for its own purposes. To avoid any conflict with these namespaces, _devenv-4-iom_ will not allow you to use an `ID` that starts with: _default_, _docker_ or _kube_. Hence, the orphaned _Kubernetes_ namespace will never start with any of these three phrases.
 
-The following box shows how to list all existing namespaces. According to the naming rules of namespaces created by _devenv-4-iom_, only two entries in the list of results are of interest: _customerprojectiom400_ and _oldprojectiom3000_. If you know the `ID`s of your currently existing configurations, you can find out the name of the orphaned namespace. In our example, _oldprojectiom3000_ is the one we have searched for.
+The following box shows how to list all existing namespaces. According to the naming rules of namespaces created by _devenv-4-iom_, only two entries in the list of results are of interest: _customerprojectiom410_ and _oldprojectiom3000_. If you know the `ID`s of your currently existing configurations, you can find out the name of the orphaned namespace. In our example, _oldprojectiom3000_ is the one we have searched for.
 
     # list all existing Kubernetes namespaces
     kubectl get namespace --context="docker-desktop"
     NAME                     STATUS   AGE
-    customerprojectiom400    Active   40m
+    customerprojectiom410    Active   40m
     default                  Active   28d
     docker                   Active   28d
     kube-node-lease          Active   28d
@@ -241,7 +241,7 @@ Hence, if the orphaned _Kubernetes_ namespaces is _oldprojectiom3000_, the accor
     # list all existing Docker volumes
     docker volume ls -q
     008e5dc60890b954a68de526da1ba73113143b8dcb9edbf382db585cb7cf2736
-    customerprojectiom400-pgdata
+    customerprojectiom410-pgdata
     oldprojectiom3000-pgdata
 
     # delete orphaned Docker volume
@@ -263,11 +263,11 @@ Hence, if the orphaned _Kubernetes_ namespaces is _oldprojectiom3000_, the accor
 
 When trying a `docker login` from a Linux-like terminal on Windows such as _Git bash_ or _Docker quickstart terminal_, you will get the following error.
 
-    docker login docker.intershop.de
+    docker login docker.tools.intershop.com
     > Error: Cannot perform an interactive login from a non TTY device
 
     # The trick here is to use:
-    winpty docker login docker.intershop.de
+    winpty docker login docker.tools.intershop.com
 
 ---
 [< Log Messages](05_log_messages.md) | [^ Index](../README.md)
