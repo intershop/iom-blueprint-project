@@ -56,22 +56,22 @@ MAILHOG_IMAGE=${MAILHOG_IMAGE}
 
 # iom dbaccount image (name:tag)
 # examples:
-# local image:                      iom-dbaccount:1.3.0.0
-# release from ISH Docker registry: docker.intershop.de/intershophub/iom-dbaccount:1.3.0.0
+# local image:                      iom-dbaccount:1.5.0
+# release from ISH Docker registry: docker.tools.intershop.com/iom/intershophub/iom-dbaccount:1.5.0
 IOM_DBACCOUNT_IMAGE=${IOM_DBACCOUNT_IMAGE}
 
 # iom config image (name:tag)
 # examples:
 # local image:                      iom-config:3.7.0.0
 # locally built project image:      prj-iom-config:3.7.0.0-1.2.0.0-SNAPSHOT
-# IOM release from ISH registry:    docker.intershop.de/intershophub/iom-config:3.7.0.0
+# IOM release from ISH registry:    docker.tools.intershop.com/iom/intershophub/iom-config:3.7.0.0
 IOM_CONFIG_IMAGE=${IOM_CONFIG_IMAGE}
 
 # iom app image (name:tag)
 # examples:
 # local image:                      iom-app:3.7.0.0
 # locally built project image:      prj-iom-app:3.7.0.0-1.2.0.0-SNAPSHOT
-# IOM release from ISH registry:    docker.intershop.de/intershophub/iom-app:3.7.0.0
+# IOM release from ISH registry:    docker.tools.intershop.com/iom/intershophub/iom-app:3.7.0.0
 IOM_APP_IMAGE=${IOM_APP_IMAGE}
 
 # iom image (name:tag)
@@ -81,9 +81,9 @@ IOM_APP_IMAGE=${IOM_APP_IMAGE}
 # If IOM_IMAGE is set, the properties IOM_CONFIG_IMAGE and IOM_APP_IMAGE will
 # be ignored.
 # examples:
-# local image:                      iom:4.0.0.0
-# locally built project image:      prj-iom:4.0.0.0-1.2.0.0-SNAPSHOT
-# IOM release from ISH registry:    docker.intershop.de/intershophub/iom:4.0.0.0
+# local image:                      iom:4.1.0
+# locally built project image:      prj-iom:1.2.0-SNAPSHOT
+# IOM release from ISH registry:    docker.tools.intershop.com/iom/intershophub/iom:4.1.0
 IOM_IMAGE=${IOM_IMAGE}
 
 ################################################################################

@@ -145,28 +145,28 @@ Before creating a new project image, the properties and _Wildfly-CLI_ scripts ha
     # determine command, how to access jboss-cli.sh in running IOM pod
     devenv-cli.sh info iom
     ...
-    jboss-cli: kubectl exec --namespace customerprojectiom400 --context="docker-desktop" iom-7b99d8c9df-trctc -c iom -it -- /opt/jboss/wildfly/bin/jboss-cli.sh -c
+    jboss-cli: kubectl exec --namespace customerprojectiom410 --context="docker-desktop" iom-7b99d8c9df-trctc -c iom -it -- /opt/jboss/wildfly/bin/jboss-cli.sh -c
     ...
 
     # execute jboss-cli.sh in running IOM pod
-    kubectl exec --namespace customerprojectiom400 --context="docker-desktop" iom-7b99d8c9df-trctc -c iom -it -- /opt/jboss/wildfly/bin/jboss-cli.sh -c
+    kubectl exec --namespace customerprojectiom410 --context="docker-desktop" iom-7b99d8c9df-trctc -c iom -it -- /opt/jboss/wildfly/bin/jboss-cli.sh -c
 
     # test your CLI commands
     [standalone@localhost:9990 /] ls -l /deployment
-    bakery.base-app-4.0.0.ear
-    bakery.communication-app-4.0.0.ear
-    bakery.control-app-4.0.0.war
-    bakery.impex-app-4.0.0.war
-    bakery.omt-app-4.0.0.war
-    gdpr-app-4.0.0.war
-    oms.monitoring-app-4.0.0.war
-    oms.rest.communication-app-4.0.0.war
-    order-state-app-4.0.0.war
+    bakery.base-app-4.1.0.ear
+    bakery.communication-app-4.1.0.ear
+    bakery.control-app-4.1.0.war
+    bakery.impex-app-4.1.0.war
+    bakery.omt-app-4.1.0.war
+    gdpr-app-4.1.0.war
+    oms.monitoring-app-4.1.0.war
+    oms.rest.communication-app-4.1.0.war
+    order-state-app-4.1.0.war
     postgresql-jdbc4
-    process-app-4.0.0.ear
-    rma-app-4.0.0.war
-    schedule-app-4.0.0.war
-    transmission-app-4.0.0.war
+    process-app-4.1.0.ear
+    rma-app-4.1.0.war
+    schedule-app-4.1.0.war
+    transmission-app-4.1.0.war
 
 ## <a name="load_dump">Load Custom Dump</a>
 

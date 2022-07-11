@@ -16,6 +16,26 @@ If _devenv-4-iom_ is already installed and you are looking for a short overview 
 ```
     devenv-cli.sh -h
 ```
+# Release Information 2.2.0
+
+## Compatibility
+
+At the time of release of _devenv-4-iom_, it is compatible with the latest version of IOM. As long as there is no new release of _devenv-4-iom_, it is ensured, that new releases of IOM are compatible with _devenv-4-iom_. If a new version of IOM requires an update of _devenev-4-iom_, the release notes of IOM will contain an according statement.
+
+At the time of writing, _devenv-4-iom 2.2.0_ is compatible with all IOM versions between 3.0 and 4.1 (inclusive).
+
+## New Features
+
+### Documentation, Comments and Default Values were adapted for new Intershop Docker Registry <!-- 77974 -->
+
+Intershop provides Docker images of their products now on _docker.tools.intershop.com_. All documentation, comments and default values were changed to use this new server.
+
+## Migration Notes
+
+### Default value of _DB_ACCOUNT_IMAGE_ was changed <!-- 77974 -->
+
+The Docker repository, that is used by the default value of DB_ACCOUNT_IMAGE was changed to _docker.tools.intershop.com_. Since this repository requires authorization to access its images, a new Pull-Secret has to be created (see chapter [Accessing in Private Docker Registry](docs/04_development_process.md#accessing-a-private-docker-registry)).
+
 # Release Information 2.1.0
 
 ## Compatibility

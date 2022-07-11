@@ -7,15 +7,15 @@ _devenv-4-iom_ does not manage the _Kubernetes_ secret in any way. The user is 
 
 The document [Pull an Image from a Private Registry](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/) from the _Kubernetes_ documentation explains how to create _Kubernetes_ secret objects in general, suitable to authenticate at a private _Docker_ registry. [Pull images from an Azure container registry to a _Kubernetes_ cluster](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-auth-kubernetes) from the Microsoft Azure documentation explains how to apply this concept to private Azure Container Registries.
 
-The following example shows how to create a _Kubernetes_ secret to be used to access the private _Docker_ Registry _docker.intershop.de_ within the default namespace. The name of the newly created secret is `intershop-pull-secret`, which has to be set as value of the variable `IMAGE_PULL_SECRET`.
+The following example shows how to create a _Kubernetes_ secret to be used to access the private _Docker_ Registry _docker.tools.intershop.com_ within the default namespace. The name of the newly created secret is `intershop-pull-secret`, which has to be set as value of the variable `IMAGE_PULL_SECRET`.
 
     kubectl create secret docker-registry intershop-pull-secret \
         --context="docker-desktop" \
-        --docker-server=docker.intershop.de \
+        --docker-server=docker.tools.intershop.com \
         --docker-username='<user name>' \
         --docker-password='<password>'
 
-If the secret is created and the variable `IMAGE_PULL_SECRET` is set in a user-specific configuration file (see [General Concept of Configuration](02_configuration.md#concept_config)), _devenv-4-iom_ can now authenticate at the _Docker_ Registry _docker.intershop.de_.
+If the secret is created and the variable `IMAGE_PULL_SECRET` is set in a user-specific configuration file (see [General Concept of Configuration](02_configuration.md#concept_config)), _devenv-4-iom_ can now authenticate at the _Docker_ Registry _docker.tools.intershop.com_.
 
 When accessing a private Azure Container Registry (ACR), the same mechanism can be used. In this case the value of _service principal ID_ has to be set at `docker-username` and the value of _service principal password_ for `docker-password`.
 
