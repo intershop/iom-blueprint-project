@@ -33,7 +33,7 @@ PERFORM create_or_update_shop(
             -- "amountDaysForPaymentReminderMailOfPrepaidOrders", "amountDaysForAutoCancellationOfPrepaidOrders", "isReservationWithDOSE"
             NULL, NULL, TRUE,
             -- "shopRMANumberSequenceName", "shopRMANumberSequenceFormatString"
-            NULL, NULL
+            'rma_number_sequence_generator', 'rma-number-{0}' -- will produce number like 'rma-number-10000'
 );
 
 -- inTRONICS b2b Shop
@@ -59,7 +59,7 @@ PERFORM create_or_update_shop(
             -- "amountDaysForPaymentReminderMailOfPrepaidOrders", "amountDaysForAutoCancellationOfPrepaidOrders", "isReservationWithDOSE"
             NULL, NULL, TRUE,
             -- "shopRMANumberSequenceName", "shopRMANumberSequenceFormatString"
-            NULL, NULL
+            'rma_number_sequence_generator', 'rma-number-{0}' -- will produce number like 'rma-number-10000'
 );
 
 END;
