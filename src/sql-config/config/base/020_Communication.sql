@@ -14,10 +14,11 @@ supplierId int8;
 supplierIds int8[];
 senderId int8;
 receiverId int8;
+transmissionType int8;
 
 -- keys
-k_shop_transmitter varchar = 'shopMessageTransmitter';
-k_supplier_transmitter varchar = 'supplierMessageTransmitter';
+k_shop_transmitter_order varchar = 'shopMessageTransmitterOrder';
+k_shop_transmitter_rma varchar = 'shopMessageTransmitterRMA';
 supplier_transmitter_key_res varchar = 'supplierMessageTransmitterRes';
 supplier_transmitter_key_dis varchar = 'supplierMessageTransmitterDis';
 supplier_transmitter_key_ret varchar = 'supplierMessageTransmitterRet';
@@ -33,6 +34,7 @@ BEGIN
 
 	-- ORDER EXPORT/TRANSMISSION
 	-- REGISTER shopMessageTransmitter
+	transmissionType := (SELECT id FROM oms."TransmissionTypeDefDO" WHERE name = 'sendAnnounceOrder');
 	INSERT INTO oms."CommunicationDO"
 	(
     	id,
@@ -49,15 +51,15 @@ BEGIN
 		nextval('"CommunicationDO_id_seq"'),
 		true,
 		null,
-		k_shop_transmitter,
+		k_shop_transmitter_order,
 		(SELECT id FROM oms."DocumentFormatDefDO" WHERE name = 'XML'),
     	(SELECT id FROM oms."ExecutionBeanDefDO" WHERE id = eb_shop_transmitter),
-		(SELECT id FROM oms."TransmissionTypeDefDO" WHERE name = 'sendAnnounceOrder'),
+		transmissionType,
 		(SELECT id FROM oms."CommunicationVersionDefDO" WHERE "incomingURLParameter" = 'v1.0'),
 		(SELECT id FROM oms."TransmissionFormDefDO" WHERE name = 'PUSH')
-    WHERE NOT EXISTS (SELECT * FROM oms."CommunicationDO" where key = k_shop_transmitter);
+    WHERE NOT EXISTS (SELECT * FROM oms."CommunicationDO" WHERE key = k_shop_transmitter_order AND "transmissionTypeDefRef" = transmissionType);
 
-	communicationId := (SELECT id FROM oms."CommunicationDO" WHERE key = k_shop_transmitter);
+	communicationId := (SELECT id FROM oms."CommunicationDO" WHERE key = k_shop_transmitter_order AND "transmissionTypeDefRef" = transmissionType);
 
 	-- CONFIGURE partners
 	FOREACH shopId IN ARRAY shops_all LOOP
@@ -109,6 +111,7 @@ BEGIN
 
 	-- RETURN ANNOUNCEMENT EXPORT/TRANSMISSION
 	-- REGISTER shopMessageTransmitter
+	transmissionType := (SELECT id FROM oms."TransmissionTypeDefDO" WHERE name = 'sendReturnAnnouncement');
 	INSERT INTO oms."CommunicationDO"
 	(
     	id,
@@ -125,59 +128,50 @@ BEGIN
 		nextval('"CommunicationDO_id_seq"'),
 		true,
 		null,
-		k_shop_transmitter,
+		k_shop_transmitter_rma,
 		(SELECT id FROM oms."DocumentFormatDefDO" WHERE name = 'XML'),
     	(SELECT id FROM oms."ExecutionBeanDefDO" WHERE id = eb_shop_transmitter),
-		(SELECT id FROM oms."TransmissionTypeDefDO" WHERE name = 'sendReturnAnnouncement'),
+		transmissionType,
 		(SELECT id FROM oms."CommunicationVersionDefDO" WHERE "incomingURLParameter" = 'v1.0'),
 		(SELECT id FROM oms."TransmissionFormDefDO" WHERE name = 'PUSH')
-    WHERE NOT EXISTS (SELECT * FROM oms."CommunicationDO" where key = k_shop_transmitter);
+    WHERE NOT EXISTS (SELECT * FROM oms."CommunicationDO" where key = k_shop_transmitter_rma AND "transmissionTypeDefRef" = transmissionType);
 
-	communicationId := (SELECT id FROM oms."CommunicationDO" WHERE key = k_shop_transmitter);
+	communicationId := (SELECT id FROM oms."CommunicationDO" WHERE key = k_shop_transmitter_rma AND "transmissionTypeDefRef" = transmissionType);
 
 	-- CONFIGURE partners
 	FOREACH shopId IN ARRAY shops_all LOOP
 	
-		-- iterate all suppliers of the shop and insert if not existing yet
-		supplierIds := ARRAY(SELECT "supplierRef" FROM oms."Shop2SupplierDO" WHERE "shopRef" = shopId and "supplierRef" != internal_supplier_id);
 		senderId := (SELECT id FROM oms."PartnerReferrerDO" WHERE "shopRef" = shopId);
+		IF NOT EXISTS (SELECT * FROM "CommunicationPartnerDO"
+			WHERE "sendingPartnerReferrerRef" = senderId
+			AND "receivingPartnerReferrerRef" = NULL	-- NULL, because no supplier is assigned to be checked				
+			AND "communicationRef" = communicationId)
+		THEN
 
-		FOREACH supplierId IN ARRAY supplierIds LOOP
-
-			receiverId := (SELECT id FROM oms."PartnerReferrerDO" WHERE "supplierRef" = supplierId);
-
-			IF NOT EXISTS (SELECT * FROM "CommunicationPartnerDO"
-				WHERE "sendingPartnerReferrerRef" = senderId
-				AND "receivingPartnerReferrerRef" = receiverId				
-				AND "communicationRef" = communicationId)
-			THEN
-
-				INSERT INTO oms."CommunicationPartnerDO"
-				(
-					id,
-					"decisionBeanDefRef",
-					"splitTransmission",
-					"communicationRef",
-					"sendingPartnerReferrerRef",
-					"receivingPartnerReferrerRef",
-					"maxNoOfRetries",
-					"retryDelay",
-					"splitTransmissionPerSupplier"
-				)
-				SELECT 
-					nextval('"CommunicationPartnerDO_id_seq"'),
-					(SELECT id FROM oms."DecisionBeanDefDO" WHERE id = db_shop_transmission), -- skip export ?
-					false,
-					communicationId,
-					senderId,	-- a shop
-					receiverId,	-- a supplier
-					5,
-					'2m',
-					false;
+			INSERT INTO oms."CommunicationPartnerDO"
+			(
+				id,
+				"decisionBeanDefRef",
+				"splitTransmission",
+				"communicationRef",
+				"sendingPartnerReferrerRef",
+				"receivingPartnerReferrerRef",
+				"maxNoOfRetries",
+				"retryDelay",
+				"splitTransmissionPerSupplier"
+			)
+			SELECT 
+				nextval('"CommunicationPartnerDO_id_seq"'),
+				(SELECT id FROM oms."DecisionBeanDefDO" WHERE id = db_shop_transmission), -- skip export ?
+				false,
+				communicationId,
+				senderId,	-- a shop
+				NULL,		-- NULL, because no supplier is assigned to be checked
+				5,
+				'2m',
+				false;
 
 			END IF;
-
-		END LOOP;
 	
 	END LOOP;
 
