@@ -31,7 +31,7 @@ import bakery.persistence.dataobject.rma.ReturnAnnouncementDO;
  * Fails/skips if custom level property is given as group|key|value = ...|email|fail or no receiver email is given.
  */
 @Stateless
-public class SendEmailDecisionBean extends AbstractExecutionDecider<MailEventRegistryEntryDO> // -> must be configured on MailEventRegistryEntryDO
+public class SendEmailDecisionBean extends AbstractExecutionDecider<MailEventRegistryEntryDO>
 {
     private static final Logger logger = LoggerFactory.getLogger(SendEmailDecisionBean.class);
 

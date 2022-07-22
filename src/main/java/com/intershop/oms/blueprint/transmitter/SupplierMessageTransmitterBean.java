@@ -26,12 +26,11 @@ import bakery.util.exception.TechnicalException;
 import bakery.util.exception.ValidationException;
 
 /**
- * Exports a supplier message (response, dispatch, return) to a 3rd party system by HTTP API call.
+ * Exports a supplier message (response, dispatch, return) to a 3rd party system by API call.
  */
 @Stateless
 public class SupplierMessageTransmitterBean implements MessageTransmitter
 {
-    
     private static final Logger log = LoggerFactory.getLogger(SupplierMessageTransmitterBean.class);
 
     @EJB(lookup = "java:global/bakery.base-app-" + DeploymentConfig.APP_VERSION + "/bakery.logic-core-"
@@ -39,7 +38,7 @@ public class SupplierMessageTransmitterBean implements MessageTransmitter
                     + "/ResponseMapperOutBean!bakery.logic.communication.mapper.out.ResponseMapperOut")
     private ResponseMapperOut responseMapperOut;
     
-    @EJB(lookup = DispatchMapperOut.LOGIC_DSIPATCHMAPPEROUT) // there's an API-typo
+    @EJB(lookup = DispatchMapperOut.LOGIC_DISPATCHMAPPEROUT)
     private DispatchMapperOut dispatchMapperOut;
     
     @EJB(lookup = "java:global/bakery.base-app-" + DeploymentConfig.APP_VERSION + "/bakery.logic-core-"
@@ -85,11 +84,6 @@ public class SupplierMessageTransmitterBean implements MessageTransmitter
         return abstractTransmission;
     }
 
-    /**
-     * Make API-call to submit the data.
-     * @param responseTransmissionDO
-     * @return
-     */
     private ResponseTransmissionDO transmitResponse(ResponseTransmissionDO responseTransmissionDO)
     {
         StoreResponse storeResponse;
@@ -125,11 +119,6 @@ public class SupplierMessageTransmitterBean implements MessageTransmitter
         return responseTransmissionDO;
     }
     
-    /**
-     * Make API-call to submit the data.
-     * @param dispatchTransmissionDO
-     * @return
-     */
     private DispatchTransmissionDO transmitDispatch(DispatchTransmissionDO dispatchTransmissionDO)
     {
         StoreDispatch storeDispatch;
@@ -165,11 +154,6 @@ public class SupplierMessageTransmitterBean implements MessageTransmitter
         return dispatchTransmissionDO;
     }
     
-    /**
-     * Make API-call to submit the data.
-     * @param returnTransmissionDO
-     * @return
-     */
     private ReturnTransmissionDO transmitReturn(ReturnTransmissionDO returnTransmissionDO)
     {
         StoreReturn storeReturn;

@@ -78,6 +78,9 @@ public class ShopMessageTransmitterBean implements MessageTransmitter
         Long orderId = transmissionDO.getOrderDO().getId();        
         log.debug("Started transmitting order " + orderId);
 
+        /**
+         * Map to API-object.
+         */
         TransmissionWrapper transmissionWrapper = transmissionWrapperFactory.getTransmissionWrapper(transmissionDO);
         try
         {
@@ -110,16 +113,10 @@ public class ShopMessageTransmitterBean implements MessageTransmitter
         Long returnAnnouncementId = transmissionDO.getReturnAnnouncementDO().getId();
         log.debug("Started transmitting return annoucement " + returnAnnouncementId + " for order " + orderId);
 
-//        TransmissionWrapper transmissionWrapper = transmissionWrapperFactory.getTransmissionWrapper(transmissionDO);
-//        try
-//        {
-            returnAnnouncementExport = (ReturnAnnouncementExport)returnAnnouncementMapperOut.mapReturnAnnouncement(transmissionDO);
-//        }
-//        catch(ValidationException e)
-//        {
-//            log.error("Failed to map order: {}", e.getMessage());
-//            throw new TechnicalException("Failed to map order: {}" + e);
-//        }
+        /**
+         * Map to API-object.
+         */
+        returnAnnouncementExport = (ReturnAnnouncementExport)returnAnnouncementMapperOut.mapReturnAnnouncement(transmissionDO);
 
         /**
          * If desired, add more data to returnAnnouncementExport

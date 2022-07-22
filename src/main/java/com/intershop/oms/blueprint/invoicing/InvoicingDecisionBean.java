@@ -10,7 +10,6 @@ import javax.ejb.TransactionAttributeType;
 import com.intershop.oms.blueprint.BlueprintConstants;
 
 import bakery.logic.service.util.AbstractExecutionDecider;
-import bakery.logic.service.util.ExecutionDecider;
 import bakery.persistence.dataobject.configuration.common.InvoicingTypeDefDO;
 import bakery.persistence.dataobject.configuration.common.ReturnTypeDefDO;
 import bakery.persistence.dataobject.configuration.invoicing.InvoicingEventRegistryEntryDO;
@@ -20,7 +19,6 @@ import bakery.persistence.dataobject.order.ReturnDO;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class InvoicingDecisionBean extends AbstractExecutionDecider<InvoicingEventRegistryEntryDO>
-                implements ExecutionDecider<InvoicingEventRegistryEntryDO>
 {
     public static final List<ReturnTypeDefDO> RETURN_TYPES_WITH_INVOICE = Arrays.asList(ReturnTypeDefDO.RET,
                     ReturnTypeDefDO.INV, ReturnTypeDefDO.DEF);

@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import bakery.logic.service.util.AbstractExecutionDecider;
-import bakery.logic.service.util.ExecutionDecider;
 import bakery.persistence.dataobject.configuration.connections.CommunicationPartnerDO;
 import bakery.persistence.dataobject.order.DispatchDO;
 import bakery.persistence.dataobject.order.ResponseDO;
@@ -17,9 +16,8 @@ import bakery.util.exception.TechnicalException;
  * Message (response, dispatch, return) should not be exported if custom root level property is given as group|key|value = <response|dispatch|return>|export|false
  */
 @Stateless
-public class SupplierTransmissionDecisionBean extends AbstractExecutionDecider<CommunicationPartnerDO> implements ExecutionDecider<CommunicationPartnerDO>
-{
-    
+public class SupplierTransmissionDecisionBean extends AbstractExecutionDecider<CommunicationPartnerDO>
+{  
     private static final String GROUP_RES   = "response";
     private static final String GROUP_DIS   = "dispatch";
     private static final String GROUP_RET   = "return";
@@ -44,8 +42,7 @@ public class SupplierTransmissionDecisionBean extends AbstractExecutionDecider<C
             return false;
         }
         
-        return true;
-      
+        return true;  
     }
     
     @Override
@@ -65,7 +62,6 @@ public class SupplierTransmissionDecisionBean extends AbstractExecutionDecider<C
         }
         
         return true;
-      
     }
     
     @Override
@@ -85,7 +81,6 @@ public class SupplierTransmissionDecisionBean extends AbstractExecutionDecider<C
         }
         
         return true;
-      
     }
 
 }
