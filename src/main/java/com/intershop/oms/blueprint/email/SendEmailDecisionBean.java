@@ -42,8 +42,8 @@ public class SendEmailDecisionBean extends AbstractExecutionDecider<MailEventReg
     public boolean isExecutionRequired(OrderDO orderDO, MailEventRegistryEntryDO eventRegistry)
     {
         // has email and not contains the custom property
-        return hasEmailAddress(orderDO) && (!hasCustomProperty(orderDO, BlueprintConstants.ORDER_PROPERTY_GROUP_ORDER,
-                        BlueprintConstants.PROPERTY_KEY_EMAIL, BlueprintConstants.PROPERTY_VALUE_FALSE));
+        return hasEmailAddress(orderDO) && (!hasCustomProperty(orderDO, BlueprintConstants.PROPERTY_ORDER,
+                        BlueprintConstants.PROPERTY_EMAIL, BlueprintConstants.PROPERTY_VALUE_FALSE));
     }
 
     @Override
@@ -51,7 +51,7 @@ public class SendEmailDecisionBean extends AbstractExecutionDecider<MailEventReg
     {
         // has email and not contains the custom property
         return hasEmailAddress(dispatchDO.getOrderDO()) && (!hasCustomProperty(dispatchDO,
-                        BlueprintConstants.DISPATCH_PROPERTY_GROUP_DISPATCH, BlueprintConstants.PROPERTY_KEY_EMAIL,
+                        BlueprintConstants.PROPERTY_DISPATCH, BlueprintConstants.PROPERTY_EMAIL,
                         BlueprintConstants.PROPERTY_VALUE_FALSE));
     }
 
@@ -61,7 +61,7 @@ public class SendEmailDecisionBean extends AbstractExecutionDecider<MailEventReg
     {
         // has email and not contains the custom property
         return hasEmailAddress(returnAnnouncementDO.getOrder()) && (!hasCustomProperty(returnAnnouncementDO,
-                        BlueprintConstants.RMA_PROPERTY_GROUP_RMA, BlueprintConstants.PROPERTY_KEY_EMAIL,
+                        BlueprintConstants.PROPERTY_RMA, BlueprintConstants.PROPERTY_EMAIL,
                         BlueprintConstants.PROPERTY_VALUE_FALSE));
     }
 
@@ -70,7 +70,7 @@ public class SendEmailDecisionBean extends AbstractExecutionDecider<MailEventReg
     {
         // has email and not contains the custom property
         return hasEmailAddress(returnDO.getOrderDO()) && (!hasCustomProperty(returnDO,
-                        BlueprintConstants.RETURN_PROPERTY_GROUP_RETURN, BlueprintConstants.PROPERTY_KEY_EMAIL,
+                        BlueprintConstants.PROPERTY_RETURN, BlueprintConstants.PROPERTY_EMAIL,
                         BlueprintConstants.PROPERTY_VALUE_FALSE));
     }
 

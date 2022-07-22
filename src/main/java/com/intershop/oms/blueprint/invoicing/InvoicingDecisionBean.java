@@ -36,8 +36,8 @@ public class InvoicingDecisionBean extends AbstractExecutionDecider<InvoicingEve
         }
 
         // check for special dispatch property
-        String createInvoiceProperty = dispatchDO.getPropertyValue(BlueprintConstants.DISPATCH_PROPERTY_GROUP_DISPATCH,
-                        BlueprintConstants.DISPATCH_PROPERTY_KEY_CREATE_INVOICE);
+        String createInvoiceProperty = dispatchDO.getPropertyValue(BlueprintConstants.PROPERTY_DISPATCH,
+                        BlueprintConstants.PROPERTY_CREATE_INVOICE);
         if (Boolean.FALSE.toString().equals(createInvoiceProperty))
         {
             return false;

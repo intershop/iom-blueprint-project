@@ -22,7 +22,7 @@ BEGIN
 
 	--EXECUTION BEANS
 	INSERT INTO oms."ExecutionBeanDefDO"(id, "decisionBeanDefRef", description) values
-		(10000, null,  'customOrderMessageTransmitter'),
+		(10000, null,  'shopMessageTransmitter'),
 		(20000, null,  'supplierMessageTransmitter')
 	ON CONFLICT (id) DO NOTHING;
 
