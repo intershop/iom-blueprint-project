@@ -47,7 +47,7 @@ BEGIN
 
 	INSERT INTO oms."CommunicationDO"
 	(
-    	id,
+		id,
 		active,
 		"activeOMT",
 		key,
@@ -67,7 +67,7 @@ BEGIN
 		id_transtype_sendorder,
 		id_commversion_1,
 		id_transform_push
-    WHERE NOT EXISTS (SELECT * FROM oms."CommunicationDO" WHERE key = k_shop_transmitter_order AND "transmissionTypeDefRef" = id_transtype_sendorder);
+	WHERE NOT EXISTS (SELECT * FROM oms."CommunicationDO" WHERE key = k_shop_transmitter_order AND "transmissionTypeDefRef" = id_transtype_sendorder);
 
 	communicationId := (SELECT id FROM oms."CommunicationDO" WHERE key = k_shop_transmitter_order AND "transmissionTypeDefRef" = id_transtype_sendorder);
 
@@ -133,7 +133,7 @@ BEGIN
 		"communicationVersionDefRef",
 		"transmissionFormDefRef"
 	)
-    SELECT
+	SELECT
 		nextval('"CommunicationDO_id_seq"'),
 		true,
 		null,
