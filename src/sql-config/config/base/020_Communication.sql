@@ -63,7 +63,7 @@ BEGIN
 		null,
 		k_shop_transmitter_order,
 		id_docformat_xml,
-    	eb_shop_transmitter,
+		eb_shop_transmitter,
 		id_transtype_sendorder,
 		id_commversion_1,
 		id_transform_push
@@ -210,7 +210,7 @@ BEGIN
 		null,
 		supplier_transmitter_key_res,
 		id_docformat_xml,
-    	eb_supplier_transmitter,
+		eb_supplier_transmitter,
 		id_transtype_sendresponse,
 		id_commversion_1,
 		id_transform_push
@@ -285,7 +285,7 @@ BEGIN
 		null,
 		supplier_transmitter_key_dis,
 		id_docformat_xml,
-    	eb_supplier_transmitter,
+		eb_supplier_transmitter,
 		id_transtype_senddispatch,
 		id_commversion_1,
 		id_transform_push
@@ -360,7 +360,7 @@ BEGIN
 		null,
 		supplier_transmitter_key_ret,
 		id_docformat_xml,
-    	eb_supplier_transmitter,
+		eb_supplier_transmitter,
 		id_transtype_sendreturn,
 		id_commversion_1,
 		id_transform_push
