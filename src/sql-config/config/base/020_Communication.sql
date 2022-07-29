@@ -57,7 +57,7 @@ BEGIN
 		"communicationVersionDefRef",
 		"transmissionFormDefRef"
 	)
-    SELECT
+	SELECT
 		nextval('"CommunicationDO_id_seq"'),
 		true,
 		null,
@@ -123,7 +123,7 @@ BEGIN
 	-- REGISTER shopMessageTransmitter
 	INSERT INTO oms."CommunicationDO"
 	(
-    	id,
+		id,
 		active,
 		"activeOMT",
 		key,
@@ -139,11 +139,11 @@ BEGIN
 		null,
 		k_shop_transmitter_rma,
 		id_docformat_xml,
-    	eb_shop_transmitter,
+		eb_shop_transmitter,
 		id_transtype_sendrma,
 		id_commversion_1,
 		id_transform_push
-    WHERE NOT EXISTS (SELECT * FROM oms."CommunicationDO" where key = k_shop_transmitter_rma AND "transmissionTypeDefRef" = id_transtype_sendrma);
+	WHERE NOT EXISTS (SELECT * FROM oms."CommunicationDO" where key = k_shop_transmitter_rma AND "transmissionTypeDefRef" = id_transtype_sendrma);
 
 	communicationId := (SELECT id FROM oms."CommunicationDO" WHERE key = k_shop_transmitter_rma AND "transmissionTypeDefRef" = id_transtype_sendrma);
 
@@ -194,7 +194,7 @@ BEGIN
 	-- REGISTER supplierMessageTransmitter for responses
 	INSERT INTO oms."CommunicationDO"
 	(
-    	id,
+		id,
 		active,
 		"activeOMT",
 		key,
@@ -204,7 +204,7 @@ BEGIN
 		"communicationVersionDefRef",
 		"transmissionFormDefRef"
 	)
-    SELECT
+	SELECT
 		nextval('"CommunicationDO_id_seq"'),
 		true,
 		null,
@@ -214,7 +214,7 @@ BEGIN
 		id_transtype_sendresponse,
 		id_commversion_1,
 		id_transform_push
-    WHERE NOT EXISTS (SELECT * FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_res);
+	WHERE NOT EXISTS (SELECT * FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_res);
 
 	communicationId := (SELECT id FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_res);
 
@@ -269,7 +269,7 @@ BEGIN
 	-- REGISTER supplierMessageTransmitter for dispatches
 	INSERT INTO oms."CommunicationDO"
 	(
-    	id,
+		id,
 		active,
 		"activeOMT",
 		key,
@@ -279,7 +279,7 @@ BEGIN
 		"communicationVersionDefRef",
 		"transmissionFormDefRef"
 	)
-    SELECT
+	SELECT
 		nextval('"CommunicationDO_id_seq"'),
 		true,
 		null,
@@ -289,7 +289,7 @@ BEGIN
 		id_transtype_senddispatch,
 		id_commversion_1,
 		id_transform_push
-    WHERE NOT EXISTS (SELECT * FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_dis);
+	WHERE NOT EXISTS (SELECT * FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_dis);
 
 	communicationId := (SELECT id FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_dis);
 
@@ -321,12 +321,12 @@ BEGIN
 					"retryDelay",
 					"splitTransmissionPerSupplier"
 				)
-				SELECT 
+				SELECT
 					nextval('"CommunicationPartnerDO_id_seq"'),
 					db_supplier_transmission, 	-- skip export ?
 					false,
 					communicationId,
-					senderId, 					-- a supplier
+					senderId,					-- a supplier
 					null,
 					5,
 					'2m',
@@ -344,7 +344,7 @@ BEGIN
 	-- REGISTER supplierMessageTransmitter for returns
 	INSERT INTO oms."CommunicationDO"
 	(
-    	id,
+		id,
 		active,
 		"activeOMT",
 		key,
@@ -354,7 +354,7 @@ BEGIN
 		"communicationVersionDefRef",
 		"transmissionFormDefRef"
 	)
-    SELECT
+	SELECT
 		nextval('"CommunicationDO_id_seq"'),
 		true,
 		null,
@@ -364,7 +364,7 @@ BEGIN
 		id_transtype_sendreturn,
 		id_commversion_1,
 		id_transform_push
-    WHERE NOT EXISTS (SELECT * FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_ret);
+	WHERE NOT EXISTS (SELECT * FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_ret);
 
 	communicationId := (SELECT id FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_ret);
 
