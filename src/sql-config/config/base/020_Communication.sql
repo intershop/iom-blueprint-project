@@ -14,7 +14,6 @@ supplierId int8;
 supplierIds int8[];
 senderId int8;
 receiverId int8;
-transmissionType int8;
 
 -- keys
 k_shop_transmitter_order varchar = 'shopMessageTransmitterOrder';
@@ -23,6 +22,17 @@ supplier_transmitter_key_res varchar = 'supplierMessageTransmitterRes';
 supplier_transmitter_key_dis varchar = 'supplierMessageTransmitterDis';
 supplier_transmitter_key_ret varchar = 'supplierMessageTransmitterRet';
 communicationId int8;
+
+-- ids (instead of subselects)
+id_docformat_xml int8 = 2; 				-- see oms."DocumentFormatDefDO"
+id_commversion_1 int8 = 1; 				-- see oms."CommunicationVersionDefDO"
+id_transform_push int8 = 10; 			-- see oms."TransmissionFormDefDO"
+id_transtype_sendorder int8 = 10;		-- see oms."TransmissionTypeDefDO"
+id_transtype_sendresponse int8 = 40;	-- see oms."TransmissionTypeDefDO"
+id_transtype_senddispatch int8 = 80;	-- see oms."TransmissionTypeDefDO"
+id_transtype_sendrma int8 = 64;			-- see oms."TransmissionTypeDefDO"
+id_transtype_sendreturn int8 = 60;		-- see oms."TransmissionTypeDefDO"
+
 -- end variables block with
 BEGIN
 
@@ -34,7 +44,7 @@ BEGIN
 
 	-- ORDER EXPORT/TRANSMISSION
 	-- REGISTER shopMessageTransmitter
-	transmissionType := (SELECT id FROM oms."TransmissionTypeDefDO" WHERE name = 'sendAnnounceOrder');
+
 	INSERT INTO oms."CommunicationDO"
 	(
     	id,
@@ -52,14 +62,14 @@ BEGIN
 		true,
 		null,
 		k_shop_transmitter_order,
-		(SELECT id FROM oms."DocumentFormatDefDO" WHERE name = 'XML'),
-    	(SELECT id FROM oms."ExecutionBeanDefDO" WHERE id = eb_shop_transmitter),
-		transmissionType,
-		(SELECT id FROM oms."CommunicationVersionDefDO" WHERE "incomingURLParameter" = 'v1.0'),
-		(SELECT id FROM oms."TransmissionFormDefDO" WHERE name = 'PUSH')
-    WHERE NOT EXISTS (SELECT * FROM oms."CommunicationDO" WHERE key = k_shop_transmitter_order AND "transmissionTypeDefRef" = transmissionType);
+		id_docformat_xml,
+    	eb_shop_transmitter,
+		id_transtype_sendorder,
+		id_commversion_1,
+		id_transform_push
+    WHERE NOT EXISTS (SELECT * FROM oms."CommunicationDO" WHERE key = k_shop_transmitter_order AND "transmissionTypeDefRef" = id_transtype_sendorder);
 
-	communicationId := (SELECT id FROM oms."CommunicationDO" WHERE key = k_shop_transmitter_order AND "transmissionTypeDefRef" = transmissionType);
+	communicationId := (SELECT id FROM oms."CommunicationDO" WHERE key = k_shop_transmitter_order AND "transmissionTypeDefRef" = id_transtype_sendorder);
 
 	-- CONFIGURE partners
 	FOREACH shopId IN ARRAY shops_all LOOP
@@ -92,11 +102,11 @@ BEGIN
 				)
 				SELECT 
 					nextval('"CommunicationPartnerDO_id_seq"'),
-					(SELECT id FROM oms."DecisionBeanDefDO" WHERE id = db_shop_transmission), -- skip export ?
+					db_shop_transmission,	-- skip export ?
 					false,
 					communicationId,
-					senderId,	-- a shop
-					receiverId,	-- a supplier
+					senderId,				-- a shop
+					receiverId,				-- a supplier
 					5,
 					'2m',
 					false;
@@ -111,7 +121,6 @@ BEGIN
 
 	-- RETURN ANNOUNCEMENT EXPORT/TRANSMISSION
 	-- REGISTER shopMessageTransmitter
-	transmissionType := (SELECT id FROM oms."TransmissionTypeDefDO" WHERE name = 'sendReturnAnnouncement');
 	INSERT INTO oms."CommunicationDO"
 	(
     	id,
@@ -129,14 +138,14 @@ BEGIN
 		true,
 		null,
 		k_shop_transmitter_rma,
-		(SELECT id FROM oms."DocumentFormatDefDO" WHERE name = 'XML'),
-    	(SELECT id FROM oms."ExecutionBeanDefDO" WHERE id = eb_shop_transmitter),
-		transmissionType,
-		(SELECT id FROM oms."CommunicationVersionDefDO" WHERE "incomingURLParameter" = 'v1.0'),
-		(SELECT id FROM oms."TransmissionFormDefDO" WHERE name = 'PUSH')
-    WHERE NOT EXISTS (SELECT * FROM oms."CommunicationDO" where key = k_shop_transmitter_rma AND "transmissionTypeDefRef" = transmissionType);
+		id_docformat_xml,
+    	eb_shop_transmitter,
+		id_transtype_sendrma,
+		id_commversion_1,
+		id_transform_push
+    WHERE NOT EXISTS (SELECT * FROM oms."CommunicationDO" where key = k_shop_transmitter_rma AND "transmissionTypeDefRef" = id_transtype_sendrma);
 
-	communicationId := (SELECT id FROM oms."CommunicationDO" WHERE key = k_shop_transmitter_rma AND "transmissionTypeDefRef" = transmissionType);
+	communicationId := (SELECT id FROM oms."CommunicationDO" WHERE key = k_shop_transmitter_rma AND "transmissionTypeDefRef" = id_transtype_sendrma);
 
 	-- CONFIGURE partners
 	FOREACH shopId IN ARRAY shops_all LOOP
@@ -162,11 +171,11 @@ BEGIN
 			)
 			SELECT 
 				nextval('"CommunicationPartnerDO_id_seq"'),
-				(SELECT id FROM oms."DecisionBeanDefDO" WHERE id = db_shop_transmission), -- skip export ?
+				db_shop_transmission, 	-- skip export ?
 				false,
 				communicationId,
-				senderId,	-- a shop
-				NULL,		-- NULL, because no supplier is assigned to be checked
+				senderId,				-- a shop
+				NULL,					-- NULL, because no supplier is assigned to be checked
 				5,
 				'2m',
 				false;
@@ -174,6 +183,8 @@ BEGIN
 			END IF;
 	
 	END LOOP;
+
+
 
 	/*
 		SUPPLIER MESSAGES
@@ -198,11 +209,11 @@ BEGIN
 		true,
 		null,
 		supplier_transmitter_key_res,
-		(SELECT id FROM oms."DocumentFormatDefDO" WHERE name = 'XML'),
-    	(SELECT id FROM oms."ExecutionBeanDefDO" WHERE id = eb_supplier_transmitter),
-		(SELECT id FROM oms."TransmissionTypeDefDO" WHERE name = 'sendResponse'),
-		(SELECT id FROM oms."CommunicationVersionDefDO" WHERE "incomingURLParameter" = 'v1.0'),
-		(SELECT id FROM oms."TransmissionFormDefDO" WHERE name = 'PUSH')
+		id_docformat_xml,
+    	eb_supplier_transmitter,
+		id_transtype_sendresponse,
+		id_commversion_1,
+		id_transform_push
     WHERE NOT EXISTS (SELECT * FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_res);
 
 	communicationId := (SELECT id FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_res);
@@ -219,8 +230,7 @@ BEGIN
 			senderId := (SELECT id FROM oms."PartnerReferrerDO" WHERE "supplierRef" = supplierId);
 
 			IF NOT EXISTS (SELECT * FROM "CommunicationPartnerDO"
-				WHERE "sendingPartnerReferrerRef" = senderId
-				--AND "receivingPartnerReferrerRef" = receiverId				
+				WHERE "sendingPartnerReferrerRef" = senderId			
 				AND "communicationRef" = communicationId)
 			THEN
 
@@ -238,10 +248,10 @@ BEGIN
 				)
 				SELECT 
 					nextval('"CommunicationPartnerDO_id_seq"'),
-					(SELECT id FROM oms."DecisionBeanDefDO" WHERE id = db_supplier_transmission), -- skip export ?
+					db_supplier_transmission, 	-- skip export ?
 					false,
 					communicationId,
-					senderId, -- a supplier
+					senderId, 					-- a supplier
 					null,
 					5,
 					'2m',
@@ -274,11 +284,11 @@ BEGIN
 		true,
 		null,
 		supplier_transmitter_key_dis,
-		(SELECT id FROM oms."DocumentFormatDefDO" WHERE name = 'XML'),
-    	(SELECT id FROM oms."ExecutionBeanDefDO" WHERE id = eb_supplier_transmitter),
-		(SELECT id FROM oms."TransmissionTypeDefDO" WHERE name = 'sendDispatch'),
-		(SELECT id FROM oms."CommunicationVersionDefDO" WHERE "incomingURLParameter" = 'v1.0'),
-		(SELECT id FROM oms."TransmissionFormDefDO" WHERE name = 'PUSH')
+		id_docformat_xml,
+    	eb_supplier_transmitter,
+		id_transtype_senddispatch,
+		id_commversion_1,
+		id_transform_push
     WHERE NOT EXISTS (SELECT * FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_dis);
 
 	communicationId := (SELECT id FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_dis);
@@ -295,8 +305,7 @@ BEGIN
 			senderId := (SELECT id FROM oms."PartnerReferrerDO" WHERE "supplierRef" = supplierId);
 
 			IF NOT EXISTS (SELECT * FROM "CommunicationPartnerDO"
-				WHERE "sendingPartnerReferrerRef" = senderId
-				--AND "receivingPartnerReferrerRef" = receiverId				
+				WHERE "sendingPartnerReferrerRef" = senderId				
 				AND "communicationRef" = communicationId)
 			THEN
 
@@ -314,10 +323,10 @@ BEGIN
 				)
 				SELECT 
 					nextval('"CommunicationPartnerDO_id_seq"'),
-					(SELECT id FROM oms."DecisionBeanDefDO" WHERE id = db_supplier_transmission), -- skip export ?
+					db_supplier_transmission, 	-- skip export ?
 					false,
 					communicationId,
-					senderId, -- a supplier
+					senderId, 					-- a supplier
 					null,
 					5,
 					'2m',
@@ -350,11 +359,11 @@ BEGIN
 		true,
 		null,
 		supplier_transmitter_key_ret,
-		(SELECT id FROM oms."DocumentFormatDefDO" WHERE name = 'XML'),
-    	(SELECT id FROM oms."ExecutionBeanDefDO" WHERE id = eb_supplier_transmitter),
-		(SELECT id FROM oms."TransmissionTypeDefDO" WHERE name = 'sendReturn'),
-		(SELECT id FROM oms."CommunicationVersionDefDO" WHERE "incomingURLParameter" = 'v1.0'),
-		(SELECT id FROM oms."TransmissionFormDefDO" WHERE name = 'PUSH')
+		id_docformat_xml,
+    	eb_supplier_transmitter,
+		id_transtype_sendreturn,
+		id_commversion_1,
+		id_transform_push
     WHERE NOT EXISTS (SELECT * FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_ret);
 
 	communicationId := (SELECT id FROM oms."CommunicationDO" WHERE key = supplier_transmitter_key_ret);
@@ -370,8 +379,7 @@ BEGIN
 			senderId := (SELECT id FROM oms."PartnerReferrerDO" WHERE "supplierRef" = supplierId);
 
 			IF NOT EXISTS (SELECT * FROM "CommunicationPartnerDO"
-				WHERE "sendingPartnerReferrerRef" = senderId
-				--AND "receivingPartnerReferrerRef" = receiverId				
+				WHERE "sendingPartnerReferrerRef" = senderId				
 				AND "communicationRef" = communicationId)
 			THEN
 
@@ -389,10 +397,10 @@ BEGIN
 				)
 				SELECT 
 					nextval('"CommunicationPartnerDO_id_seq"'),
-					(SELECT id FROM oms."DecisionBeanDefDO" WHERE id = db_supplier_transmission), -- skip export ?
+					db_supplier_transmission, 	-- skip export ?
 					false,
 					communicationId,
-					senderId, -- a supplier
+					senderId, 					-- a supplier
 					null,
 					5,
 					'2m',
