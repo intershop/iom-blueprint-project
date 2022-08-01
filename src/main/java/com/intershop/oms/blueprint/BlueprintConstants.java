@@ -2,14 +2,20 @@ package com.intershop.oms.blueprint;
 
 public interface BlueprintConstants
 {
-    static final String ORDER_PROPERTY_GROUP_ORDER = "order";
-    static final String RESPONSE_PROPERTY_GROUP_RESPONSE = "response";
-    static final String DISPATCH_PROPERTY_GROUP_DISPATCH = "dispatch";
-    static final String RMA_PROPERTY_GROUP_RMA = "rma";
-    static final String RETURN_PROPERTY_GROUP_RETURN = "return";
+    // to be used to check for properties
+    // objects
+    static final String PROPERTY_ORDER = "order";
+    static final String PROPERTY_RESPONSE = "response";
+    static final String PROPERTY_DISPATCH = "dispatch";
+    static final String PROPERTY_RMA = "rma";
+    static final String PROPERTY_RETURN = "return";
 
-    static final String DISPATCH_PROPERTY_KEY_CREATE_INVOICE = "createInvoice";
+    // keys
+    static final String PROPERTY_CREATE_INVOICE = "createInvoice";
+    static final String PROPERTY_EMAIL = "email";
+    static final String PROPERTY_EXPORT = "export";
 
-    static final String PROPERTY_KEY_EMAIL = "email";
+    // values
     static final String PROPERTY_VALUE_FALSE = "false";
+    static final String PROPERTY_VALUE_TRUE = "true";
 }
