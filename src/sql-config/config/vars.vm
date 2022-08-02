@@ -54,19 +54,20 @@ av_erp_endpoint varchar = ''erpEndpointUrl'';
 av_erp_username varchar = ''erpUsername'';
 av_erp_password varchar = ''erpPassword'';
 
-
-
 ')
 
 #set($vars_execution_beans = '
-eb_erp int = 1000;
-
+eb_shop_transmitter int = 10000;
+eb_supplier_transmitter int = 20000;
 ')
 
 #set($vars_decision_beans = '
 -- decision beans
 db_mail int = 1000;
 db_invoicing int = 10001;
+db_shop_transmission int = 40000;
+db_supplier_transmission int = 41000;
+db_send_email int = 50000;
 ')
 
 #set($vars_payment_methods = '

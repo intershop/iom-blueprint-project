@@ -13,15 +13,16 @@ BEGIN
 		(10001, 'invoicingDecisionBean'),
 		(20000, 'codPaymentDecisionBean'),
 		(20001, 'maxOrderValueDecisionBean'),
-		(40000, 'orderTransmissionDecisionBean'),
-		(41000, 'supplierTransmissionDecisionBean')
+		(40000, 'shopTransmissionDecisionBean'),
+		(41000, 'supplierTransmissionDecisionBean'),
+		(50000, 'sendEmailDecisionBean')
 	ON CONFLICT (id) DO NOTHING;
 
 
 
 	--EXECUTION BEANS
 	INSERT INTO oms."ExecutionBeanDefDO"(id, "decisionBeanDefRef", description) values
-		(10000, null,  'customOrderMessageTransmitter'),
+		(10000, null,  'shopMessageTransmitter'),
 		(20000, null,  'supplierMessageTransmitter')
 	ON CONFLICT (id) DO NOTHING;
 

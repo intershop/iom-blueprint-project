@@ -6,15 +6,15 @@
 
     <groupId>com.intershop.oms.blueprint</groupId>
     <artifactId>iom-blueprint-project</artifactId>
-    <version>1.2.0</version>
+    <version>1.3.0-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>IOM iom-blueprint-project APPLICATION</name>
     <description>IOM iom-blueprint-project APPLICATION</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <platform.version>4.1.2</platform.version>
-        <intershop.docker.repo>docker-internal.rnd.intershop.de/intershophub/</intershop.docker.repo>
+        <platform.version>4.1.3</platform.version>
+        <intershop.docker.repo>docker.tools.intershop.com/iom/intershophub/</intershop.docker.repo>
         <image.base.name>iom-blueprint-project</image.base.name>
         <image.version.suffix></image.version.suffix>
         <image.version>${project.version}${image.version.suffix}</image.version>

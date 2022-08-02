@@ -70,5 +70,15 @@ To become able to use _devenv-cli.sh_ without the need to call it with its absol
 export PATH="$PATH:/DirnameToBeAdapted/devenv-4-iom/bin"
 ```
 
+To enable bash-completion, add the following line to `~/.bashrc`:
+```sh
+source <(devenv-cli.sh get bash-completion)
+```
+
+This method is not working on Mac OS X, alternatively the following command can be used:
+```sh
+eval "$(devenv-cli.sh get bash-completion)"
+```
+
 ---
 [^ Index](../README.md) | [First Steps >](01_first_steps.md)

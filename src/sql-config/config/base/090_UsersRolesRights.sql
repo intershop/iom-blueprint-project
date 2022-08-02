@@ -26,8 +26,7 @@ shop_service_rights int8[] = ARRAY[1,2,67,123,124,125,126,131,137,139,140,141,14
 --technical supplier APIs
 supplier_service_user_name text = 'webservice_supplier'; --if you change the name, change cryptedPassword too
 supplier_service_role_name text = 'supplier_services'; 
-                                     --returns,              ATP,   Dispatches   Create_receipt_message
-supplier_service_rights int8[] = ARRAY[131,139,140,141,142,  123,   10,11,       13];
+supplier_service_rights int8[] = ARRAY[7,10,11,13,123,131,139,140,141,142];
 
 --technical supplier API
 
@@ -238,6 +237,16 @@ BEGIN
 	FROM "RoleDO" WHERE "name" IN(  user_admin_role_name)
 	ON CONFLICT ("organizationRef", "roleRef", "userRef") DO NOTHING;
 	
+	-- Ensure that the role FullPlatformAdmin  present in the initial database has all existing rights 
+	-- NOT RECOMMENED FOR PRODUCTIVE SYSTEMS
+	
+	WITH ADMINROLE as (select id from "RoleDO" WHERE  name='FullPlatformAdmin')
+		INSERT INTO "Role2RightDO" ("rightDefRef",	"roleRef")
+		SELECT r.id, adminRole.id
+		FROM "RightDefDO" r JOIN ADMINROLE ON true
+		EXCEPT -- already in
+		SELECT "rightDefRef",	"roleRef" FROM "Role2RightDO"
+	WHERE "roleRef" = (select id from ADMINROLE);
 	
 		
 END;

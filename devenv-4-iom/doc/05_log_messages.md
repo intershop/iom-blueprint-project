@@ -9,8 +9,8 @@ The most important features used in context of _devenv-4-iom_ are formatting and
     # Print raw JSON messages
     cmd_producing_json
     ...
-    {"tenant":"Intershop","environment":"first steps","logHost":"iom-5948d556fd-h8wq8","logVersion":"1.0","appName":"iom","appVersion":"4.0.0","logType":"script","timestamp":"2021-12-21T11:48:19+00:00","level":"INFO","processName":"dbmigrate-kubernetes.sh","message":"processing directory '/opt/oms/stored_procedures'","configName":null}
-    {"tenant":"Intershop","environment":"first steps","logHost":"iom-5948d556fd-h8wq8","logVersion":"1.0","appName":"iom","appVersion":"4.0.0","logType":"script","timestamp":"2021-12-21T11:48:19+00:00","level":"INFO","processName":"dbmigrate-kubernetes.sh","message":"processing file '/opt/oms/stored_procedures/./admin/add_communication_partner.sql'","configName":null}
+    {"tenant":"Intershop","environment":"first steps","logHost":"iom-5948d556fd-h8wq8","logVersion":"1.0","appName":"iom","appVersion":"4.1.0","logType":"script","timestamp":"2021-12-21T11:48:19+00:00","level":"INFO","processName":"dbmigrate-kubernetes.sh","message":"processing directory '/opt/oms/stored_procedures'","configName":null}
+    {"tenant":"Intershop","environment":"first steps","logHost":"iom-5948d556fd-h8wq8","logVersion":"1.0","appName":"iom","appVersion":"4.1.0","logType":"script","timestamp":"2021-12-21T11:48:19+00:00","level":"INFO","processName":"dbmigrate-kubernetes.sh","message":"processing file '/opt/oms/stored_procedures/./admin/add_communication_partner.sql'","configName":null}
     ...
 
     # Print formatted JSON messages
@@ -21,7 +21,7 @@ The most important features used in context of _devenv-4-iom_ are formatting and
       "logHost": "iom-5948d556fd-h8wq8",
       "logVersion": "1.0",
       "appName": "iom",
-      "appVersion": "4.0.0",
+      "appVersion": "4.1.0",
       "logType": "script",
       "timestamp": "2021-12-21T11:48:19+00:00",
       "level": "INFO",
@@ -35,7 +35,7 @@ The most important features used in context of _devenv-4-iom_ are formatting and
       "logHost": "iom-5948d556fd-h8wq8",
       "logVersion": "1.0",
       "appName": "iom",
-      "appVersion": "4.0.0",
+      "appVersion": "4.1.0",
       "logType": "script",
       "timestamp": "2021-12-21T11:48:19+00:00",
       "level": "INFO",
@@ -62,18 +62,18 @@ The most important features used in context of _devenv-4-iom_ are formatting and
       "hostName": "iom-5948d556fd-h8wq8",
       "processName": "jboss-modules.jar",
       "processId": 12621,
-      "stackTrace": ": com.intershop.oms.rolemgmt.capi.OMSLogicalException: Object not found for given ID '100' while 'get user for management'.\n\tat deployment.bakery.base-app-4.0.0.ear.oms.rolemgmt-internal-4.0.0.jar//com.intershop.oms.rolemgmt.internal.security.user.UserSecurityBean.checkForNull(UserSecurityBean.java:87)\n\t...",
+      "stackTrace": ": com.intershop.oms.rolemgmt.capi.OMSLogicalException: Object not found for given ID '100' while 'get user for management'.\n\tat deployment.bakery.base-app-4.1.0.ear.oms.rolemgmt-internal-4.1.0.jar//com.intershop.oms.rolemgmt.internal.security.user.UserSecurityBean.checkForNull(UserSecurityBean.java:87)\n\t...",
       "sourceClassName": "com.intershop.oms.rolemgmt.internal.connector.BackendAdminConnector",
       "sourceFileName": "BackendAdminConnector.java",
       "sourceMethodName": "handleException",
       "sourceLineNumber": 140,
-      "sourceModuleName": "deployment.bakery.base-app-4.0.0.ear.oms.rolemgmt-internal-4.0.0.jar",
+      "sourceModuleName": "deployment.bakery.base-app-4.1.0.ear.oms.rolemgmt-internal-4.1.0.jar",
       "sourceModuleVersion": null,
       "tenant": "Intershop",
       "environment": "first steps",
       "logHost": "iom-5948d556fd-h8wq8",
       "logVersion": "1.0",
-      "appVersion": "4.0.0",
+      "appVersion": "4.1.0",
       "appName": "iom",
       "logType": "message",
       "configName": null
@@ -97,18 +97,18 @@ The most important features used in context of _devenv-4-iom_ are formatting and
       "hostName": "iom-5948d556fd-h8wq8",
       "processName": "jboss-modules.jar",
       "processId": 12621,
-      "stackTrace": ": com.intershop.oms.rolemgmt.capi.OMSLogicalException: Object not found for given ID '100' while 'get user for management'.\n\tat deployment.bakery.base-app-4.0.0.ear.oms.rolemgmt-internal-4.0.0.jar//com.intershop.oms.rolemgmt.internal.security.user.UserSecurityBean.checkForNull(UserSecurityBean.java:87)\n\t...",
+      "stackTrace": ": com.intershop.oms.rolemgmt.capi.OMSLogicalException: Object not found for given ID '100' while 'get user for management'.\n\tat deployment.bakery.base-app-4.1.0.ear.oms.rolemgmt-internal-4.1.0.jar//com.intershop.oms.rolemgmt.internal.security.user.UserSecurityBean.checkForNull(UserSecurityBean.java:87)\n\t...",
       "sourceClassName": "com.intershop.oms.rolemgmt.internal.connector.BackendAdminConnector",
       "sourceFileName": "BackendAdminConnector.java",
       "sourceMethodName": "handleException",
       "sourceLineNumber": 140,
-      "sourceModuleName": "deployment.bakery.base-app-4.0.0.ear.oms.rolemgmt-internal-4.0.0.jar",
+      "sourceModuleName": "deployment.bakery.base-app-4.1.0.ear.oms.rolemgmt-internal-4.1.0.jar",
       "sourceModuleVersion": null,
       "tenant": "Intershop",
       "environment": "first steps",
       "logHost": "iom-5948d556fd-h8wq8",
       "logVersion": "1.0",
-      "appVersion": "4.0.0",
+      "appVersion": "4.1.0",
       "appName": "iom",
       "logType": "message",
       "configName": null

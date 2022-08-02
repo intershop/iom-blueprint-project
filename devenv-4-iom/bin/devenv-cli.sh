@@ -1219,10 +1219,11 @@ CONFIG-FILE
 $(msg_config_file 4)
 
 RESOURCE
-    config|co*         get configuration file
+    config|c*          get configuration file
     ws-props|w*        get ws properties
     geb-props|g*       get geb properties
     soap-props|s*      get soap properties
+    bash-completion|b* get bash completion script
 
 Run '$ME [CONFIG-FILE] get RESOURCE --help|-h' for more information on a command.
 EOF
@@ -1337,6 +1338,33 @@ BACKGROUND
       --template="$DEVENV_DIR/templates/soap.properties.template" \\
       --config="$CONFIG_FILES" \\
       --project-dir="$PROJECT_DIR"
+EOF
+}
+
+#-------------------------------------------------------------------------------
+help-get-bash-completion() {
+    ME=$(basename "$0")
+    cat <<EOF
+writes bash completion script to stdout
+
+SYNOPSIS
+    $ME [CONFIG-FILE] get bash-completion
+
+OVERVIEW
+    Writes bash completion script to stdout. The intention of this command is
+    to provide an easy integration of bash completion for commands and arguments
+    of $ME.
+    To enable bash-completion, add the following line to ~/.bashrc:
+
+      source <($ME get bash-completion)
+
+    This method is not working on Mac OS X, alternatively the following
+    command can be used:
+
+      eval "\$($ME get bash-completion)"
+
+CONFIG-FILE
+$(msg_config_file 4)
 EOF
 }
 
@@ -1734,6 +1762,32 @@ kube_resource_exists() (
         fi
     done
     [ "$RESOURCE_EXISTS" = 'true' ]
+)
+
+#-------------------------------------------------------------------------------
+# kubernetes pod is starting/running?
+# Terminating pods still have the state running. Terminating pods can be
+# identified by checking deletingTimestamp. If this field exists, it is
+# terminating.
+# $1: name
+# ->: true|false
+#-------------------------------------------------------------------------------
+kube_pod_started() (
+    APP_NAME=$1
+
+    PODS=( $(kubectl get pods --namespace $EnvId --context="$KUBERNETES_CONTEXT" -l app=$APP_NAME -o jsonpath='{.items[*].metadata.name}' 2> /dev/null) )
+
+    for POD in ${PODS[@]}; do
+        # array with Phase at position 0 and deletionTimestamp at position 1
+        POD_STATUS=( $(kubectl get pod $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT" -o jsonpath='{.status.phase} {.metadata.deletionTimestamp}' 2> /dev/null) )
+        PHASE=${POD_STATUS[0]}
+        DELETION_TIMESTAMP=${POD_STATUS[1]}
+        if [ "$PHASE" = 'Running' -o "$PHASE" = 'Pending' ] && [ -z "$DELETION_TIMESTAMP" ]; then
+            STATUS='Started'
+            break
+        fi
+    done
+    [ "$STATUS" = 'Started' ]
 )
 
 #-------------------------------------------------------------------------------
@@ -2192,7 +2246,7 @@ create-mailserver() {
     if [ -z "$CONFIG_FILES" ]; then
         log_msg ERROR "create-mailserver: no config-file given!" < /dev/null
         SUCCESS=false
-    else
+    elif ! kube_pod_started mailhog; then
         "$DEVENV_DIR/bin/template_engine.sh" \
             --template="$DEVENV_DIR/templates/mailhog.yml.template" \
             --config="$CONFIG_FILES" \
@@ -2236,7 +2290,7 @@ create-postgres() {
             log_msg INFO "create-postges: no need to link docker volume to dabase storage" < /dev/null
         fi
         if [ "$SUCCESS" = 'true' ]; then
-            if ! kube_resource_exists pods postgres || ! kube_resource_exists services postgres-service; then
+            if ! kube_pod_started postgres; then
                 # start postgres pod/service
                 "$DEVENV_DIR/bin/template_engine.sh" \
                     --template="$DEVENV_DIR/templates/postgres.yml.template" \
@@ -2249,7 +2303,7 @@ create-postgres() {
                     log_msg INFO "create-postgres: successfully created postgres" < "$TMP_OUT"
                 fi
             else
-                log_msg INFO "create-postgres: pod and service already exist" < /dev/null
+                log_msg INFO "create-postgres: nothing to do" < /dev/null
             fi
         fi
     else
@@ -2282,16 +2336,34 @@ create-iom() {
                 log_msg INFO "create-iom: successfully copied secret $IMAGE_PULL_SECRET from default namespace" < "$TMP_OUT"
             fi
         fi
+        # create IOM deployment
         if [ "$SUCCESS" = 'true' ]; then
+            if ! kube_pod_started iom; then
+                "$DEVENV_DIR/bin/template_engine.sh" \
+                    --template="$DEVENV_DIR/templates/$IomTemplate" \
+                    --config="$CONFIG_FILES" \
+                    --project-dir="$PROJECT_DIR" | kubectl apply --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f - 2> "$TMP_ERR" > "$TMP_OUT"
+                if [ $? -ne 0 ]; then
+                    log_msg ERROR "create-iom: error creating iom" < "$TMP_ERR"
+                    SUCCESS=false
+                else
+                    log_msg INFO "create-iom: successfully created iom" < "$TMP_OUT"
+                fi
+            else
+                log_msg INFO "create-iom: nothing to do" < /dev/null
+            fi
+        fi
+        # create file testframework-config.user.yaml
+        if [ "$SUCCESS" = 'true' -a "$CREATE_TEST_CONFIG" = 'true' ]; then
             "$DEVENV_DIR/bin/template_engine.sh" \
-                --template="$DEVENV_DIR/templates/$IomTemplate" \
+                --template="$DEVENV_DIR/templates/testframework-config.user.yaml.template" \
                 --config="$CONFIG_FILES" \
-                --project-dir="$PROJECT_DIR" | kubectl apply --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f - 2> "$TMP_ERR" > "$TMP_OUT"
+                --project-dir="$PROJECT_DIR" > "$PROJECT_DIR/testframework-config.user.yaml" 2> "$TMP_ERR"
             if [ $? -ne 0 ]; then
-                log_msg ERROR "create-iom: error creating iom" < "$TMP_ERR"
+                log_msg ERROR "create-iom: error creating file $PROJECT_DIR/testframework-config.user.yaml" < "$TMP_ERROR"
                 SUCCESS=false
             else
-                log_msg INFO "create-iom: successfully created iom" < "$TMP_OUT"
+                log_msg INFO "create-iom: successfully created file $PROJECT_DIR/testframework-config.user.yaml" < /dev/null
             fi
         fi
     fi
@@ -2463,7 +2535,7 @@ delete-iom() {
     else
         log_msg INFO "delete-iom: nothing to do" < /dev/null
     fi
-    rm -f "$TMP_ERR" "$TMP_OUT"
+    rm -f "$TMP_ERR" "$TMP_OUT" "$PROJECT_DIR/testframework-config.user.yaml"
     [ "$SUCCESS" = 'true' ]
 }
 
@@ -3190,6 +3262,13 @@ get-soap-props() {
     [ "$SUCCESS" = 'true' ]
 }
 
+#-------------------------------------------------------------------------------
+# get bash completion script
+#-------------------------------------------------------------------------------
+get-bash-completion() {
+    cat "$DEVENV_DIR/bin/devenv-cli-completion.sh"
+}
+
 ################################################################################
 # functions, implementing the log handler
 ################################################################################
@@ -3796,10 +3875,11 @@ elif [ "$LEVEL0" = "dump" ]; then
             exit 1
         fi
 elif [ "$LEVEL0" = 'get' ]; then
-    LEVEL1=$(isCommand "$1" co config      ||
-             isCommand "$1" g  geb-props   ||
-             isCommand "$1" w  ws-props    ||
-             isCommand "$1" s  soap-props) ||
+    LEVEL1=$(isCommand "$1" c config           ||
+             isCommand "$1" g geb-props        ||
+             isCommand "$1" w ws-props         ||
+             isCommand "$1" s soap-props       ||
+             isCommand "$1" b bash-completion) ||
         if [ "$1" = '--help' -o "$1" = '-h' ]; then
             help-get
             exit 0

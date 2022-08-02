@@ -15,14 +15,7 @@ FOREACH shopref IN ARRAY shops_all
 LOOP
 
     -- delivery note
-	perform admin.add_document_transformer_config(1, 2, 6, shopRef, 2, true);
-	
-	-- return slip
-	perform admin.add_document_transformer_config(1, 2, 7, shopRef, 2, true);
-	
-	-- returnLabel and documentMapperDefRef=1
-	-- requires BarCodeGenDO
-	perform admin.add_document_transformer_config(1, 1, 1, shopRef, 2, true);
+	perform admin.add_document_transformer_config(1, 2, 6, shopRef, 2, true); /* p_documentformatdefref, p_documentmapperdefref, p_documenttypedefref, p_shopref, p_transformerframeworkdefref, p_save */
 
 
 END LOOP;

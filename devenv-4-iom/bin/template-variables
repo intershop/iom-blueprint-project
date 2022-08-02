@@ -1,4 +1,4 @@
-DEVENV4IOM_VERSION=2.0.5
+DEVENV4IOM_VERSION=2.2.0
 
 ################################################################################
 # Defaults
@@ -355,7 +355,7 @@ TIMEZONE="${TIMEZONE:-Europe/Berlin}"
 # images
 DOCKER_DB_IMAGE="${DOCKER_DB_IMAGE:-postgres:12}"
 MAILHOG_IMAGE="${MAILHOG_IMAGE:-mailhog/mailhog}"
-IOM_DBACCOUNT_IMAGE="${IOM_DBACCOUNT_IMAGE:-docker.intershop.de/intershophub/iom-dbaccount:1.3.0.0}"
+IOM_DBACCOUNT_IMAGE="${IOM_DBACCOUNT_IMAGE:-docker.tools.intershop.com/iom/intershophub/iom-dbaccount:1.5.0}"
 IOM_CONFIG_IMAGE="${IOM_CONFIG_IMAGE}"
 IOM_APP_IMAGE="${IOM_APP_IMAGE}"
 IOM_IMAGE="${IOM_IMAGE}"
@@ -399,3 +399,5 @@ OMS_LOGLEVEL_CUSTOMIZATION=${OMS_LOGLEVEL_CUSTOMIZATION:-WARN}
 OMS_LOGLEVEL_SCRIPTS=${OMS_LOGLEVEL_SCRIPTS:-INFO}
 OMS_LOGLEVEL_DEVENV=${OMS_LOGLEVEL_DEVENV:-INFO}
 OMS_LOG_REST_IDS=${OMS_LOG_REST_IDS}
+
+CREATE_TEST_CONFIG="${CREATE_TEST_CONFIG:-true}"
