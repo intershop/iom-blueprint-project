@@ -34,9 +34,14 @@ stages:
       parameters:
         # You have to set here the name of the environment, that is providing the CI specific configuration! 
         projectEnvName:                     dev
+
+        # Project images, built and tested by the DevOps pipeline, are published to the project ACR only, if
+        # the name of the branch matches the regex passed in parameter branchesForPublication. If the default
+        # behavior does not fit your requirements, activate the following line and adapt the regular expression.
+        #branchesForPublication: '^refs/heads/develop$\|^refs/heads/master$\|^refs/heads/main$\|^refs/heads/release/\|^refs/heads/hotfix/'
         
-        # These parameters must not be changed. They are passing variables, defined by library
-        # iom-build-configuration to the ci-job template.
+        # These parameters must not be changed. They are used to pass variables to the ci-job templaten, which
+        # are defined by library iom-build-configuration.
         agentPool:                          $(BUILD_AGENT_POOL)
         artifactsFeed:                      iom-maven-artifacts
         dockerRepoIOMServiceConnection:     $(INTERSHOP_REPO_SERVICE_CONNECTION)
