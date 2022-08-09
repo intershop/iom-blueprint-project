@@ -1,25 +1,61 @@
-# see https://docs.microsoft.com/en-us/azure/devops/pipelines/process/resources?view=azure-devops&tabs=schema#define-a-repositories-resource
+# Library iom-build-configuration is provided by Intershops DevOps Environment. It provides
+# the following variables:
+#  - BUILD_AGENT_POOL:                  name of the build agent pool
+#  - REPO_SERVICE_CONNECTION:           service connection to the customer ACR
+#  - REPO_PATH:                         host name and path of the customer ACR
+#  - INTERSHOP_REPO_SERVICE_CONNECTION: service connection to the Intershop container registry
+#  - INTERSHOP_REPO_PATH:               host name and path of the Intershop container registry
+#  - TODO: github service-connection:   service connection to public github repos
+variables:
+- group: iom-build-configuration
+
+# Create a repository resource to the Github repo, that is providing the centrally managed CI job.
 resources:
   repositories:
-    - repository: IOMDevopsRepo
-      type: git
-      name: order-iom-partner-devops
-      ref: develop
+    - repository: iom-partner-devops
+      type: github
+      # TODO: replace name of Service-Connection with according variable
+      endpoint: github-intershop
+      name: intershop/iom-partner-devops
+      ref: main
 
+# Define, when the pipeline should be triggered.
+# See https://docs.microsoft.com/en-us/azure/devops/pipelines/repos/azure-repos-git?view=azure-devops&tabs=yaml#ci-triggers
 trigger:
   branches:
     include:
       - '*'
 
-# see https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops#extend-from-a-template
-# see https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops#use-other-repositories
-extends:
-  template: template.yml@IOMDevopsRepo
-  parameters:
-    agentPool:                          ubuntu-20.4-DS4_v2-adopt-adoptium-jdk-ora
-    artifactsFeed:                      order-iom-releases
-    dockerRepoIOMServiceConnection:     order-iom-docker.tools.intershop.com
-    dockerRepoIOM:                      docker.tools.intershop.com/iom/intershophub
-    acrServiceConnection:               order-iomInternalACR-ISH-ENG-IOM
-    acr:                                iominternalacr.azurecr.io
-    projectEnvName:                     dev
+# Run CI job. Additional custom stages/jobs might be added, see example below.
+stages:
+- stage: CI
+  jobs:
+    - template: ci-job-template.yml@iom-partner-devops
+      parameters:
+        # You have to set here the name of the environment, that is providing the CI specific configuration! 
+        projectEnvName:                     dev
+        
+        # These parameters must not be changed. They are passing variables, defined by library
+        # iom-build-configuration to the ci-job template.
+        agentPool:                          $(BUILD_AGENT_POOL)
+        artifactsFeed:                      iom-maven-artifacts
+        dockerRepoIOMServiceConnection:     $(INTERSHOP_REPO_SERVICE_CONNECTION)
+        dockerRepoIOM:                      $(INTERSHOP_REPO_PATH)
+        acrServiceConnection:               $(REPO_SERVICE_CONNECTION)
+        acr:                                $(REPO_PATH)
+
+    # The following block shows a very simple example, how to extend the DevOps pipeline by a custom
+    # job. Alternatively one or more stages could be added, see:
+    # https://docs.microsoft.com/en-us/azure/devops/pipelines/process/stages?view=azure-devops
+    #- job: custom
+    #  pool: $(BUILD_AGENT_POOL)
+    #  continueOnError: false
+    #  timeoutInMinutes: 5
+    #  workspace:
+    #    clean: all
+    #  steps:
+    #  - checkout: self
+    #    path: project
+    #    clean: true
+    #    timeoutInMinutes: 5
+    #    displayName: "Checkout IOM project @$(Build.SourceBranchName)"
