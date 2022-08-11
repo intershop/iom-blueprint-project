@@ -8,13 +8,15 @@
 #  - TODO: github service-connection:   service connection to public github repos
 variables:
 - group: iom-build-configuration
+- name: INTERSHOP_GITHUB_SERVICE_CONNECTION1
+  value: github-intershop
 
 # Create a repository resource to the Github repo, that is providing the centrally managed CI job.
 resources:
   repositories:
     - repository: iom-partner-devops
       type: github
-      endpoint: $[INTERSHOP_GITHUB_SERVICE_CONNECTION]
+      endpoint: $(INTERSHOP_GITHUB_SERVICE_CONNECTION1)
       name: intershop/iom-partner-devops
       ref: main
 
