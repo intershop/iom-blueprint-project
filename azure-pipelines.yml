@@ -14,7 +14,7 @@ resources:
   repositories:
     - repository: iom-partner-devops
       type: github
-      endpoint: github-intershop
+      endpoint: $(INTERSHOP_GITHUB_SERVICE_CONNECTION)
       name: intershop/iom-partner-devops
       ref: main
 
