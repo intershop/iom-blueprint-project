@@ -14,8 +14,7 @@ resources:
   repositories:
     - repository: iom-partner-devops
       type: github
-      # TODO: replace name of Service-Connection with according variable
-      endpoint: github-intershop
+      endpoint: $(INTERSHOP_GITHUB_SERVICE_CONNECTION)
       name: intershop/iom-partner-devops
       ref: main
 
