@@ -31,4 +31,4 @@ comment on function oms.add_s2s_config_parameter(
      p_shop2supplierref bigint,
      p_configtype       varchar,
      p_key              varchar,
-     p_value            varchar) is 'used to define custom attributes to given Shop2SupplierDOs';
+     p_value            varchar) is 'add config values for a given Shop2SupplierDO / configType';
