@@ -79,7 +79,6 @@ BEGIN
 		 "shopRMANumberSequenceName" = EXCLUDED."shopRMANumberSequenceName", "shopRMANumberSequenceFormatString" = EXCLUDED."shopRMANumberSequenceFormatString"
 		 ;
 	IF p_parentRef IS NULL THEN
-	-- TODO adjust in new project or make configurable
 		 PERFORM admin.set_parent_org(p_name, p_parentorganization);
 	END IF;
 
