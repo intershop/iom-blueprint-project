@@ -10,6 +10,15 @@ $vars_country_codes
 -- end variables block with 
 BEGIN
 
+
+-- to generate RMA numbers
+CREATE SEQUENCE IF NOT EXISTS "rma_number_sequence_generator"
+  INCREMENT 1
+  START 10000
+  CYCLE -- allows the sequence to wrap around when the maxvalue or minvalue has been reached by an ascending or descending sequence respectively
+;
+
+
 -- inTRONICS b2c Shop
 PERFORM create_or_update_shop(
             -- "id", "active", "availabilityTolerance", "isB2B"
