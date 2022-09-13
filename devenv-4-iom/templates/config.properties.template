@@ -41,6 +41,7 @@ IMAGE_PULL_POLICY=${IMAGE_PULL_POLICY}
 # Name of Kubernetes secret to be used, if authentication at a private Docker
 # registry is required. The secret has to be created manually in default
 # namespace.
+# It's possible to list several pull-secrets separated by comma.
 # More information about pull secrets can be found at:
 # - https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 # - https://docs.microsoft.com/en-us/azure/container-registry/container-registry-auth-kubernetes

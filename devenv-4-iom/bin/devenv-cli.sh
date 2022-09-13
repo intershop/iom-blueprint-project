@@ -2326,15 +2326,20 @@ create-iom() {
     else
         # copy secret from default namespace to namespace of IOM
         if [ ! -z "$IMAGE_PULL_SECRET" ]; then
-            kubectl get secret "$IMAGE_PULL_SECRET" --namespace default --context="$KUBERNETES_CONTEXT" -oyaml 2> "$TMP_ERR" |
-                grep -v 'namespace:\|resourceVersion:\|selfLink:\|uid:' |
-                kubectl apply --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f - 2>> "$TMP_ERR" > "$TMP_OUT"
-            if [ $? -ne 0 ]; then
-                log_msg ERROR "create-iom: error copying secret $IMAGE_PULL_SECRET from default namespace" < "$TMP_ERR"
-                SUCCESS=false
-            else
-                log_msg INFO "create-iom: successfully copied secret $IMAGE_PULL_SECRET from default namespace" < "$TMP_OUT"
-            fi
+            echo "$IMAGE_PULL_SECRET" | tr ',' '\n' | while read SECRET; do
+                if [ "$SUCCESS" = 'true' ]; then
+                    kubectl get secret "$SECRET" --namespace default --context="$KUBERNETES_CONTEXT" -oyaml 2> "$TMP_ERR" |
+                        grep -v 'namespace:\|resourceVersion:\|selfLink:\|uid:' |
+                        kubectl apply --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f - 2>> "$TMP_ERR" > "$TMP_OUT"
+                    if [ $? -ne 0 ]; then
+                        log_msg ERROR "create-iom: error copying secret $SECRET from default namespace" < "$TMP_ERR"
+                        SUCCESS=false
+                    else
+                        log_msg INFO "create-iom: successfully copied secret $SECRET from default namespace" < "$TMP_OUT"
+                    fi
+                fi
+                [ "$SUCCESS" = 'true' ]
+            done || SUCCESS=false
         fi
         # create IOM deployment
         if [ "$SUCCESS" = 'true' ]; then
