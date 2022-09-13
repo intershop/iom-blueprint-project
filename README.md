@@ -6,16 +6,35 @@ The following chapters provide a detailed insight into various aspects of instal
 - [Installation](doc/00_installation.md)
 - [First steps](doc/01_first_steps.md)
 - [Configuration](doc/02_configuration.md)
-- [Operation](doc/03_operations.md)
-- [Development process](doc/04_development_process.md)
-- [Log messages](doc/05_log_messages.md)
-- [Troubleshooting](doc/06_troubleshooting.md)
+- [Azure DevOps Integration](doc/03_devops_integration.md)
+- [Operations](doc/04_operations.md)
+- [Development process](doc/05_development_process.md)
+- [Log messages](doc/06_log_messages.md)
+- [Troubleshooting](doc/07_troubleshooting.md)
 
 If _devenv-4-iom_ is already installed and you are looking for a short overview about features, please use the integrated help. To do so, call `devenv-cli.sh` with parameter `-h` or `--help`:
 
 ```
     devenv-cli.sh -h
 ```
+# Release Information 2.3.0
+
+## Compatibility
+
+At the time of release of _devenv-4-iom_, it is compatible with the latest version of IOM. As long as there is no new release of _devenv-4-iom_, it is ensured, that new releases of IOM are compatible with _devenv-4-iom_. If a new version of IOM requires an update of _devenev-4-iom_, the release notes of IOM will contain an according statement.
+
+At the time of writing, _devenv-4-iom 2.3.0_ is compatible with all IOM versions between 3.0 and 4.1 (inclusive).
+
+## New Features
+
+### Support for multiple image pull secrets <!-- 79173 -->
+
+Property *IMAGE_PULL_SECRET* can now hold a list of image pull secrets. The different secrets have to be separated by comma.
+
+### Documentation of Azure DevOps Integration <!-- 78770 -->
+
+A new chapter was added to the documentation, that describes the integration of _devenv-4-iom_ into *Azure DevOps Environment*.
+
 # Release Information 2.2.0
 
 ## Compatibility

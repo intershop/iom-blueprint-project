@@ -141,4 +141,4 @@ The _devenv-cli.sh_ provides a very simple interface to get these information:
     devenv-cli.sh info config
 
 ---
-[< Configuration](02_configuration.md) | [^ Index](../README.md) | [Development Process >](04_development_process.md)
+[< Azure DevOps Integration](03_devops_integration.md) | [^ Index](../README.md) | [Development Process >](05_development_process.md)

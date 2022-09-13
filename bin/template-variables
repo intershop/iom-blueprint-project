@@ -1,4 +1,4 @@
-DEVENV4IOM_VERSION=2.2.0
+DEVENV4IOM_VERSION=2.3.0
 
 ################################################################################
 # Defaults
@@ -47,7 +47,11 @@ JBOSS_XA_POOLSIZE_MAX="${JBOSS_XA_POOLSIZE_MAX:-50}"
 # pull policy defaults to Always, which makes it easy for developers get always
 # the newest image
 IMAGE_PULL_POLICY="${IMAGE_PULL_POLICY:-Always}"
+
+# IMAGE_PULL_SECRET may contain a comma separated list of pull secrets, which are expanded
+# in variable ImagePullSecrets 
 IMAGE_PULL_SECRET="${IMAGE_PULL_SECRET}"
+ImagePullSecrets="$(echo $IMAGE_PULL_SECRET | tr ',' '\n'| while read SECRET; do echo "      - name: $SECRET"; done)"
 
 # initialize POSTGRES_ARGS
 if [ ${#POSTGRES_ARGS[@]} -eq 0 ]; then
