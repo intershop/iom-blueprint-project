@@ -1,15 +1,11 @@
 package com.intershop.oms.enums.expand;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Transient;
-
-import bakery.persistence.annotation.PersistedEnumerationTable;
+import bakery.persistence.annotation.ExpandedEnum;
 import bakery.persistence.dataobject.article.configuration.ImportConfigurationBeanDefDO;
 import bakery.persistence.dataobject.transformer.EnumInterface;
 import bakery.util.StringUtils;
 
-@PersistedEnumerationTable(ImportConfigurationBeanDefDO.class)
+@ExpandedEnum(ImportConfigurationBeanDefDO.class)
 public enum ExpandedImportConfigurationBeanDefDO implements EnumInterface
 {
 
@@ -32,21 +28,18 @@ public enum ExpandedImportConfigurationBeanDefDO implements EnumInterface
     }
 
     @Override
-    @Id
     public Integer getId()
     {
         return this.id;
     }
 
     @Override
-    @Column(name = "`description`")
     public String getName()
     {
         return StringUtils.constantToHungarianNotation(this.name(), StringUtils.FLAG_FIRST_LOWER);
     }
 
     @Override
-    @Transient
     public String getJndiName()
     {
         return this.jndiName;

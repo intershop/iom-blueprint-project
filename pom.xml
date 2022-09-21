@@ -13,16 +13,18 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <platform.version>4.1.3</platform.version>
+        <platform.version>4.2.0</platform.version>
         <intershop.docker.repo>docker.tools.intershop.com/iom/intershophub/</intershop.docker.repo>
         <image.base.name>iom-blueprint-project</image.base.name>
         <image.version.suffix></image.version.suffix>
         <image.version>${project.version}${image.version.suffix}</image.version>
         <image.docker.opts>--docker-opts="--no-cache"</image.docker.opts>
+        <ubuntu.mirror.x64>http://azure.archive.ubuntu.com/ubuntu/</ubuntu.mirror.x64>
         <maven.javadoc.skip>true</maven.javadoc.skip>
-        <wildfly.version>26.1.0.Final</wildfly.version>
+        <wildfly.version>26.1.2.Final</wildfly.version>
         <org.junit.version>5.7.2</org.junit.version>
-        <org.mockito.version>3.11.2</org.mockito.version>
+        <org.mockito.version>4.6.1</org.mockito.version>
+        <net.bytebuddy.version>1.12.10</net.bytebuddy.version>
         <org.apache.commons-lang.version>3.12.0</org.apache.commons-lang.version>
     </properties>
 
@@ -79,7 +81,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>${org.apache.commons-lang.version}</version>
+            <version>${org.apache.commons-lang.version}</version><!--$NO-MVN-MAN-VER$-->
         </dependency>
         <dependency>
 		    <groupId>org.apache.commons</groupId>
@@ -156,7 +158,7 @@
         <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
-            <version>1.11.3</version><!--$NO-MVN-MAN-VER$ -->
+            <version>${net.bytebuddy.version}</version><!--$NO-MVN-MAN-VER$ -->
             <scope>test</scope>
         </dependency>
 
@@ -194,7 +196,7 @@
                  <plugin>
                      <groupId>org.apache.maven.plugins</groupId>
                      <artifactId>maven-surefire-plugin</artifactId>
-                     <version>3.0.0-M6</version>
+                     <version>3.0.0-M7</version>
                      <configuration>
                          <redirectTestOutputToFile>true</redirectTestOutputToFile>
                      </configuration>
@@ -205,7 +207,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.0.0-M6</version>
+                <version>3.0.0-M7</version>
                 <executions>
                     <execution>
                         <id>run-tests</id>
@@ -251,7 +253,7 @@
                     <showWarnings>true</showWarnings>
                     <meminitial>256</meminitial>
                     <maxmem>2048</maxmem>
-                    <release>11</release>
+                    <release>17</release>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
@@ -437,6 +439,7 @@
                                         <IOM_VERSION>${platform.version}</IOM_VERSION>
                                         <IOM_REPO_NAME>${intershop.docker.repo}</IOM_REPO_NAME>
                                         <PROJECT_DIR>${project.build.directory}/p2d/p2d-dl/</PROJECT_DIR>
+                                        <UBUNTU_MIRROR_X64>${ubuntu.mirror.x64}</UBUNTU_MIRROR_X64>
                                     </environmentVariables>
                                     <workingDirectory>${basedir}</workingDirectory>
                                 </configuration>
