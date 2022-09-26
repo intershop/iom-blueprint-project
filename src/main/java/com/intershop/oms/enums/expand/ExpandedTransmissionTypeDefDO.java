@@ -3,15 +3,18 @@
  */
 package com.intershop.oms.enums.expand;
 
-import javax.persistence.Transient;
+import java.util.Collection;
+import java.util.Set;
 
-import bakery.persistence.annotation.PersistedEnumerationTable;
+import bakery.persistence.annotation.ExpandedEnum;
 import bakery.persistence.dataobject.configuration.common.RoleDefDO;
 import bakery.persistence.dataobject.configuration.connections.TransmissionTypeDefDO;
+import bakery.persistence.dataobject.mail.ShopCustomerMailTransmissionDO;
+import bakery.persistence.dataobject.order.AbstractTransmission;
 import bakery.persistence.expand.MessageTypeDefDOEnumInterface;
 import bakery.persistence.expand.TransmissionTypeDefDOEnumInterface;
 
-@PersistedEnumerationTable(TransmissionTypeDefDO.class)
+@ExpandedEnum(TransmissionTypeDefDO.class)
 public enum ExpandedTransmissionTypeDefDO implements TransmissionTypeDefDOEnumInterface
 {
 
@@ -20,25 +23,30 @@ public enum ExpandedTransmissionTypeDefDO implements TransmissionTypeDefDOEnumIn
      * The name must be unique across both classes.
      * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
-    
+
     // Mails to customers of a shop
-    EXAMPLE_SEND_CUSTOMER_MAIL_ORDER( -9999, "exampleSendCustomerMailOrder", RoleDefDO.CUSTOMER, ExpandedMessageTypeDefDO.EXAMPLE_SEND_CUSTOMER_MAIL_ORDER )
-    ;
+    EXAMPLE_SEND_CUSTOMER_MAIL_ORDER(-9999, "exampleSendCustomerMailOrder", RoleDefDO.CUSTOMER, ExpandedMessageTypeDefDO.EXAMPLE_SEND_CUSTOMER_MAIL_ORDER, "send customer order mail", Set
+                    .of(ShopCustomerMailTransmissionDO.class));
 
     private Integer id;
     private String name;
     private RoleDefDO roleDefDO;
     private Integer roleDefRef;
     private MessageTypeDefDOEnumInterface messageTypeDefDO;
+    private String description;
+    private Collection<Class<? extends AbstractTransmission>> transmissionTypeGroups;
 
     private ExpandedTransmissionTypeDefDO(Integer id, String name, RoleDefDO roleDefDO,
-                    MessageTypeDefDOEnumInterface messageTypeDefDO)
+                    MessageTypeDefDOEnumInterface messageTypeDefDO, String description,
+                    Collection<Class<? extends AbstractTransmission>> transmissionTypeGroups)
     {
         this.name = name;
         this.id = id;
         this.roleDefDO = roleDefDO;
         this.roleDefRef = roleDefDO.getId();
         this.messageTypeDefDO = messageTypeDefDO;
+        this.description = description;
+        this.transmissionTypeGroups = transmissionTypeGroups;
     }
 
     @Override
@@ -54,7 +62,6 @@ public enum ExpandedTransmissionTypeDefDO implements TransmissionTypeDefDOEnumIn
     }
 
     @Override
-    @Transient
     public RoleDefDO getRoleDefDO()
     {
         return this.roleDefDO;
@@ -67,17 +74,27 @@ public enum ExpandedTransmissionTypeDefDO implements TransmissionTypeDefDOEnumIn
     }
 
     @Override
-    @Transient
     public MessageTypeDefDOEnumInterface getMessageTypeDefDO()
     {
         return this.messageTypeDefDO;
     }
 
     @Override
-    @Transient
     public String getFieldName()
     {
         return this.name();
+    }
+
+    @Override
+    public String getDescription()
+    {
+        return description;
+    }
+
+    @Override
+    public Collection<Class<? extends AbstractTransmission>> getTransmissionTypeGroups()
+    {
+        return transmissionTypeGroups;
     }
 
 }

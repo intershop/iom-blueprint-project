@@ -1,14 +1,10 @@
 package com.intershop.oms.enums.expand;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Transient;
-
-import bakery.persistence.annotation.PersistedEnumerationTable;
+import bakery.persistence.annotation.ExpandedEnum;
 import bakery.persistence.dataobject.common.PaymentDefDO;
 import bakery.persistence.expand.PaymentDefDOEnumInterface;
 
-@PersistedEnumerationTable(PaymentDefDO.class)
+@ExpandedEnum(PaymentDefDO.class)
 public enum ExpandedPaymentDefDO implements PaymentDefDOEnumInterface
 {
 
@@ -17,7 +13,7 @@ public enum ExpandedPaymentDefDO implements PaymentDefDOEnumInterface
      * The name must be unique across both classes.
      * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
-    
+
     TEST(-999, "AfterPay", "AfterPay", null, "AfterPay")
     ;
 
@@ -25,7 +21,6 @@ public enum ExpandedPaymentDefDO implements PaymentDefDOEnumInterface
     private String name;
     private String description;
     private PaymentDefDOEnumInterface paymentGroup;
-    private Integer paymentGroupRef;
     private String payment;
 
     private ExpandedPaymentDefDO(Integer id, String name, String description, PaymentDefDO paymentGroup, String payment)
@@ -38,36 +33,30 @@ public enum ExpandedPaymentDefDO implements PaymentDefDOEnumInterface
     }
 
     @Override
-    @Id
-    @Column(name = "`id`")
     public Integer getId()
     {
         return this.id;
     }
 
     @Override
-    @Column(name = "`name`", length = 30, nullable = false)
     public String getName()
     {
         return this.name;
     }
 
     @Override
-    @Column(name = "`description`", length = 50, nullable = false)
     public String getDescription()
     {
         return this.description;
     }
 
     @Override
-    @Transient
     public PaymentDefDOEnumInterface getPaymentGroup()
     {
         return (this.paymentGroup != null ? this.paymentGroup : this);
     }
 
     @Override
-    @Transient
     public String getPayment()
     {
         return this.payment;
@@ -77,14 +66,12 @@ public enum ExpandedPaymentDefDO implements PaymentDefDOEnumInterface
     * @return the id of the payment method group
     */
     @Override
-    @Column( name = "`paymentGroupRef`" )
     public Integer getPaymentGroupRef()
     {
 	    return ( paymentGroup == null ? null : paymentGroup.getId() );
     }
 
     @Override
-    @Column(name = "`paymentName`", length = 100, nullable = false)
     public String getFieldName()
     {
 	    return this.name();
