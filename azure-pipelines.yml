@@ -15,7 +15,7 @@ resources:
       type: github
       endpoint: INTERSHOP_GITHUB
       name: intershop/iom-partner-devops
-      ref: main
+      ref: debug-oom-issue
 
 # Define, when the pipeline should be triggered.
 # See https://docs.microsoft.com/en-us/azure/devops/pipelines/repos/azure-repos-git?view=azure-devops&tabs=yaml#ci-triggers
