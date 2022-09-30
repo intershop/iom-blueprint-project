@@ -12,6 +12,7 @@ public interface BlueprintConstants
 
     // keys
     static final String PROPERTY_CREATE_INVOICE = "createInvoice";
+    static final String PROPERTY_CREATE_CREDIT_NOTE = "createCreditNote";
     static final String PROPERTY_EMAIL = "email";
     static final String PROPERTY_EXPORT = "export";
 

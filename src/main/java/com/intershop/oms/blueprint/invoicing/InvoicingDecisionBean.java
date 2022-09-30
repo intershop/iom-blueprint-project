@@ -29,7 +29,7 @@ public class InvoicingDecisionBean extends AbstractExecutionDecider<InvoicingEve
     {
         if (InvoicingTypeDefDO.CREDITNOTE.equals(invoicingEventRegistryEntryDO.getInvoicingTypeDefDO()))
         {
-            // for CREDITNOTE not expected
+            // not expected for CREDITNOTE
             return false;
         }
 
@@ -45,15 +45,27 @@ public class InvoicingDecisionBean extends AbstractExecutionDecider<InvoicingEve
         return true;
     }
 
+    /**
+     * Credit notes on return.
+     */
     @Override
     public boolean isExecutionRequired(ReturnDO returnDO, InvoicingEventRegistryEntryDO invoicingEventRegistryEntryDO)
     {
         if (InvoicingTypeDefDO.INVOICE.equals(invoicingEventRegistryEntryDO.getInvoicingTypeDefDO()))
         {
-            // for INVOICE not expected
+            // not expected for INVOICE
             return false;
         }
 
+        // check for special return property
+        String createCreditNoteProperty = returnDO.getPropertyValue(BlueprintConstants.PROPERTY_RETURN,
+                        BlueprintConstants.PROPERTY_CREATE_CREDIT_NOTE);
+        if (Boolean.FALSE.toString().equals(createCreditNoteProperty))
+        {
+            return false;
+        }
+
+        // execute for returns of type RETURN, INVERSION, DEFECT
         return RETURN_TYPES_WITH_INVOICE.contains(returnDO.getReturnReasonDefDO().getReturnTypeDefDO());
     }
 
