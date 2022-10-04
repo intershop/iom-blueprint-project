@@ -17,7 +17,6 @@ import bakery.logic.service.transmission.TransmissionWrapperFactory;
 import bakery.persistence.dataobject.order.AbstractTransmission;
 import bakery.persistence.dataobject.order.OrderTransmissionDO;
 import bakery.persistence.dataobject.rma.ReturnAnnouncementTransmissionDO;
-import bakery.util.DeploymentConfig;
 import bakery.util.exception.TechnicalException;
 import bakery.util.exception.ValidationException;
 
@@ -29,10 +28,7 @@ public class ShopMessageTransmitterBean implements MessageTransmitter
 {
     private static final Logger log = LoggerFactory.getLogger(ShopMessageTransmitterBean.class);
 
-    //@EJB(lookup=OrderMapperOut.LOGIC_ORDERMAPPEROUT)
-    @EJB(lookup = "java:global/bakery.base-app-" + DeploymentConfig.APP_VERSION + "/bakery.logic-core-"
-                    + DeploymentConfig.APP_VERSION
-                    + "/OrderMapperOutBean_v1_1!bakery.logic.communication.mapper.out.OrderMapperOut")
+    @EJB(lookup=OrderMapperOut.LOGIC_ORDERMAPPEROUT_V1_1)
     private OrderMapperOut orderMapperOut;
 
     @EJB(lookup=ReturnAnnouncementMapperOut.JNDI_NAME_V2_0)
