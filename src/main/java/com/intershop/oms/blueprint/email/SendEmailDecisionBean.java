@@ -16,6 +16,9 @@ import bakery.logic.service.util.AbstractExecutionDecider;
 import bakery.logic.service.util.OrderHelper;
 import bakery.persistence.dataobject.common.PropertyOwner;
 import bakery.persistence.dataobject.configuration.common.InvoicingTypeDefDO;
+import bakery.persistence.dataobject.configuration.common.ResponseTypeDefDO;
+import bakery.persistence.dataobject.configuration.common.ReturnReasonDefDO;
+import bakery.persistence.dataobject.configuration.common.ReturnTypeDefDO;
 import bakery.persistence.dataobject.configuration.connections.TransmissionTypeDefDO;
 import bakery.persistence.dataobject.configuration.mail.MailEventRegistryEntryDO;
 import bakery.persistence.dataobject.configuration.states.InvoicingTransmissionStatesDefDO;
@@ -23,6 +26,7 @@ import bakery.persistence.dataobject.invoicing.InvoicingDO;
 import bakery.persistence.dataobject.invoicing.InvoicingTransmissionDO;
 import bakery.persistence.dataobject.order.DispatchDO;
 import bakery.persistence.dataobject.order.OrderDO;
+import bakery.persistence.dataobject.order.ResponseDO;
 import bakery.persistence.dataobject.order.ReturnDO;
 import bakery.persistence.dataobject.rma.ReturnAnnouncementDO;
 
@@ -45,7 +49,42 @@ public class SendEmailDecisionBean extends AbstractExecutionDecider<MailEventReg
         return hasEmailAddress(orderDO) && (!hasCustomProperty(orderDO, BlueprintConstants.PROPERTY_ORDER,
                         BlueprintConstants.PROPERTY_EMAIL, BlueprintConstants.PROPERTY_VALUE_FALSE));
     }
+    
+    @Override
+    public boolean isExecutionRequired(ResponseDO responseDO, MailEventRegistryEntryDO eventRegistry)
+    {
+        // has email
+        if (!hasEmailAddress(responseDO.getOrderDO()))
+        {
+            return false;
+        }
 
+        // determine type of mail by type of response
+        ResponseTypeDefDO responseType = responseDO.getResponseTypeDefDO();
+        switch (responseType)
+        {
+            case TEMPORARY:
+                return eventRegistry
+                        .getTransmissionTypeDefDO() == TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_RESPONSE_TEMPORARY;
+            case INITIAL:
+                return eventRegistry
+                        .getTransmissionTypeDefDO() == TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_RESPONSE_INITIAL;
+            case CONTINUOUS:
+                return eventRegistry
+                        .getTransmissionTypeDefDO() == TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_RESPONSE_CONTINUOUS;
+            case INTERNAL:
+            default:
+                logger.error("Transmission type of response type " + responseType.name() + " is not supported.");
+                return false;
+        }
+    }
+
+    /**
+     * Does not differ
+     *      TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_DISPATCH
+     *      and
+     *      TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_DISPATCH_IMMATERIAL yet.
+     */
     @Override
     public boolean isExecutionRequired(DispatchDO dispatchDO, MailEventRegistryEntryDO eventRegistry)
     {
@@ -56,8 +95,7 @@ public class SendEmailDecisionBean extends AbstractExecutionDecider<MailEventReg
     }
 
     @Override
-    public boolean isExecutionRequired(ReturnAnnouncementDO returnAnnouncementDO,
-                    MailEventRegistryEntryDO eventRegistry)
+    public boolean isExecutionRequired(ReturnAnnouncementDO returnAnnouncementDO, MailEventRegistryEntryDO eventRegistry)
     {
         // has email and not contains the custom property
         return hasEmailAddress(returnAnnouncementDO.getOrder()) && (!hasCustomProperty(returnAnnouncementDO,
@@ -68,10 +106,93 @@ public class SendEmailDecisionBean extends AbstractExecutionDecider<MailEventReg
     @Override
     public boolean isExecutionRequired(ReturnDO returnDO, MailEventRegistryEntryDO eventRegistry)
     {
-        // has email and not contains the custom property
-        return hasEmailAddress(returnDO.getOrderDO()) && (!hasCustomProperty(returnDO,
-                        BlueprintConstants.PROPERTY_RETURN, BlueprintConstants.PROPERTY_EMAIL,
-                        BlueprintConstants.PROPERTY_VALUE_FALSE));
+        // skip if has no email
+        if(!hasEmailAddress(returnDO.getOrderDO()))
+        {
+            return false;
+        }
+        
+        // skip if contains special custom property
+        if(hasCustomProperty(returnDO,
+                BlueprintConstants.PROPERTY_RETURN, BlueprintConstants.PROPERTY_EMAIL,
+                BlueprintConstants.PROPERTY_VALUE_FALSE))
+        {
+            return false;
+        }
+        
+        // determine type of mail
+        TransmissionTypeDefDO transmissionTypeDefDO = null;
+        TransmissionTypeDefDO transmissionTypeCreditNoteDefDO = null;
+        ReturnReasonDefDO returnReasonDefDO = returnDO.getReturnReasonDefDO();
+
+        // determine transmission type by return reason - consider credit notes
+        switch(returnReasonDefDO)
+        {
+            case RCL010:
+                transmissionTypeDefDO = TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_RETURN_RCL010;
+                transmissionTypeCreditNoteDefDO = TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_RETURN_RCL010_CREDITNOTE;
+                break;
+            case RCL020:
+            case RCL041:
+                transmissionTypeDefDO = TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_RETURN_RCL020;
+                transmissionTypeCreditNoteDefDO = TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_RETURN_RCL020_CREDITNOTE;
+                break;
+            case RCL045:
+                transmissionTypeDefDO = TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_RETURN_RCL045;
+                transmissionTypeCreditNoteDefDO = TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_RETURN_RCL045_CREDITNOTE;
+                break;
+            case RCL980:
+                transmissionTypeDefDO = TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_RETURN_RCL980;
+                transmissionTypeCreditNoteDefDO = TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_RETURN_RCL980_CREDITNOTE;
+                break;
+            case RCL021:
+                transmissionTypeDefDO = TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_RETURN_RCL021;
+                transmissionTypeCreditNoteDefDO = TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_RETURN_RCL021_CREDITNOTE;
+                break;
+            case RET200:
+                transmissionTypeDefDO = TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_RETURN_REJECTED;
+                break;
+            default:
+                logger.info("Failed to determine transmission type for return reason " + returnReasonDefDO.name()
+                        + ". Try to find using return type.");
+            }
+
+        // determine transmission type by return type - consider credit notes
+        if((transmissionTypeDefDO == null) || (transmissionTypeDefDO != eventRegistry.getTransmissionTypeDefDO()))
+        {
+            ReturnTypeDefDO returnTypeDefDO = returnReasonDefDO.getReturnTypeDefDO();
+
+            switch (returnTypeDefDO)
+            {
+                case CAN:
+                    transmissionTypeDefDO = TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_RETURN_CAN;
+                    transmissionTypeCreditNoteDefDO = TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_RETURN_CAN_CREDITNOTE;
+                    break;
+                case DEF:
+                    transmissionTypeDefDO = TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_RETURN_DEF;
+                    transmissionTypeCreditNoteDefDO = TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_RETURN_DEF_CREDITNOTE;
+                    break;
+                case INV:
+                    transmissionTypeDefDO = TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_RETURN_INV;
+                    transmissionTypeCreditNoteDefDO = TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_RETURN_INV_CREDITNOTE;
+                    break;
+                case RCL:
+                    transmissionTypeDefDO = TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_RETURN_RCL;
+                    transmissionTypeCreditNoteDefDO = TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_RETURN_RCL_CREDITNOTE;
+                    break;
+                case RET:
+                    transmissionTypeDefDO = TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_RETURN_RET;
+                    transmissionTypeCreditNoteDefDO = TransmissionTypeDefDO.SEND_CUSTOMER_MAIL_RETURN_RET_CREDITNOTE;
+                    break;
+                default:
+                    logger.error("No transmission type configured for return type "
+                            + (returnTypeDefDO != null ? returnTypeDefDO.name() : "null"));
+                          
+            }
+        }
+
+        return transmissionTypeDefDO == eventRegistry.getTransmissionTypeDefDO()
+                || transmissionTypeCreditNoteDefDO == eventRegistry.getTransmissionTypeDefDO();
     }
 
     @Override
@@ -80,7 +201,7 @@ public class SendEmailDecisionBean extends AbstractExecutionDecider<MailEventReg
         // has email ?
         if (StringUtils.isEmpty(invoicingDO.getEmailAddress()))
         {
-            logger.debug("For customer number '{}' with invoice number '{}' no email address exists. Couldn't send email.",
+            logger.debug("For customer number '{}' with invoice number '{}' no e-mail address exists. Could not send e-mail.",
                             invoicingDO.getShopCustomerNo(), invoicingDO.getInvoiceNo());
             return false;
         }
@@ -125,7 +246,7 @@ public class SendEmailDecisionBean extends AbstractExecutionDecider<MailEventReg
         // transmission type is configured ?
         if (!transmissionTypes.contains(eventRegistry.getTransmissionTypeDefDO()))
         {
-            logger.debug("Transmission type '{}' is not configured for emails. Couldn't send email.",
+            logger.debug("Transmission type '{}' is not configured for e-mails. Could not send e-mail.",
                             eventRegistry.getTransmissionTypeDefDO());
             return false;
         }
