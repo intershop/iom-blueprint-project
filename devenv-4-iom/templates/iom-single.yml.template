@@ -137,6 +137,12 @@ ${DumpsDirYml____}          mountPath: /opt/oms/dumps
             value: '${JBOSS_XA_POOLSIZE_MIN}'
           - name: JBOSS_XA_POOLSIZE_MAX
             value: '${JBOSS_XA_POOLSIZE_MAX}'
+          - name: OMS_SSO_ENABLED
+            value: '${SSO_ENABLED}'
+          - name: OMS_SSO_TYPE
+            value: '${SSO_TYPE}'
+          - name: OMS_SSO_OIDC_CONFIG
+            value: '${SSO_OIDC_CONFIG}'
           - name: OMS_WILDFLY_READY_TIMEOUT
             value: '180'
           - name: OMS_PUBLIC_URL

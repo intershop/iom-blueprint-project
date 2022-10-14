@@ -160,6 +160,16 @@ JBOSS_JAVA_OPTS="${JBOSS_JAVA_OPTS}"
 JBOSS_XA_POOLSIZE_MIN="${JBOSS_XA_POOLSIZE_MIN}"
 JBOSS_XA_POOLSIZE_MAX="${JBOSS_XA_POOLSIZE_MAX}"
 
+# IOM >= 4.3 supports Single Sign On (SSO).
+# Devenv-4-iom allows the usage of SSO during development. 
+# Allowed values are true|false
+SSO_ENABLED="${SSO_ENABLED}"
+# Allowed values are azure-ad|keycloak
+SSO_TYPE="${SSO_TYPE}"
+# Set a JSON structure similar to oidc.json,
+# see: https://docs.wildfly.org/26/Admin_Guide.html#Elytron_OIDC_Client
+SSO_OIDC_CONFIG="${SSO_OIDC_CONFIG}"
+
 ################################################################################
 # Database settings (not applied to external database)
 ################################################################################
