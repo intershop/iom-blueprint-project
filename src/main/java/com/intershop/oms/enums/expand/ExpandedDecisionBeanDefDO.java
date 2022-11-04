@@ -25,7 +25,7 @@ public enum ExpandedDecisionBeanDefDO implements EnumInterface
     MAX_ORDER_VALUE_DECISION_BEAN(Integer.valueOf(20001), "java:global/iom-blueprint-project/OrderValueApprovalDecisionBean"),
 
     // rma approval 3xxxx
-    RMA_DECISION_BEAN(Integer.valueOf(-30000), "java:global/iom-blueprint-project/TBD"),
+    RMA_DECISION_BEAN(Integer.valueOf(30000), "java:global/iom-blueprint-project/RmaApprovalDecisionBean"),
 
     // export|transmissions 4xxxx
     SHOP_TRANSMISSION_DECISION_BEAN(Integer.valueOf(40000), "java:global/iom-blueprint-project/ShopTransmissionDecisionBean"),

@@ -15,8 +15,11 @@ public interface BlueprintConstants
     static final String PROPERTY_CREATE_CREDIT_NOTE = "createCreditNote";
     static final String PROPERTY_EMAIL = "email";
     static final String PROPERTY_EXPORT = "export";
+    static final String PROPERTY_APPROVAL = "approval";
 
     // values
     static final String PROPERTY_VALUE_FALSE = "false";
     static final String PROPERTY_VALUE_TRUE = "true";
+    
+    static final String PROPERTY_SKIP = "skip";
 }
