@@ -13,6 +13,7 @@ BEGIN
 		(10001, 'invoicingDecisionBean'),
 		(20000, 'codPaymentDecisionBean'),
 		(20001, 'maxOrderValueDecisionBean'),
+		(30000, 'rmaApprovalDecisionBean'),
 		(40000, 'shopTransmissionDecisionBean'),
 		(41000, 'supplierTransmissionDecisionBean'),
 		(50000, 'sendEmailDecisionBean')
