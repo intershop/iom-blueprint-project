@@ -52,5 +52,9 @@ BEGIN
 		SET active = TRUE
 		WHERE key = 'ORDER PROGRESS BAR';
 
+	UPDATE omt."FeatureToggleDTO"
+		SET active = TRUE
+		WHERE key = 'ORDER CHANGE REQUEST TAB';
+
 END;
 $$;
