@@ -247,8 +247,19 @@ BEGIN
 		EXCEPT -- already in
 		SELECT "rightDefRef",	"roleRef" FROM "Role2RightDO"
 	WHERE "roleRef" = (select id from ADMINROLE);
-	
-		
+
+	-- Single sign-on (SSO) defaults
+
+	-- default organization
+	INSERT INTO oms."PlatformConfigPropertyDO" (id, "platformConfigRef", key, value, description)
+	SELECT nextval('"PlatformConfigPropertyDO_id_seq"'), 1, 'ssoUserDefaultOrganization', 'OmsSystem', 'The default organization for new users (UserDO). Lookup is by OrganizationDO.name.'
+	WHERE NOT EXISTS (SELECT NULL FROM "PlatformConfigPropertyDO" WHERE "key" = 'ssoUserDefaultOrganization');
+
+	-- default role
+	INSERT INTO oms."PlatformConfigPropertyDO" (id, "platformConfigRef", key, value, description)
+	SELECT nextval('"PlatformConfigPropertyDO_id_seq"'), 1, 'ssoUserDefaultRole', 'FullOMTClient', 'The default role for new users (UserDO). Lookup is by RoleDO.name.'
+	WHERE NOT EXISTS (SELECT NULL FROM "PlatformConfigPropertyDO" WHERE "key" = 'ssoUserDefaultRole');
+			
 END;
 -- RESUME velocity parser
 ]]#
