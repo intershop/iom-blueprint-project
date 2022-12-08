@@ -13,9 +13,9 @@ BEGIN
 IF NOT EXISTS(SELECT null from oms."OrganizationDO" where "name" = 'inSPIRED') THEN
 	PERFORM admin.createdomain
 	(
-	    'OmsSystem',                    --parent_org_name varchar,
-	    'inSPIRED',    						--name            varchar,
-		'inSPIRED Organization'				--description     varchar
+	    'OmsSystem',		--parent_org_name varchar,
+	    'inSPIRED',    		--name            varchar,
+	    'inSPIRED Organization'	--description     varchar
 	);
 END IF;
 
