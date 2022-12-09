@@ -16,4 +16,4 @@ Checkout [How to Start](https://support.intershop.com/kb/index.php/Display/30097
 
 ## License
 
-The Intershop Progressive Web App is made available under the [MIT license](./LICENSE).
+The Intershop Order Management Blueprint Project is published as [MIT license](./LICENSE).
