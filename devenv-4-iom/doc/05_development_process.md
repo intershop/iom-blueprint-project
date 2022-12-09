@@ -317,4 +317,4 @@ To run all SOAP tests, use the following method:
     mvn -Dhost=$(cat "${PATH_TO_SOAP_PROPERTIES}/soap.properties") clean test
 
 ---
-[< Operations](03_operations.md) | [^ Index](../README.md) | [Log Messages >](05_log_messages.md)
+[< Operations](04_operations.md) | [^ Index](../README.md) | [Log Messages >](06_log_messages.md)

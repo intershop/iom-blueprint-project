@@ -1,10 +1,10 @@
 package com.intershop.oms.enums.expand;
 
-import bakery.persistence.annotation.PersistedEnumerationTable;
+import bakery.persistence.annotation.ExpandedEnum;
 import bakery.persistence.dataobject.configuration.connections.MessageTypeDefDO;
 import bakery.persistence.expand.MessageTypeDefDOEnumInterface;
 
-@PersistedEnumerationTable(MessageTypeDefDO.class)
+@ExpandedEnum(MessageTypeDefDO.class)
 public enum ExpandedMessageTypeDefDO implements MessageTypeDefDOEnumInterface
 {
 

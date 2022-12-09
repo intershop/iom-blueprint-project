@@ -7,13 +7,12 @@ BEGIN
 	
 	DELETE FROM omt."CustomMenuItemDTO";
 
-	-- Intershop support
+	-- Intershop knowledge base
 	INSERT INTO omt."CustomMenuItemDTO"
 		(SELECT 2, 'Documentation', 'fa fa-question-circle-o',
-		'https://support.intershop.com/kb/index.php/Search?qdo=SetFilter&qtset=PRD78&qtrem=|PRD154|PRD153|PRD106|PRD97|PRD87|PRD85&qoff=0&qtext=',2 , TRUE, NULL, FALSE);
-		
+		'https://support.intershop.com/kb/index.php/Search?qdo=SetFilter&qtset=PRD78&qtrem=|PRD154|PRD153|PRD106|PRD97|PRD87|PRD85&qoff=0&qtext=', 1 , TRUE, NULL, FALSE);
 	
-	-- CUSTOM POSITION PROPERTIES
+	-- CUSTOM POSITION PROPERTIES	
 	
 	DELETE FROM omt."CustomPropertyPresentationDTO";
 	DELETE FROM omt."CustomBlockDTO";
@@ -48,6 +47,10 @@ BEGIN
 	UPDATE omt."FeatureToggleDTO"
 		SET active = TRUE
 		WHERE key = 'ORDER PROGRESS BAR';
+
+	UPDATE omt."FeatureToggleDTO"
+		SET active = TRUE
+		WHERE key = 'ORDER CHANGE REQUEST TAB';
 
 END;
 $$;

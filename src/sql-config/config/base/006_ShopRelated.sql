@@ -17,8 +17,8 @@ BEGIN
   -- recommended: use country isoCode3 as location
   FOR rec IN (
    select 'USA' as location,  0.0 as rate, 1 as type_id UNION ALL --NoTax(1)
-   select 'USA'            ,  7.0        , 3            UNION ALL --ReducedTax(3)
-   select 'USA'            , 19.0        , 5                      --FullTax(5) 
+   select 'USA'            ,  4.0        , 3            UNION ALL --ReducedTax(3)
+   select 'USA'            ,  6.0        , 5                      --FullTax(5) 
   )
   LOOP
   

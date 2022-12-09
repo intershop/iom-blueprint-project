@@ -12,6 +12,7 @@ import bakery.persistence.dataobject.configuration.connections.CommunicationPart
 import bakery.persistence.dataobject.configuration.states.ReturnAnnouncementStatesDefDO;
 import bakery.persistence.dataobject.order.OrderDO;
 import bakery.persistence.dataobject.rma.ReturnAnnouncementDO;
+import bakery.persistence.dataobject.rma.ReturnAnnouncementPropertyDO;
 import bakery.util.exception.TechnicalException;
 
 /**
@@ -66,24 +67,27 @@ public class ShopTransmissionDecisionBean extends AbstractExecutionDecider<Commu
                                         rma -> rma.getTargetState() == ReturnAnnouncementStatesDefDO.STATE_ACCEPTED)
                         : false;
 
+        // not accepted yet or declined
         if(!accepted)
         {
             return false;
         }
 
         // check custom properties
-        String value = returnAnnouncementDO.getPropertyValue("", BlueprintConstants.PROPERTY_EXPORT);
+        String value = returnAnnouncementDO.getPropertyValue(ReturnAnnouncementPropertyDO.DEFAULT_GROUP, BlueprintConstants.PROPERTY_EXPORT);
         if ((value != null) && value.equals(BlueprintConstants.PROPERTY_VALUE_FALSE))
         {
             log.debug(
                     "Skipping order export, because custom order property group|key|value = "
-                            + String.format("%s|%s|%s", "",
-                                    BlueprintConstants.PROPERTY_EXPORT, BlueprintConstants.PROPERTY_VALUE_FALSE)
+                            + String.format("%s|%s|%s",
+                                    ReturnAnnouncementPropertyDO.DEFAULT_GROUP,
+                                    BlueprintConstants.PROPERTY_EXPORT,
+                                    BlueprintConstants.PROPERTY_VALUE_FALSE)
                             + " found.");
-            return false;
+            return false;   // skip
         }
         
-        return true;
+        return true;        // export
     }
 
 }

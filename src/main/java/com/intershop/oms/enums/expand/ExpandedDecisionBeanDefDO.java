@@ -1,15 +1,11 @@
 package com.intershop.oms.enums.expand;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Transient;
-
-import bakery.persistence.annotation.PersistedEnumerationTable;
+import bakery.persistence.annotation.ExpandedEnum;
 import bakery.persistence.dataobject.configuration.connections.DecisionBeanDefDO;
 import bakery.persistence.dataobject.transformer.EnumInterface;
 import bakery.util.StringUtils;
 
-@PersistedEnumerationTable(DecisionBeanDefDO.class)
+@ExpandedEnum(DecisionBeanDefDO.class)
 public enum ExpandedDecisionBeanDefDO implements EnumInterface
 {
 
@@ -21,7 +17,7 @@ public enum ExpandedDecisionBeanDefDO implements EnumInterface
 
     // general 1xxxx
     GENERAL_DECISION_BEAN(Integer.valueOf(-10000), "java:global/iom-blueprint-project/TBD"),
-    
+
     INVOICING_DECISION_BEAN(Integer.valueOf(10001), "java:global/iom-blueprint-project/InvoicingDecisionBean"),
 
     // order approval 2xxxx
@@ -29,7 +25,7 @@ public enum ExpandedDecisionBeanDefDO implements EnumInterface
     MAX_ORDER_VALUE_DECISION_BEAN(Integer.valueOf(20001), "java:global/iom-blueprint-project/OrderValueApprovalDecisionBean"),
 
     // rma approval 3xxxx
-    RMA_DECISION_BEAN(Integer.valueOf(-30000), "java:global/iom-blueprint-project/TBD"),
+    RMA_DECISION_BEAN(Integer.valueOf(30000), "java:global/iom-blueprint-project/RmaApprovalDecisionBean"),
 
     // export|transmissions 4xxxx
     SHOP_TRANSMISSION_DECISION_BEAN(Integer.valueOf(40000), "java:global/iom-blueprint-project/ShopTransmissionDecisionBean"),
@@ -49,21 +45,18 @@ public enum ExpandedDecisionBeanDefDO implements EnumInterface
     }
 
     @Override
-    @Id
     public Integer getId()
     {
         return this.id;
     }
 
     @Override
-    @Column(name = "`description`")
     public String getName()
     {
         return StringUtils.constantToHungarianNotation(this.name(), StringUtils.FLAG_FIRST_LOWER);
     }
 
     @Override
-    @Transient
     public String getJndiName()
     {
         return this.jndiName;

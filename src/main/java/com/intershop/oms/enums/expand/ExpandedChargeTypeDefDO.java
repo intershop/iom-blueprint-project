@@ -1,14 +1,10 @@
 package com.intershop.oms.enums.expand;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Transient;
-
-import bakery.persistence.annotation.PersistedEnumerationTable;
+import bakery.persistence.annotation.ExpandedEnum;
 import bakery.persistence.dataobject.configuration.common.ChargeTypeDefDO;
 import bakery.persistence.expand.ChargeTypeDefDOEnumInterface;
 
-@PersistedEnumerationTable(ChargeTypeDefDO.class)
+@ExpandedEnum(ChargeTypeDefDO.class)
 public enum ExpandedChargeTypeDefDO implements ChargeTypeDefDOEnumInterface
 {
     /**
@@ -22,7 +18,7 @@ public enum ExpandedChargeTypeDefDO implements ChargeTypeDefDOEnumInterface
     private String name;
     private String chargeType;
     private String description;
-    
+
     private ExpandedChargeTypeDefDO(Integer id, String name, String chargeType, String description)
     {
         this.id = id;
@@ -32,62 +28,37 @@ public enum ExpandedChargeTypeDefDO implements ChargeTypeDefDOEnumInterface
     }
 
     @Override
-    @Id
     public Integer getId()
     {
         return this.id;
     }
-    
-    public void setId(Integer id)
-    {
-        this.id = id;
-    }
 
     @Override
-    @Column(name="`name`", length = 50, nullable = false)
     public String getName()
     {
         return this.name;
     }
-    
-    public void setName(String name)
-    {
-        this.name = name;
-    }
-    
+
     @Override
-    @Column(name = "`description`")
     public String getDescription()
     {
         return this.description;
     }
 
-    @SuppressWarnings( "unused" )
-    protected void setDescription(String description)
-    {
-        //dummy setter for the needs of hibernate
-    }
 
     @Override
-    @Transient
     public String getChargeType()
     {
         return this.chargeType;
     }
-    
+
     /**
     * @return the enum name of the charge type
     */
     @Override
-    @Column(name = "`chargeType`")
     public String getEnumName()
     {
     	return name();
     }
 
-    public void setEnumName(String enumName)
-    {
-        //required by hibernate
-    }
-    
 }

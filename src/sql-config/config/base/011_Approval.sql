@@ -68,7 +68,6 @@ BEGIN
 
 
     -- RMA APPROVAL
-    -- Manual approval of return requests
 	FOREACH shopId IN ARRAY shops_all LOOP
 	
 		IF NOT EXISTS (SELECT * FROM "Shop2Supplier2ApprovalTypeDefDO"
@@ -84,7 +83,8 @@ BEGIN
 					"supplierApprovalTypeName",
 					"shopRef",
 					"supplierRef", -- NULL, for all suppliers
-					"supplierApprovalTypeDescription"
+					"supplierApprovalTypeDescription",
+					"decisionBeanDefRef"
 				)
 			SELECT 
 					nextval('"Shop2Supplier2ApprovalTypeDefDO_id_seq"'),
@@ -93,7 +93,8 @@ BEGIN
 					'Approval for return-requests',
 					shopId,
 					NULL,   -- NULL, for all suppliers
-					'Return requests should be approved'
+					'Return requests should be approved',
+					30000
 					;
 				
 		END IF;
