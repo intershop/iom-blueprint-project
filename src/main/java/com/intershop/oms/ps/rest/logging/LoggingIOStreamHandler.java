@@ -7,10 +7,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.zip.GZIPInputStream;
 
-import javax.ws.rs.client.ClientResponseContext;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.ext.WriterInterceptorContext;
+import jakarta.ws.rs.client.ClientResponseContext;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.ext.WriterInterceptorContext;
 
 import org.apache.commons.lang3.StringUtils;
 

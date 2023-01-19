@@ -4,9 +4,9 @@ import java.io.IOException;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.ext.WriterInterceptor;
-import javax.ws.rs.ext.WriterInterceptorContext;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.ext.WriterInterceptor;
+import jakarta.ws.rs.ext.WriterInterceptorContext;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

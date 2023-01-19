@@ -1,7 +1,7 @@
 package com.intershop.oms.blueprint.transmitter;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
+import jakarta.ejb.EJB;
+import jakarta.ejb.Stateless;
 
 import com.intershop.oms.ps.services.configuration.ConfigurationLogicService;
 import org.slf4j.Logger;

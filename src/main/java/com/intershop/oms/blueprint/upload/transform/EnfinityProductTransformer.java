@@ -1,23 +1,16 @@
 package com.intershop.oms.blueprint.upload.transform;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -25,20 +18,10 @@ import javax.xml.stream.XMLStreamReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.intershop.oms.ps.util.CustomizationUtilityStatic;
 import com.intershop.oms.utils.configuration.IOMSharedFileSystem;
 import com.intershop.xml.ns.enfinity._7_1.xcs.impex.ComplexTypeProduct;
 import com.intershop.xml.ns.enfinity._7_1.xcs.impex.Enfinity;
 
-import bakery.logic.job.file.FileTransferTransformationDirectories;
-import bakery.logic.job.transformation.Transformer;
-import bakery.persistence.dataobject.exit.ExitCodeDefDO;
-import bakery.persistence.dataobject.job.JobRunState;
-import bakery.persistence.dataobject.job.JobStateDefDO;
-import bakery.persistence.dataobject.transformer.TransformerProcessParameterKeyDefDO;
-import bakery.persistence.dataobject.transformer.TransformerProcessesParameterDO;
-import bakery.persistence.job.file.Retry;
-import bakery.util.exception.MissingConfigurationException;
 import bakery.util.exception.TechnicalException;
 
 public abstract class EnfinityProductTransformer

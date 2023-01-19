@@ -10,15 +10,16 @@
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <validation-mode>AUTO</validation-mode>
         <properties>
-            <property name="javax.persistence.schema-generation.scripts.action" value="none"/>
+            <property name="jakarta.persistence.schema-generation.scripts.action" value="none"/>
             <property name="hibernate.show_sql" value="false" />
             <property name="hibernate.format_sql" value="false" />
             <property name="hibernate.cache.use_second_level_cache" value="false" />
             <property name="hibernate.default_schema" value="oms"/>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL9Dialect" />
+            <!--<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL9Dialect" />-->
             <property name="jboss.entity.manager.factory.jndi.name" value="java:/customizationEMF" />
             <property name="hibernate.jpa.compliance.global_id_generators" value="false"/>
             <property name="hibernate.id.optimizer.pooled.preferred" value="hilo"/>
+            <property name="hibernate.jpa.compliance.query" value="false"/>
         </properties>
     </persistence-unit>
 </persistence>
