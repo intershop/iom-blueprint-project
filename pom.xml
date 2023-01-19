@@ -21,7 +21,7 @@
         <image.docker.opts>--docker-opts="--no-cache"</image.docker.opts>
         <ubuntu.mirror.x64>http://azure.archive.ubuntu.com/ubuntu/</ubuntu.mirror.x64>
         <maven.javadoc.skip>true</maven.javadoc.skip>
-        <wildfly.version>27.0.0.Final</wildfly.version>
+        <wildfly.version>27.0.1.Final</wildfly.version>
         <org.junit.version>5.7.2</org.junit.version>
         <org.mockito.version>4.6.1</org.mockito.version>
         <net.bytebuddy.version>1.12.10</net.bytebuddy.version>
