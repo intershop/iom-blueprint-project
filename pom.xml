@@ -332,12 +332,8 @@
                             <schemaIncludes>
                                 <include>catalog.xsd</include>
                             </schemaIncludes>
-                        <!-- old stuff ?
-                            <laxSchemaValidation>true</laxSchemaValidation>
-                            <target>2.2</target>
-                            <failOnNoSchemas>true</failOnNoSchemas>
-                            <generateEpisode>true</generateEpisode>
-                            <outputDirectory>${project.build.directory}/generated-sources/xjc_enfinity</outputDirectory>
+                            <!-- default target is
+                                <outputDirectory>${project.build.directory}/generated-sources/xjc_enfinity</outputDirectory>
                             -->
                         </configuration>
                     </execution>
