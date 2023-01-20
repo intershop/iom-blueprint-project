@@ -2,11 +2,11 @@ package com.intershop.oms.ps.services.configuration.internal;
 
 import java.sql.Timestamp;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Schedule;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.EJB;
+import jakarta.ejb.Schedule;
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Startup;
 
 import com.intershop.oms.ps.services.configuration.ConfigurationLogicService;
 

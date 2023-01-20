@@ -1,6 +1,6 @@
 package com.intershop.oms.blueprint.transmitter;
 
-import javax.ejb.Stateless;
+import jakarta.ejb.Stateless;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

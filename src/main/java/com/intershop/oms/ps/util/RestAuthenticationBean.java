@@ -1,10 +1,10 @@
 package com.intershop.oms.ps.util;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.ejb.EJB;
+import jakarta.ejb.Stateless;
+import jakarta.ejb.TransactionAttribute;
+import jakarta.ejb.TransactionAttributeType;
+import jakarta.servlet.http.HttpServletRequest;
 
 import bakery.common.v1.EnumInitiator;
 import bakery.persistence.dataobject.configuration.user.UserNotFoundException;

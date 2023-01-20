@@ -7,11 +7,11 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ejb.EJB;
-import javax.ejb.Singleton;
-import javax.ejb.Stateful;
-import javax.ejb.Stateless;
-import javax.persistence.PersistenceContext;
+import jakarta.ejb.EJB;
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Stateful;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.PersistenceContext;
 
 import org.junit.jupiter.api.Test;
 import org.reflections.Reflections;

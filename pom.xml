@@ -13,7 +13,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <platform.version>4.3.3</platform.version>
+        <platform.version>4.4.0</platform.version>
         <intershop.docker.repo>docker.tools.intershop.com/iom/intershophub/</intershop.docker.repo>
         <image.base.name>iom-blueprint-project</image.base.name>
         <image.version.suffix></image.version.suffix>
@@ -21,7 +21,7 @@
         <image.docker.opts>--docker-opts="--no-cache"</image.docker.opts>
         <ubuntu.mirror.x64>http://azure.archive.ubuntu.com/ubuntu/</ubuntu.mirror.x64>
         <maven.javadoc.skip>true</maven.javadoc.skip>
-        <wildfly.version>26.1.2.Final</wildfly.version>
+        <wildfly.version>27.0.1.Final</wildfly.version>
         <org.junit.version>5.7.2</org.junit.version>
         <org.mockito.version>4.6.1</org.mockito.version>
         <net.bytebuddy.version>1.12.10</net.bytebuddy.version>
@@ -45,7 +45,7 @@
         <dependencies>
             <dependency>
                 <groupId>org.wildfly.bom</groupId>
-                <artifactId>wildfly-jakartaee8-with-tools</artifactId>
+                <artifactId>wildfly-ee-with-tools</artifactId>
                 <scope>import</scope>
                 <type>pom</type>
                 <version>${wildfly.version}</version>
@@ -316,25 +316,25 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jaxb2-maven-plugin</artifactId>
-                <version>2.5.0</version>
+                <groupId>com.evolvedbinary.maven.jvnet</groupId>
+                <artifactId>jaxb30-maven-plugin</artifactId>
+                <version>0.15.0</version>
                 <executions>
                     <execution>
-                        <id>xjc_ubl</id>
+                        <id>generate</id>
                         <goals>
-                            <goal>xjc</goal>
+                            <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <laxSchemaValidation>true</laxSchemaValidation>
-                            <target>2.2</target>
-                            <sources>
-                                <source>src/main/resources/xsd/catalog.xsd</source>
-                            </sources>
-                            <failOnNoSchemas>true</failOnNoSchemas>
-                            <generateEpisode>true</generateEpisode>
-                            <outputDirectory>${project.build.directory}/generated-sources/xjc_enfinity</outputDirectory>
+                            <schemaDirectory>src/main/resources/xsd</schemaDirectory>
+                            <schemaIncludes>
+                                <include>catalog.xsd</include>
+                            </schemaIncludes>
+                            <!-- default target is
+                                <outputDirectory>${project.build.directory}/generated-sources/xjc_enfinity</outputDirectory>
+                            -->
                         </configuration>
                     </execution>
                 </executions>
