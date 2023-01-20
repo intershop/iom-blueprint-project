@@ -8,7 +8,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
-import javax.ws.rs.client.Client;
+import jakarta.ws.rs.client.Client;
 
 import com.intershop.oms.ps.rest.filter.BasicAuthenticationFilter;
 import com.intershop.oms.ps.rest.filter.ClientCorrelationIdFilter;
@@ -103,7 +103,7 @@ public class ClientBuilder
     public Client build()
     {
         boolean isSecure = remoteURL.toLowerCase().startsWith("https://");
-        javax.ws.rs.client.ClientBuilder cb = javax.ws.rs.client.ClientBuilder.newBuilder();
+        jakarta.ws.rs.client.ClientBuilder cb = jakarta.ws.rs.client.ClientBuilder.newBuilder();
         // ClientBuilder cb = ClientBuilder.newBuilder();
         if (timeOutInMillis != null)
         {
