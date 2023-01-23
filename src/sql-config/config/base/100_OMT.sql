@@ -27,16 +27,36 @@ BEGIN
 	VALUES
 		(
 			1,
-			1,						-- id of the parent block
-			null,					-- don't display a label
-			'Product thumbnail',
-			'product',				-- group
-			'ThumbnailImgUrl',		-- key
-			3,						-- display as image
-			false,
-			1,
-			true
-		);	
+			1,                    -- id of the parent block
+			null,                 -- don't display a label
+			'Product thumbnail',  -- description
+			'product',            -- group
+			'ThumbnailImgUrl',    -- key
+			3,                    -- display as image
+			false,                -- show always, even if not given
+			1,                    -- first in the area
+			true                  -- show
+		);
+
+	INSERT INTO omt."CustomPropertyPresentationDTO"
+		(id, "customBlockRef", "label", "description", "group", "key", "presentationTypeRef", "hideIfValueEmpty", "rank", "active")
+	VALUES
+		(2, 1, null, 'Link to product details page', 'product', 'shoplink', 2 /* link */, true, 2, true);
+	
+	INSERT INTO omt."CustomPropertyPresentationDTO"
+		(id, "customBlockRef", "label", "description", "group", "key", "presentationTypeRef", "hideIfValueEmpty", "rank", "active")
+	VALUES
+		(3, 1, 'Notes', 'Notes to the product', 'product', 'notes', 1 /* text */, true, 3, true);
+
+	INSERT INTO omt."CustomPropertyPresentationDTO"
+		(id, "customBlockRef", "label", "description", "group", "key", "presentationTypeRef", "hideIfValueEmpty", "rank", "active")
+	VALUES
+		(4, 1, 'Color', 'Color of the product', 'product', 'color', 1 /* text */, true, 4, true);
+
+	INSERT INTO omt."CustomPropertyPresentationDTO"
+		(id, "customBlockRef", "label", "description", "group", "key", "presentationTypeRef", "hideIfValueEmpty", "rank", "active")
+	VALUES
+		(5, 1, 'Size', 'Size of the product', 'product', 'size', 1 /* text */, true, 5, true);
 		
 	-- FEATURE TOGGLES - https://support.intershop.com/kb/index.php/Display/292B71
 	
