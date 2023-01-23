@@ -3,7 +3,7 @@ DECLARE
  
 BEGIN
 
-	-- CUSTOM MENU ITEMS
+	-- CUSTOM MENU ITEMS - https://support.intershop.com/kb/index.php/Display/2N8973
 	
 	DELETE FROM omt."CustomMenuItemDTO";
 
@@ -12,7 +12,7 @@ BEGIN
 		(SELECT 2, 'Documentation', 'fa fa-question-circle-o',
 		'https://support.intershop.com/kb/index.php/Search?qdo=SetFilter&qtset=PRD78&qtrem=|PRD154|PRD153|PRD106|PRD97|PRD87|PRD85&qoff=0&qtext=', 1 , TRUE, NULL, FALSE);
 	
-	-- CUSTOM POSITION PROPERTIES	
+	-- CUSTOM POSITION PROPERTIES - https://support.intershop.com/kb/index.php/Display/S29206
 	
 	DELETE FROM omt."CustomPropertyPresentationDTO";
 	DELETE FROM omt."CustomBlockDTO";
@@ -27,22 +27,18 @@ BEGIN
 	VALUES
 		(
 			1,
-			1,                		--id of the block above
-			null,               	--don't display a label
+			1,						-- id of the parent block
+			null,					-- don't display a label
 			'Product thumbnail',
-			'product',				--group
-			'ThumbnailImgUrl',		--key
-			3,                  	--display as image
+			'product',				-- group
+			'ThumbnailImgUrl',		-- key
+			3,						-- display as image
 			false,
 			1,
 			true
 		);	
-
-
-
-
 		
-	-- FEATURE TOGGLES
+	-- FEATURE TOGGLES - https://support.intershop.com/kb/index.php/Display/292B71
 	
 	UPDATE omt."FeatureToggleDTO"
 		SET active = TRUE
