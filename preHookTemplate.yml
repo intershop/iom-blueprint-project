@@ -1,3 +1,4 @@
+steps:
 - script: |
     echo hallo
   displayName: test
