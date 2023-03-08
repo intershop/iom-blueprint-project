@@ -30,7 +30,8 @@ stages:
   jobs:
     - template: ci-job-template.yml@iom-partner-devops
       parameters:
-        #preHookTemplate: preHookTemplate.yml@self
+        preHookTemplate:  preHookTemplate.yml@self
+        postHookTemplate: postHookTemplate.yml@self
       
         # You have to set here the name of the environment, that is providing the CI specific configuration! 
         projectEnvName:                     dev

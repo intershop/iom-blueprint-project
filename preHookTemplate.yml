@@ -2,3 +2,10 @@ steps:
 - script: |
     echo hallo
   displayName: test
+
+- task: MavenAuthenticate@0
+  inputs:
+    artifactsFeeds: iom-test-for-second-feed
+  timeoutInMinutes: 1
+  displayName: "Maven authenticate iom-test-for-second-feed"
+  

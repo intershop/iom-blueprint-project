@@ -1,0 +1,5 @@
+steps:
+
+- script: |
+    cat $HOME/.m2/settings.xml
+  displayName: "show settings"
