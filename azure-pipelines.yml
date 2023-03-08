@@ -28,6 +28,10 @@ trigger:
 stages:
 - stage: CI
   jobs:
+    - script: |
+        set -x
+        echo test
+      
     - template: ci-job-template.yml@iom-partner-devops
       parameters:
         # You have to set here the name of the environment, that is providing the CI specific configuration! 
