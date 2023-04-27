@@ -26,6 +26,7 @@
         <org.mockito.version>4.6.1</org.mockito.version>
         <net.bytebuddy.version>1.12.10</net.bytebuddy.version>
         <org.apache.commons-lang.version>3.12.0</org.apache.commons-lang.version>
+        <testframework.version>4.5.0</testframework.version>
     </properties>
 
     <repositories>
@@ -171,7 +172,7 @@
         <dependency>
             <groupId>com.intershop.oms</groupId>
             <artifactId>iom-test-framework</artifactId>
-            <version>4.1.1</version>
+            <version>${testframework.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
