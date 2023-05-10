@@ -26,7 +26,7 @@
         <org.mockito.version>4.6.1</org.mockito.version>
         <net.bytebuddy.version>1.12.10</net.bytebuddy.version>
         <org.apache.commons-lang.version>3.12.0</org.apache.commons-lang.version>
-        <testframework.version>4.6.0-12-SNAPSHOT</testframework.version>
+        <testframework.version>5.0.0-SNAPSHOT</testframework.version>
     </properties>
 
     <repositories>
