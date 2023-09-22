@@ -324,7 +324,7 @@
                 <version>0.15.0</version>
                 <executions>
                     <execution>
-                        <id>generate</id>
+                        <id>generate-icm-schemas</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
@@ -333,9 +333,20 @@
                             <schemaIncludes>
                                 <include>catalog.xsd</include>
                             </schemaIncludes>
-                            <!-- default target is
-                                <outputDirectory>${project.build.directory}/generated-sources/xjc_enfinity</outputDirectory>
-                            -->
+                            <generateDirectory>${project.build.directory}/generated-sources/xjc_enfinity</generateDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-opentrans-schemas</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <schemaDirectory>src/main/resources/xsd/opentrans</schemaDirectory>
+                            <schemaIncludes>
+                                <include>opentrans_2_1.xsd</include>
+                            </schemaIncludes>
+                            <generateDirectory>${project.build.directory}/generated-sources/xjc_opentrans</generateDirectory>
                         </configuration>
                     </execution>
                 </executions>
