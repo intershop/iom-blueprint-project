@@ -43,6 +43,14 @@ BEGIN
 
 
 
+	--TRANSFORMER BEANS
+	INSERT INTO oms."TransformerBeanDefDO"(id, name) VALUES
+		(1000, 'IcmToIomProductTransformer')
+	ON CONFLICT (id) DO NOTHING;
+
+
+
+
 --further examples
 
 /*
@@ -72,11 +80,6 @@ BEGIN
 
 	INSERT INTO oms."OrderSupplierEvaluationRuleDefDO"(id, description, mandatory, name, rank) VALUES
 		(1000, 'Example', false, 'Example', 30)
-	ON CONFLICT (id) DO NOTHING;
-
-
-	INSERT INTO oms."TransformerBeanDefDO"(id, name) VALUES
-		(1000, 'Example')
 	ON CONFLICT (id) DO NOTHING;
 
 	INSERT INTO oms."TransmissionTypeDefDO"(id, name, "roleDefRef", description, "messageTypeName") VALUES

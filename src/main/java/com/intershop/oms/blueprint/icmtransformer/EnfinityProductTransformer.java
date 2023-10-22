@@ -39,6 +39,10 @@ import bakery.persistence.job.file.Retry;
 import bakery.util.exception.MissingConfigurationException;
 import bakery.util.exception.TechnicalException;
 
+/**
+ * Transformer to be used for files previously uploaded via direct FTP.
+ * The name is identical, but this transformer is different from the one for the ProductUpload-servlet.
+ */
 public abstract class EnfinityProductTransformer implements Transformer
 {
     private static final Logger log = LoggerFactory.getLogger(EnfinityProductTransformer.class);

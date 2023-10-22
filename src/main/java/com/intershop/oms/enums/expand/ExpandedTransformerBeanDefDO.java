@@ -15,7 +15,7 @@ public enum ExpandedTransformerBeanDefDO implements EnumInterface
      * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
 
-    ICM_TO_IOM_TRANSFORMER(-999, "java:global/example-app/ICMToIOMTransformer!bakery.logic.job.transformation.Transformer");
+    ICM_TO_IOM_TRANSFORMER(1000, "java:global/example-app/ICMToIOMTransformer!bakery.logic.job.transformation.Transformer");
 
     private Integer id;
     private String jndiName;

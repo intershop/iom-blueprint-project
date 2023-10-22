@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 public enum BasicDataCSV implements CSVTable
 {
     supplierArticleNo(StringUtils.EMPTY),
-    manufacturer("Musgrave"),
+    manufacturer("MyTrustedManufacturer"),
     manufacturerArticleNo(StringUtils.EMPTY),
     ISBN(StringUtils.EMPTY),
     EAN(StringUtils.EMPTY),
