@@ -20,7 +20,7 @@ BEGIN
 
    fileNameRegex = '10020_productavaibility_[0-9]+.zip';
    transformerGroupName = '10020_ProductImport';
-   localdirectory ='/var/opt/share/importarticle/10020_ProductImport';
+   localdirectory = '/var/opt/share/importarticle/10020_ProductImport';
    /*
     As devenv-4-iom does not contain a ftp service, the  file 
     src\test-data\env\dev\zip_1020\10020_productavaibility_20220409.zip 

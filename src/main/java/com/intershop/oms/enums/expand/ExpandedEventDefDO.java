@@ -13,7 +13,7 @@ public enum ExpandedEventDefDO implements EventDefDOEnumInterface
      * The name must be unique across both classes.
      * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
-    CUSTOM_MAIL_EVENT_MANAGER(-999, "CUSTOM_MAIL_EVENT_MANAGER_BEAN", "java:global/example-app/CustomMailEventManagerBean");
+    CUSTOM_MAIL_EVENT_MANAGER(-9999, "CUSTOM_MAIL_EVENT_MANAGER_BEAN", "java:global/example-app/CustomMailEventManagerBean");
 
     private Integer id;
     private String description;
