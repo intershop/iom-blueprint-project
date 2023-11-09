@@ -9,14 +9,12 @@
   transformerProcessId bigint;
   ftpConfigRef bigint;
   communicationPartner bigint;
-  localdirectory varchar;
   fileNameRegex varchar;
   supplierref int8;
 BEGIN
 
 	fileNameRegex = 'openTransDispatch.*\.xml'; -- adjust for your project
     transformerGroupName = 'OpenTransDispatch';
-    localdirectory = '/var/opt/share/dispatches/toBePulled';
 
     IF NOT EXISTS (SELECT NULL FROM "TransformerProcessGroupDO" WHERE name = transformerGroupName) THEN
         INSERT INTO "TransformerProcessGroupDO"(id, name)
@@ -33,22 +31,22 @@ BEGIN
     -- Add parameters for the custom transformer
     PERFORM upsert_tp_parameter(4, fileNameRegex::varchar, transformerProcessId);
     -- parent shopid
-    PERFORM upsert_tp_parameter(1, shop_intronics_b2c::varchar, transformerProcessId);
+    PERFORM upsert_tp_parameter(1, shop_intronics_b2b::varchar, transformerProcessId);
     
     -- supplier
     -- no supplier config, cause supplierids are coming with xml and could only define ine supplier here
 
     -------- FTP Config --------
     IF NOT EXISTS (SELECT NULL FROM oms."FileTransferConfigurationDO"
-        WHERE "partnerReferrerRef" = (select id from "PartnerReferrerDO" where "supplierRef" = supplier_retailer_losangeles)
+        WHERE "partnerReferrerRef" = (select id from "PartnerReferrerDO" where "supplierRef" = supplier_wh_arizona)
             AND "transformerProcessGroupRef" = transformerGroupId) THEN
         INSERT INTO oms."FileTransferConfigurationDO" (id, "basePath", "transmissionTypeDefRef", "typeDefRef", "creationDate",
             "modificationDate", "partnerReferrerRef", "description", "transformerProcessGroupRef")
-            SELECT nextval('"FileTransferConfigurationDO_id_seq"'), null, 1040, 30, current_timestamp, current_timestamp,
-                (select id from "PartnerReferrerDO" where "supplierRef" = supplier_retailer_losangeles), transformerGroupName, transformerGroupId;
+            SELECT nextval('"FileTransferConfigurationDO_id_seq"'), null, 1080, 30, current_timestamp, current_timestamp,
+                (select id from "PartnerReferrerDO" where "supplierRef" = supplier_wh_arizona), transformerGroupName, transformerGroupId;
     END IF;
     ftpConfigRef = (SELECT id FROM oms."FileTransferConfigurationDO" WHERE "partnerReferrerRef" =
-        (select id from "PartnerReferrerDO" where "supplierRef" = supplier_retailer_losangeles) AND "transformerProcessGroupRef" = transformerGroupId);
+        (select id from "PartnerReferrerDO" where "supplierRef" = supplier_wh_arizona) AND "transformerProcessGroupRef" = transformerGroupId);
 
     -------- create the schedule --------
     IF NOT EXISTS (SELECT NULL FROM "ScheduleDO" WHERE "key" = transformerGroupName AND "configId" = ftpConfigRef) THEN
@@ -61,26 +59,26 @@ BEGIN
     -------- create the Communication config --------
     IF NOT EXISTS (SELECT NULL from "CommunicationPartnerDO"
             where "communicationRef" = (select id from "CommunicationDO" where "key" = 'ANY###FTP_JOB###EXT_RECEIVE_DISPATCH')
-            and "receivingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "shopRef" = shop_intronics_b2c)
-            and "sendingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "supplierRef" = supplier_retailer_losangeles)) THEN
+            and "receivingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "shopRef" = shop_intronics_b2b)
+            and "sendingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "supplierRef" = supplier_wh_arizona)) THEN
 	    INSERT INTO oms."CommunicationPartnerDO" (id, "splitTransmission", "communicationRef", "receivingPartnerReferrerRef",
 	        "sendingPartnerReferrerRef", "maxNoOfRetries", "retryDelay")
 	        SELECT nextval('"CommunicationPartnerDO_id_seq"'), FALSE, (select id from "CommunicationDO"
-	            where "key" = 'ANY###FTP_JOB###EXT_RECEIVE_DISPATCH'), (select id from "PartnerReferrerDO" where "shopRef" = shop_intronics_b2c),
-	            (select id from "PartnerReferrerDO" where "supplierRef" = supplier_retailer_losangeles), 12, '30m'
-	        ON CONFLICT ("communicationRef", "sendingPartnerReferrerRef", "receivingPartnerReferrerRef") DO NOTHING;
+	            where "key" = 'ANY###FTP_JOB###EXT_RECEIVE_DISPATCH'), (select id from "PartnerReferrerDO" where "shopRef" = shop_intronics_b2b),
+                (select id from "PartnerReferrerDO" where "supplierRef" = supplier_wh_arizona), 12, '30m'
+                ON CONFLICT ("communicationRef", "sendingPartnerReferrerRef", "receivingPartnerReferrerRef") DO NOTHING;
 	END IF;
 
     -------- create the parameter values --------
     -- key, value, communicationPartner
     communicationPartner = (select id from "CommunicationPartnerDO"
             where "communicationRef" = (select id from "CommunicationDO" where "key" = 'ANY###FTP_JOB###EXT_RECEIVE_DISPATCH')
-            and "receivingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "shopRef" = shop_intronics_b2c)
-            and "sendingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "supplierRef" = supplier_retailer_losangeles));
+            and "receivingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "shopRef" = shop_intronics_b2b)
+            and "sendingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "supplierRef" = supplier_wh_arizona));
 
     -- set parameters in "ExecutionBeanValueDO"
-    --PERFORM upsert_eb_value(1330, 'sftp://user:pass@localhost:21', communicationPartner); --FTP_JOB_PULL_FTP_ACCOUNT
-    PERFORM upsert_eb_value(1331, localdirectory, communicationPartner);    --FTP_JOB_PULL_DIRECTORY 
+    --PERFORM upsert_eb_value(1330, 'sftp://user@ftpHost:22', communicationPartner); --FTP_JOB_PULL_FTP_ACCOUNT
+    PERFORM upsert_eb_value(1331, 'sftp/dispatches/', communicationPartner);    --FTP_JOB_PULL_DIRECTORY 
     PERFORM upsert_eb_value(1332, 'dispatches/in/', communicationPartner);  --FTP_JOB_PUSH_DIRECTORY
     PERFORM upsert_eb_value(1333, fileNameRegex, communicationPartner);     --FTP_JOB_PULL_FILENAME_REGEX
     --PERFORM upsert_eb_value(1338, 'project-files/private-keys/rsa-key-sftp', communicationPartner);

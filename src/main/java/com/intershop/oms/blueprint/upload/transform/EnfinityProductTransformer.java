@@ -26,7 +26,6 @@ import bakery.util.exception.TechnicalException;
 
 /**
  * Transformer to be used for files previously uploaded by ProductUpload-servlet.
- * The name is identical, but this transformer is different from the one for direct FTP file upload.
  */
 public abstract class EnfinityProductTransformer
 {

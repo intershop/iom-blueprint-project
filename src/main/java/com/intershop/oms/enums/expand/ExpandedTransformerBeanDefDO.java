@@ -10,13 +10,13 @@ public enum ExpandedTransformerBeanDefDO implements EnumInterface
 {
 
     /**
-     * Start with 1000 to avoid conflict with TransformerBeanDefDO.
+     * Start with 10000 to avoid conflict with TransformerBeanDefDO.
      * The name must be unique across both classes.
      * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
-
-    ICM_TO_IOM_TRANSFORMER(10000, "java:global/iom-blueprint-project/ICMToIOMTransformer!bakery.logic.job.transformation.Transformer"),
-    OPENTRANS_DISPATCH_TRANSFORMER(10200, "java:global/iom-blueprint-project/OpenTransDispatchTransformer!bakery.logic.job.transformation.Transformer");
+    
+    BLUEPRINT_ICM_TRANSFORMER(Integer.valueOf(10000), "java:global/iom-blueprint-project/BlueprintIcmTransformer"),
+    OPENTRANS_DISPATCH_TRANSFORMER(Integer.valueOf(10200), "java:global/iom-blueprint-project/OpenTransDispatchTransformer!bakery.logic.job.transformation.Transformer");
 
     private Integer id;
     private String jndiName;

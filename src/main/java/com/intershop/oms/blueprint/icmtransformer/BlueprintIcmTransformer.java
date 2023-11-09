@@ -2,6 +2,7 @@ package com.intershop.oms.blueprint.icmtransformer;
 
 import bakery.logic.job.file.FileTransferTransformationDirectories;
 import bakery.persistence.dataobject.configuration.shop.ShopDO;
+import bakery.persistence.dataobject.configuration.supplier.SupplierDO;
 import bakery.persistence.dataobject.transformer.TransformerProcessParameterKeyDefDO;
 import bakery.persistence.dataobject.transformer.TransformerProcessesParameterDO;
 import bakery.persistence.service.configuration.ShopPersistenceService;
@@ -36,9 +37,9 @@ import java.util.Set;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Stateless
-public class BlueprintICMTransformer extends EnfinityProductTransformer
+public class BlueprintIcmTransformer extends EnfinityProductImpExTransformer
 {
-    private static final Logger log = LoggerFactory.getLogger(BlueprintICMTransformer.class);
+    private static final Logger log = LoggerFactory.getLogger(BlueprintIcmTransformer.class);
     private static final char ESCAPE_CHAR = '\u0015';
 
     @EJB(lookup = ShopPersistenceService.PERSISTENCE_SHOPPERSISTENCEBEAN)
@@ -106,9 +107,9 @@ public class BlueprintICMTransformer extends EnfinityProductTransformer
                     rec.setNotBlank(BasicDataCSV.articleName,
                                     ((ComplexTypeGenericAttributeString)elem.getValue()).getValue());
                     break;
-                case "custom-attributes":
-                    handleCustomAttributes((ComplexTypeCustomAttributes)elem.getValue(), rec, supplierNames);
-                    break;
+//                case "custom-attributes":
+//                    handleCustomAttributes((ComplexTypeCustomAttributes)elem.getValue(), rec, supplierNames);
+//                    break;
                 case "manufacturer":
                     rec.setNotBlank(BasicDataCSV.manufacturer,
                                     ((ComplexTypeProductManufacturer)elem.getValue()).getManufacturerName());
@@ -120,15 +121,16 @@ public class BlueprintICMTransformer extends EnfinityProductTransformer
             }
         }
 
-        for (String supplierName : supplierNames)
+        // Iterate over all configured suppliers.
+        // In case you send then with exported custom attributes you need to adjust the code.
+        for (Long supplierId : supplierMapping.values())
         {
-            Long supplierId = supplierMapping.get(supplierName);
-            if (supplierId == null)
+            // skip the internal supplier
+            if(SupplierDO.INTERNAL_SUPPLIER_ID.equals(supplierId))
             {
-                log.trace("found unknown supplierName {}", supplierName);
                 continue;
             }
-
+            
             // closed in postFileHook
             @SuppressWarnings("resource")
             CSVPrinter printer = basicDataPrinters.computeIfAbsent(supplierId, this::createPrinter);
@@ -214,6 +216,7 @@ public class BlueprintICMTransformer extends EnfinityProductTransformer
 
     }
 
+    // When sending supplier names in the exported file you can use this code
     private void handleCustomAttributes(ComplexTypeCustomAttributes value, CSVRecord<BasicDataCSV> rec,
                     Set<String> supplierNames)
     {

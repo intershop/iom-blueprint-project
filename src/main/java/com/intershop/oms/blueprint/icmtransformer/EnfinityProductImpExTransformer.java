@@ -41,11 +41,10 @@ import bakery.util.exception.TechnicalException;
 
 /**
  * Transformer to be used for files previously uploaded via direct FTP.
- * The name is identical, but this transformer is different from the one for the ProductUpload-servlet.
  */
-public abstract class EnfinityProductTransformer implements Transformer
+public abstract class EnfinityProductImpExTransformer implements Transformer
 {
-    private static final Logger log = LoggerFactory.getLogger(EnfinityProductTransformer.class);
+    private static final Logger log = LoggerFactory.getLogger(EnfinityProductImpExTransformer.class);
 
     @Override
     public void transform(List<TransformerProcessesParameterDO> parameters,
@@ -67,7 +66,7 @@ public abstract class EnfinityProductTransformer implements Transformer
         Path errorDir = dirStructure.getErrorDir().toPath();
 
         /*
-         * check for paramter list
+         * check for parameter list
          */
         if (parameters == null || parameters.isEmpty())
         {

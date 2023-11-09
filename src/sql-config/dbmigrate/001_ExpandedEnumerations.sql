@@ -45,7 +45,7 @@ BEGIN
 
 	--TRANSFORMER BEANS
 	INSERT INTO oms."TransformerBeanDefDO"(id, name) VALUES
-		(10000, 'IcmToIomProductTransformer'),
+		(10000, 'BlueprintIcmTransformer'),
 		(10200, 'OpenTransDispatchTransformer')
 	ON CONFLICT (id) DO NOTHING;
 

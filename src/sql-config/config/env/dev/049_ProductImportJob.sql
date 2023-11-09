@@ -52,7 +52,7 @@ BEGIN
     -- (TransformerProcessParameterKeyDefDO 4=sourceFilename, 1=shopId)
     PERFORM upsert_tp_parameter(4, fileNameRegex, transformerProcessId);
     -- parent shopid
-    PERFORM upsert_tp_parameter(1, shop_intronics_b2c::varchar, transformerProcessId);
+    PERFORM upsert_tp_parameter(1, shop_intronics_b2b::varchar, transformerProcessId);
     
     -------- FTP Config --------
     IF NOT EXISTS (SELECT * FROM oms."FileTransferConfigurationDO"
@@ -115,7 +115,7 @@ BEGIN
     -------- create the communication config --------
     IF NOT EXISTS (SELECT * from "CommunicationPartnerDO"
             where "communicationRef" = (select id from "CommunicationDO" where "key" = 'ANY###FTP_JOB###EXT_RECEIVE_ARTICLE')
-            and "receivingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "shopRef" = shop_intronics_b2c)
+            and "receivingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "shopRef" = shop_intronics_b2b)
             and "sendingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "supplierRef" = supplier_wh_texas)) THEN
             
        INSERT INTO oms."CommunicationPartnerDO" (id, 
@@ -128,7 +128,7 @@ BEGIN
        SELECT nextval('"CommunicationPartnerDO_id_seq"'), 
            FALSE, 
            (select id from "CommunicationDO" where "key" = 'ANY###FTP_JOB###EXT_RECEIVE_ARTICLE'), 
-           (select id from "PartnerReferrerDO" where "shopRef" = shop_intronics_b2c),
+           (select id from "PartnerReferrerDO" where "shopRef" = shop_intronics_b2b),
            (select id from "PartnerReferrerDO" where "supplierRef" = supplier_wh_texas), 
            12, 
            '30m'
@@ -140,7 +140,7 @@ BEGIN
     -- key, value, communicationPartner
     communicationPartner = (select id from "CommunicationPartnerDO"
             where "communicationRef" = (select id from "CommunicationDO" where "key" = 'ANY###FTP_JOB###EXT_RECEIVE_ARTICLE')
-            and "receivingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "shopRef" = shop_intronics_b2c)
+            and "receivingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "shopRef" = shop_intronics_b2b)
             and "sendingPartnerReferrerRef" = (select id from "PartnerReferrerDO" where "supplierRef" = supplier_wh_texas))
             ;
     -- set parameters in "ExecutionBeanValueDO"

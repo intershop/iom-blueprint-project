@@ -132,8 +132,8 @@ public class OpenTransDeliveryMessageBean
             OrderDO orderDO = null;
             try
             {
-                // FIXME hardcoded shop id, just an example
-                orderDO = orderPersistenceService.getOrderDO(10000L, shopPurchaseOrderNumber);
+                // FIXME hardcoded shop id, just an example - shop_intronics_b2b
+                orderDO = orderPersistenceService.getOrderDO(10020L, shopPurchaseOrderNumber);
             }
             catch(NoObjectException e)
             {
