@@ -16,7 +16,7 @@ public enum ExpandedSalesPriceCalculatorBeanDefDO implements EnumInterface
      * database).
      */
 
-    EXAMPLE(-999, "java:global/blueprint-app/blueprint-ejb/ExampleCalculatorBean!bakery.logic.service.util.SalesPriceCalculator");
+    EXAMPLE(-9999, "java:global/example-app/ExampleCalculatorBean!bakery.logic.service.util.SalesPriceCalculator");
 
     private Integer id;
     private String jndiName;

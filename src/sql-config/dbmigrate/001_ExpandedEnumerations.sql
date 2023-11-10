@@ -43,16 +43,24 @@ BEGIN
 
 
 
+	--TRANSFORMER BEANS
+	INSERT INTO oms."TransformerBeanDefDO"(id, name) VALUES
+		(10000, 'BlueprintIcmTransformer'),
+		(10200, 'OpenTransDispatchTransformer')
+	ON CONFLICT (id) DO NOTHING;
+
+
+
 --further examples
 
 /*
 
 	INSERT INTO oms."DocumentMapperDefDO"(id,name) values
-		(1000, 'Example')
+		(10000, 'Example')
 	ON CONFLICT (id) DO NOTHING;
 		
 	INSERT INTO oms."ExecutionBeanDefDO"(id, "decisionBeanDefRef", description) VALUES
-		(1000, null, 'Example')
+		(10000, null, 'Example')
 	ON CONFLICT (id) DO NOTHING;
 
 	INSERT INTO oms."ExecutionBeanKeyDefDO"(
@@ -63,7 +71,7 @@ BEGIN
 	ON CONFLICT (id) DO NOTHING;
 
 	INSERT INTO oms."JobDefDO"(id, name, description) VALUES
-		(1000, 'Example', 'Example')
+		(10000, 'Example', 'Example')
 	ON CONFLICT (id) DO NOTHING;
 
 	INSERT INTO oms."MessageTypeDefDO"(id, name, description) VALUES
@@ -71,12 +79,7 @@ BEGIN
 	ON CONFLICT (id) DO NOTHING;
 
 	INSERT INTO oms."OrderSupplierEvaluationRuleDefDO"(id, description, mandatory, name, rank) VALUES
-		(1000, 'Example', false, 'Example', 30)
-	ON CONFLICT (id) DO NOTHING;
-
-
-	INSERT INTO oms."TransformerBeanDefDO"(id, name) VALUES
-		(1000, 'Example')
+		(10000, 'Example', false, 'Example', 30)
 	ON CONFLICT (id) DO NOTHING;
 
 	INSERT INTO oms."TransmissionTypeDefDO"(id, name, "roleDefRef", description, "messageTypeName") VALUES
@@ -84,8 +87,9 @@ BEGIN
 	ON CONFLICT (id) DO NOTHING;
 
 	INSERT INTO oms."EventDefDO"(id, description) VALUES
-		(1001, 'EXAMPLE_EVENT_MANAGER_BEAN')
+		(10000, 'EXAMPLE_EVENT_MANAGER_BEAN')
 	ON CONFLICT (id) DO NOTHING;
 */
+
 END;
 $$;

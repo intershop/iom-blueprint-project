@@ -6,14 +6,14 @@
 
     <groupId>com.intershop.oms.blueprint</groupId>
     <artifactId>iom-blueprint-project</artifactId>
-    <version>1.4.0</version>
+    <version>1.5.0</version>
     <packaging>war</packaging>
     <name>IOM iom-blueprint-project APPLICATION</name>
-    <description>IOM iom-blueprint-project APPLICATION</description>
+    <description>IOM blueprint-project</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <platform.version>4.3.3</platform.version>
+        <platform.version>4.7.0</platform.version>
         <intershop.docker.repo>docker.tools.intershop.com/iom/intershophub/</intershop.docker.repo>
         <image.base.name>iom-blueprint-project</image.base.name>
         <image.version.suffix></image.version.suffix>
@@ -21,11 +21,12 @@
         <image.docker.opts>--docker-opts="--no-cache"</image.docker.opts>
         <ubuntu.mirror.x64>http://azure.archive.ubuntu.com/ubuntu/</ubuntu.mirror.x64>
         <maven.javadoc.skip>true</maven.javadoc.skip>
-        <wildfly.version>26.1.2.Final</wildfly.version>
+        <wildfly.version>27.0.1.Final</wildfly.version>
         <org.junit.version>5.7.2</org.junit.version>
         <org.mockito.version>4.6.1</org.mockito.version>
         <net.bytebuddy.version>1.12.10</net.bytebuddy.version>
         <org.apache.commons-lang.version>3.12.0</org.apache.commons-lang.version>
+        <testframework.version>6.0.0</testframework.version>
     </properties>
 
     <repositories>
@@ -45,7 +46,7 @@
         <dependencies>
             <dependency>
                 <groupId>org.wildfly.bom</groupId>
-                <artifactId>wildfly-jakartaee8-with-tools</artifactId>
+                <artifactId>wildfly-ee-with-tools</artifactId>
                 <scope>import</scope>
                 <type>pom</type>
                 <version>${wildfly.version}</version>
@@ -171,7 +172,7 @@
         <dependency>
             <groupId>com.intershop.oms</groupId>
             <artifactId>iom-test-framework</artifactId>
-            <version>4.1.1</version>
+            <version>${testframework.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -316,25 +317,36 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jaxb2-maven-plugin</artifactId>
-                <version>2.5.0</version>
+                <groupId>com.evolvedbinary.maven.jvnet</groupId>
+                <artifactId>jaxb30-maven-plugin</artifactId>
+                <version>0.15.0</version>
                 <executions>
                     <execution>
-                        <id>xjc_ubl</id>
+                        <id>generate-icm-schemas</id>
                         <goals>
-                            <goal>xjc</goal>
+                            <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <laxSchemaValidation>true</laxSchemaValidation>
-                            <target>2.2</target>
-                            <sources>
-                                <source>src/main/resources/xsd/catalog.xsd</source>
-                            </sources>
-                            <failOnNoSchemas>true</failOnNoSchemas>
-                            <generateEpisode>true</generateEpisode>
-                            <outputDirectory>${project.build.directory}/generated-sources/xjc_enfinity</outputDirectory>
+                            <schemaDirectory>src/main/resources/xsd</schemaDirectory>
+                            <schemaIncludes>
+                                <include>catalog.xsd</include>
+                            </schemaIncludes>
+                            <generateDirectory>${project.build.directory}/generated-sources/xjc_enfinity</generateDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-opentrans-schemas</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <schemaDirectory>src/main/resources/xsd/opentrans</schemaDirectory>
+                            <schemaIncludes>
+                                <include>opentrans_2_1.xsd</include>
+                            </schemaIncludes>
+                            <generateDirectory>${project.build.directory}/generated-sources/xjc_opentrans</generateDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -428,6 +440,7 @@
                                     <environmentVariables>
                                         <IMAGE_BASE_NAME>${image.base.name}</IMAGE_BASE_NAME>
                                         <PROJECT_VERSION>${project.version}</PROJECT_VERSION>
+                                        <PROJECT_DESCRIPTION>${project.description}</PROJECT_DESCRIPTION>
                                         <IMAGE_TAG>${image.version}</IMAGE_TAG>
                                         <IOM_IMAGE_NAME>iom</IOM_IMAGE_NAME>
                                         <IOM_VERSION>${platform.version}</IOM_VERSION>

@@ -8,6 +8,8 @@ on:
 jobs:
   alert:
     runs-on: ubuntu-latest
+    concurrency:
+      group: sync-to-azure-boards
     steps:
       - uses: danhellem/github-actions-issue-to-work-item@master
         env:

@@ -14,7 +14,7 @@ public enum ExpandedArticleExportConfigBeanDefDO implements EnumInterface
      * The name must be unique across both classes.
      * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
-    EXAMPLE(-999, "java:global/example-app/example-ejb/ExampleExportCSVBean");
+    EXAMPLE(-9999, "java:global/example-app/ExampleExportCSVBean");
 
     private Integer id;
     private String jndiName;

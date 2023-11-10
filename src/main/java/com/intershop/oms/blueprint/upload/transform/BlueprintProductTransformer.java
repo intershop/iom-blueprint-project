@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.servlet.http.Part;
-import javax.xml.bind.JAXBElement;
+import jakarta.ejb.EJB;
+import jakarta.ejb.Stateless;
+import jakarta.servlet.http.Part;
+import jakarta.xml.bind.JAXBElement;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;

@@ -14,7 +14,7 @@ public enum ExpandedNumberRangeFormatterDefDO implements NumberRangeFormatterEnu
      * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
 
-    EXAMPLE(-999, "EXAMPLE_INVOICENO_GENERATOR", "java:global/blueprint-app/blueprint-ejb/ExampleNumberRangeSequencerBean!bakery.logic.service.configuration.NumberRangeFormatterService")
+    EXAMPLE(-9999, "EXAMPLE_INVOICENO_GENERATOR", "java:global/blueprint-app/blueprint-ejb/ExampleNumberRangeSequencerBean!bakery.logic.service.configuration.NumberRangeFormatterService")
     ;
 
     private Integer id;

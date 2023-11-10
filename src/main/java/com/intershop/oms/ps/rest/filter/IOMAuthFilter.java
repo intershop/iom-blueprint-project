@@ -7,13 +7,13 @@ import java.io.IOException;
 import java.util.Base64;
 import java.util.StringTokenizer;
 
-import javax.annotation.Priority;
-import javax.ejb.EJB;
-import javax.ws.rs.Priorities;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.ext.Provider;
+import jakarta.annotation.Priority;
+import jakarta.ejb.EJB;
+import jakarta.ws.rs.Priorities;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.ext.Provider;
 
 import bakery.logic.service.user.UserLoginLogicService;
 import bakery.persistence.dataobject.configuration.user.UserDO;

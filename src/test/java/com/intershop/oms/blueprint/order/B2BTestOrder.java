@@ -37,9 +37,11 @@ public class B2BTestOrder
     public static OMSOrder createSimpleOrder(String testCaseId)
     {
         OMSOrder order = new OMSOrder();
-        order.customerData(createB2BCustomer()).invoiceAddress(createB2BInvoiceAddress())
-                        .payment(new OMSPayment().paymentMethod("ISH_INVOICE")).sales(getSales())
-                        .addShippingBucketsItem(getShippingBucket());
+        order.setCustomerData(createB2BCustomer())
+            .setInvoiceAddress(createB2BInvoiceAddress())
+            .setPayment(new OMSPayment().setPaymentMethod("ISH_INVOICE"))
+            .setSales(getSales())
+            .addShippingBucketsItem(getShippingBucket());
 
         order.setTestCaseId(testCaseId);
         order.setShop(new OMSShop(10020));
@@ -48,39 +50,66 @@ public class B2BTestOrder
 
     private static OMSShippingBucket getShippingBucket()
     {
-        return new OMSShippingBucket().shippingMethod("DHL").shippingAddress(getShippingAddress())
-                        .addChargesItem(getDeliveryCharge()).addPositionsItem(getPosA()).addPositionsItem(getPosB());
+        return new OMSShippingBucket()
+                        .setShippingMethod("DHL")
+                        .setShippingAddress(getShippingAddress())
+                        .addChargesItem(getDeliveryCharge())
+                        .addPositionsItem(getPosA()).addPositionsItem(getPosB());
     }
 
     private static OMSOrderPosition getPosB()
     {
-        OMSProduct product = new OMSProduct().name("LUXA2 M1-Pro").number("7030019");
-        OMSShipping shipping = new OMSShipping().deliveryDate(new OMSDeliveryDate()
-                        .deliveryDateType(OMSDeliveryDateTypeEnum.FIXED).desiredDeliveryDate(tomorrow()));
-        OMSUnitPrice unitPrice = new OMSUnitPrice().gross(getListPrice("72.00", "72.00"))
-                        .net(getListPrice("60.00", "60.00"));
-        OMSSumPrice sum = new OMSSumPrice().addTaxesItem(new OMSTax().type("FullTax").amount(new BigDecimal("12.00")))
-                        .net(getPrice("60.00", "60.00")).gross(getPrice("72.00", "72.00"));
-        return new OMSOrderPosition().product(product).quantity(1).shipping(shipping).unitPrice(unitPrice).sum(sum)
-                        .number(2);
+        OMSProduct product = new OMSProduct().setName("LUXA2 M1-Pro").setNumber("7030019");
+        OMSShipping shipping = new OMSShipping()
+                        .setDeliveryDate(new OMSDeliveryDate()
+                        .setDeliveryDateType(OMSDeliveryDateTypeEnum.FIXED)
+                        .setDesiredDeliveryDate(tomorrow()));
+        OMSUnitPrice unitPrice = new OMSUnitPrice()
+                        .setGross(getListPrice("72.00", "72.00"))
+                        .setNet(getListPrice("60.00", "60.00"));
+        OMSSumPrice sum = new OMSSumPrice()
+                        .addTaxesItem(new OMSTax().setType("FullTax").setAmount(new BigDecimal("12.00")))
+                        .setNet(getPrice("60.00", "60.00"))
+                        .setGross(getPrice("72.00", "72.00"));
+        return new OMSOrderPosition()
+                        .setProduct(product)
+                        .setQuantity(1)
+                        .setShipping(shipping)
+                        .setUnitPrice(unitPrice)
+                        .setSum(sum)
+                        .setNumber(2);
     }
 
     private static OMSOrderPosition getPosA()
     {
-        OMSProduct product = new OMSProduct().name("Logitech ClearChat Comfort").number("896737");
-        OMSShipping shipping = new OMSShipping().deliveryDate(new OMSDeliveryDate()
-                        .deliveryDateType(OMSDeliveryDateTypeEnum.FIXED).desiredDeliveryDate(tomorrow()));
-        OMSUnitPrice unitPrice = new OMSUnitPrice().gross(getListPrice("24.20", "24.20"))
-                        .net(getListPrice("20.00", "20.00"));
-        OMSSumPrice sum = new OMSSumPrice().addTaxesItem(new OMSTax().type("FullTax").amount(new BigDecimal("8.40")))
-                        .net(getPrice("40.00", "40.00")).gross(getPrice("48.40", "48.40"));
-        return new OMSOrderPosition().product(product).quantity(2).shipping(shipping).unitPrice(unitPrice).sum(sum)
-                        .number(1);
+        OMSProduct product = new OMSProduct()
+                        .setName("Logitech ClearChat Comfort")
+                        .setNumber("896737");
+        OMSShipping shipping = new OMSShipping()
+                        .setDeliveryDate(new OMSDeliveryDate()
+                        .setDeliveryDateType(OMSDeliveryDateTypeEnum.FIXED)
+                        .setDesiredDeliveryDate(tomorrow()));
+        OMSUnitPrice unitPrice = new OMSUnitPrice()
+                        .setGross(getListPrice("24.20", "24.20"))
+                        .setNet(getListPrice("20.00", "20.00"));
+        OMSSumPrice sum = new OMSSumPrice()
+                        .addTaxesItem(new OMSTax().setType("FullTax").setAmount(new BigDecimal("8.40")))
+                        .setNet(getPrice("40.00", "40.00"))
+                        .setGross(getPrice("48.40", "48.40"));
+        return new OMSOrderPosition()
+                        .setProduct(product)
+                        .setQuantity(2)
+                        .setShipping(shipping)
+                        .setUnitPrice(unitPrice)
+                        .setSum(sum)
+                        .setNumber(1);
     }
 
     private static OMSListPrice getListPrice(String amount, String amountDiscounted)
     {
-        return new OMSListPrice().amount(new BigDecimal(amount)).amountDiscounted(new BigDecimal(amountDiscounted));
+        return new OMSListPrice()
+                        .setAmount(new BigDecimal(amount))
+                        .setAmountDiscounted(new BigDecimal(amountDiscounted));
     }
 
     private static OffsetDateTime tomorrow()
@@ -90,65 +119,84 @@ public class B2BTestOrder
 
     private static OMSCharge getDeliveryCharge()
     {
-        return new OMSCharge().type("DELIVERYCHARGE").net(getPrice("5.00", "5.00")).gross(getPrice("6.05", "6.05"))
-                        .addTaxesItem(new OMSTax().amount(new BigDecimal("1.05")).type("FullTax"));
+        return new OMSCharge()
+                        .setType("DELIVERYCHARGE")
+                        .setNet(getPrice("5.00", "5.00"))
+                        .setGross(getPrice("6.05", "6.05"))
+                        .addTaxesItem(new OMSTax().setAmount(new BigDecimal("1.05")).setType("FullTax"));
     }
 
     private static OMSAddressShipping getShippingAddress()
     {
-        return new OMSAddressShipping().contact(new OMSContact().email("user@example.com"))
-                        .receiver(new OMSAddressReceiver().addressReceiverType(OMSAddressReceiverTypeEnum.COMPANY)
-                                        .companyName("Intershop Communications AG")
-                                        .person(new OMSPerson().firstName("Tester").lastName("McTesterson")))
-                        .location(getAddressLocation());
+        return new OMSAddressShipping()
+                        .setContact(new OMSContact().setEmail("user@example.com"))
+                        .setReceiver(new OMSAddressReceiver()
+                                        .setAddressReceiverType(OMSAddressReceiverTypeEnum.COMPANY)
+                                        .setCompanyName("Intershop Communications AG")
+                                        .setPerson(new OMSPerson().setFirstName("Tester").setLastName("McTesterson")))
+                        .setLocation(getAddressLocation());
     }
 
     private static OMSSales getSales()
     {
-        return new OMSSales().currencyCode("EUR").subTotal(getSubTotal()).total(getTotal());
+        return new OMSSales().setCurrencyCode("EUR").setSubTotal(getSubTotal()).setTotal(getTotal());
     }
 
     private static OMSTotalPrice getTotal()
     {
-        return new OMSTotalPrice().addTaxesItem(new OMSTax().amount(new BigDecimal("21.45")).type("FullTax"))
-                        .gross(getPrice("126.45", "126.45")).net(getPrice("105.00", "105.00"));
+        return new OMSTotalPrice()
+                        .addTaxesItem(new OMSTax().setAmount(new BigDecimal("21.45")).setType("FullTax"))
+                        .setGross(getPrice("126.45", "126.45"))
+                        .setNet(getPrice("105.00", "105.00"));
     }
 
     private static OMSPrice getPrice(String amount, String amountDiscounted)
     {
-        return new OMSPrice().amount(new BigDecimal(amount)).amountDiscounted(new BigDecimal(amountDiscounted));
+        return new OMSPrice().setAmount(new BigDecimal(amount)).setAmountDiscounted(new BigDecimal(amountDiscounted));
     }
 
     private static OMSSumPrice getSubTotal()
     {
-        return new OMSSumPrice().addTaxesItem(new OMSTax().amount(new BigDecimal("20.40")).type("FullTax"))
-                        .net(getPrice("100.00", "100.00")).gross(getPrice("120.40", "120.40"));
+        return new OMSSumPrice()
+                        .addTaxesItem(new OMSTax().setAmount(new BigDecimal("20.40")).setType("FullTax"))
+                        .setNet(getPrice("100.00", "100.00"))
+                        .setGross(getPrice("120.40", "120.40"));
     }
 
     private static OMSAddressInvoice createB2BInvoiceAddress()
     {
-        return new OMSAddressInvoice().contact(new OMSContact().email("user@example.com"))
-                        .receiver(new OMSAddressReceiver().addressReceiverType(OMSAddressReceiverTypeEnum.COMPANY)
-                                        .companyName("Intershop Communications AG")
-                                        .person(new OMSPerson().firstName("Tester").lastName("McTesterson")))
-                        .location(getAddressLocation());
+        return new OMSAddressInvoice()
+                        .setContact(new OMSContact().setEmail("user@example.com"))
+                        .setReceiver(new OMSAddressReceiver()
+                                        .setAddressReceiverType(OMSAddressReceiverTypeEnum.COMPANY)
+                                        .setCompanyName("Intershop Communications AG")
+                                        .setPerson(new OMSPerson().setFirstName("Tester").setLastName("McTesterson")))
+                        .setLocation(getAddressLocation());
     }
 
     private static OMSAddressLocation getAddressLocation()
     {
-        return new OMSAddressLocationStreet().street("Steinweg").streetNumber("10").city("Jena").postCode("07743")
-                        .countryCode("DEU");
+        return new OMSAddressLocationStreet()
+                        .setStreet("Steinweg")
+                        .setStreetNumber("10")
+                        .setCity("Jena")
+                        .setPostCode("07743")
+                        .setCountryCode("DEU");
     }
 
     private static OMSCustomerData createB2BCustomer()
     {
-        return new OMSCustomerData().customerDataType(OMSCustomerDataTypeEnum.COMPANY).companyData(createCompanyData());
+        return new OMSCustomerData()
+                        .setCustomerDataType(OMSCustomerDataTypeEnum.COMPANY)
+                        .setCompanyData(createCompanyData());
     }
 
     private static OMSCompanyData createCompanyData()
     {
-        return new OMSCompanyData().commercialRegisterLocation("Jena").commercialRegisterNumber("HRB 209419")
-                        .vatNumber("DE 812464534").companyName("Intershop Communications AG");
+        return new OMSCompanyData()
+                        .setCommercialRegisterLocation("Jena")
+                        .setCommercialRegisterNumber("HRB 209419")
+                        .setVatNumber("DE 812464534")
+                        .setCompanyName("Intershop Communications AG");
     }
-
 }
