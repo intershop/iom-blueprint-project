@@ -14,7 +14,7 @@ public enum ExpandedPaymentDefDO implements PaymentDefDOEnumInterface
      * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
 
-    TEST(-999, "AfterPay", "AfterPay", null, "AfterPay")
+    TEST(-9999, "AfterPay", "AfterPay", null, "AfterPay")
     ;
 
     private Integer id;

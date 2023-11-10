@@ -15,7 +15,7 @@ public enum ExpandedImportConfigurationBeanDefDO implements EnumInterface
      * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
 
-    EXAMPLE(-999, "java:global/blueprint-app/blueprint-ejb/ExampleImportConfigurationBean!bakery.logic.job.transformation.Transformer")
+    EXAMPLE(-9999, "java:global/blueprint-app/ExampleImportConfigurationBean!bakery.logic.job.transformation.Transformer")
     ;
 
     private Integer id;

@@ -14,7 +14,7 @@ public enum ExpandedProcessTaskDefDO implements EnumInterface
      * syntax example and are ignored (won't get persisted within the database).
      */
 
-    EXAMPLE_PT(-999, "CheckSendDebitorPT", "java:global/example-app/SkipSendDebitorPTBean");
+    EXAMPLE_PT(-9999, "CheckSendDebitorPT", "java:global/example-app/SkipSendDebitorPTBean");
 
     private Integer id;
     private String name;

@@ -14,8 +14,9 @@ public enum ExpandedTransformerBeanDefDO implements EnumInterface
      * The name must be unique across both classes.
      * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
-
-    ICM_TO_IOM_TRANSFORMER(-999, "java:global/example-app/ICMToIOMTransformer!bakery.logic.job.transformation.Transformer");
+    
+    BLUEPRINT_ICM_TRANSFORMER(Integer.valueOf(10000), "java:global/iom-blueprint-project/BlueprintIcmTransformer"),
+    OPENTRANS_DISPATCH_TRANSFORMER(Integer.valueOf(10200), "java:global/iom-blueprint-project/OpenTransDispatchTransformer!bakery.logic.job.transformation.Transformer");
 
     private Integer id;
     private String jndiName;

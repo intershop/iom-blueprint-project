@@ -24,6 +24,9 @@ import com.intershop.xml.ns.enfinity._7_1.xcs.impex.Enfinity;
 
 import bakery.util.exception.TechnicalException;
 
+/**
+ * Transformer to be used for files previously uploaded by ProductUpload-servlet.
+ */
 public abstract class EnfinityProductTransformer
 {
     private static final Logger log = LoggerFactory.getLogger(EnfinityProductTransformer.class);

@@ -14,7 +14,7 @@ public enum ExpandedOrderSupplierEvaluationRuleDefDO implements OrderSupplierEva
      * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
 
-    ONE_SUPPLIER_ONLY_CHECK(10000, "SupplierHasStockCheckPTBean", "Filters for suppliers that have stock to deliver.", "java:global/iom-blueprint-project/SupplierHasStockCheckPTBean!bakery.logic.service.order.task.OrderSupplierCheckPT", 1000, false)
+    ONE_SUPPLIER_ONLY_CHECK(Integer.valueOf(10000), "SupplierHasStockCheckPTBean", "Filters for suppliers that have stock to deliver.", "java:global/iom-blueprint-project/SupplierHasStockCheckPTBean!bakery.logic.service.order.task.OrderSupplierCheckPT", 1000, false)
     ;
 
     private Integer id;
