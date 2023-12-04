@@ -34,7 +34,10 @@ BEGIN
 		(10000, 'SupplierHasStockCheckPTBean', 'Filters for suppliers that have stock to deliver.', 50, false)
 	ON CONFLICT (id) DO NOTHING;
 
-
+	--CHARGE TYPES
+	INSERT INTO oms."ChargeTypeDefDO" (id, "name", description, "chargeType")
+	VALUES(10000, 'Container Service Charge', 'Container service charge.', 'CONTAINER_SERVICE_CHARGE')
+	ON CONFLICT (id) DO NOTHING;
 
 	--APPROVAL TYPES
 	INSERT INTO oms."ApprovalTypeDefDO"(id, "name", "ObjectTypeName") values
