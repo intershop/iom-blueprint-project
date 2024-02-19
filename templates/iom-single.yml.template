@@ -143,18 +143,18 @@ ${DumpsDirYml____}          mountPath: /opt/oms/dumps
             value: '${SSO_TYPE}'
           - name: OMS_SSO_OIDC_CONFIG
             value: '${SSO_OIDC_CONFIG}'
+          - name: OMS_OTEL_COLLECTOR
+            value: '${OTEL_COLLECTOR}'
           - name: OMS_WILDFLY_READY_TIMEOUT
             value: '180'
           - name: OMS_PUBLIC_URL
             value: 'http://${HostIom}:${PORT_IOM_SERVICE}'
           - name: OMS_EXEC_BACKEND_APPS
             value: 'true'
-          - name: OMS_SHARE
-            value: '${OmsShareDir}'
           - name: OMS_SMTP_HOST
-            value: 'mailhog-service'
+            value: 'mailsrv-service'
           - name: OMS_SMTP_PORT
-            value: '${PORT_MAILHOG_SMTP_SERVICE}'
+            value: '${PORT_MAILSRV_SMTP_SERVICE}'
         lifecycle:
           postStart:
             exec:
