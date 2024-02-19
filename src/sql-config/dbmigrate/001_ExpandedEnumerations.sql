@@ -24,7 +24,23 @@ BEGIN
 	--EXECUTION BEANS
 	INSERT INTO oms."ExecutionBeanDefDO"(id, "decisionBeanDefRef", description) values
 		(10000, null,  'shopMessageTransmitter'),
-		(20000, null,  'supplierMessageTransmitter')
+		(20000, null,  'supplierMessageTransmitter'),
+		(30000, null,  'customMailTransmitter')
+	ON CONFLICT (id) DO NOTHING;
+
+	--KEYS
+	INSERT INTO oms."ExecutionBeanKeyDefDO"(
+			id, "executionBeanDefRef", "parameterKey", "parameterTypeDefRef",
+			mandatory, "defaultValue") VALUES
+		(10001, 30000, 'mimeType', 2 /* MIMETYPE */, true, null),
+		(10002, 30000, 'shopEmailAddress', 4 /* EMAIL */, false, null),
+		(10003, 30000, 'shopEmailSenderName', 11 /* STRING */, false, null)
+	ON CONFLICT (id) DO NOTHING;
+
+	--TRANSFORMER BEANS
+	INSERT INTO oms."TransformerBeanDefDO"(id, name) VALUES
+		(10000, 'BlueprintIcmTransformer'),
+		(10200, 'OpenTransDispatchTransformer')
 	ON CONFLICT (id) DO NOTHING;
 
 
@@ -41,14 +57,14 @@ BEGIN
 		(10000, 'PaymentMethod',  'Order')
 	ON CONFLICT (id) DO NOTHING;
 
-
-
-	--TRANSFORMER BEANS
-	INSERT INTO oms."TransformerBeanDefDO"(id, name) VALUES
-		(10000, 'BlueprintIcmTransformer'),
-		(10200, 'OpenTransDispatchTransformer')
+	--MESSAGE TYPES
+	INSERT INTO oms."MessageTypeDefDO"(id, name, description) VALUES
+		(10000, 'Approval notification', 'Approval notification')
 	ON CONFLICT (id) DO NOTHING;
 
+	INSERT INTO oms."TransmissionTypeDefDO"(id, name, "roleDefRef", description, "messageTypeName") VALUES
+		(10000, 'E-mail approval notification', 2 /* BAKERY|OMS */, 'Approval notification e-mail.', 'example ShopCustomerMailTransmissionDO.class')
+	ON CONFLICT (id) DO NOTHING;
 
 
 --further examples
@@ -62,28 +78,12 @@ BEGIN
 	INSERT INTO oms."ExecutionBeanDefDO"(id, "decisionBeanDefRef", description) VALUES
 		(10000, null, 'Example')
 	ON CONFLICT (id) DO NOTHING;
-
-	INSERT INTO oms."ExecutionBeanKeyDefDO"(
-			id, "executionBeanDefRef", "parameterKey", "parameterTypeDefRef",
-			mandatory, "defaultValue", "activeOMT") VALUES
-		(11200, 1003, 'shopEmailAddress', 11, true, null, true),
-		(11201, 1003, 'shopEmailSenderName', 11, false, null, true)
-	ON CONFLICT (id) DO NOTHING;
-
 	INSERT INTO oms."JobDefDO"(id, name, description) VALUES
 		(10000, 'Example', 'Example')
 	ON CONFLICT (id) DO NOTHING;
 
-	INSERT INTO oms."MessageTypeDefDO"(id, name, description) VALUES
-		(10500, 'Send customer mail - order', 'Send customer mail - order')
-	ON CONFLICT (id) DO NOTHING;
-
 	INSERT INTO oms."OrderSupplierEvaluationRuleDefDO"(id, description, mandatory, name, rank) VALUES
 		(10000, 'Example', false, 'Example', 30)
-	ON CONFLICT (id) DO NOTHING;
-
-	INSERT INTO oms."TransmissionTypeDefDO"(id, name, "roleDefRef", description, "messageTypeName") VALUES
-		(10500, 'Example', 6, 'Example', 'EXAMPLE')
 	ON CONFLICT (id) DO NOTHING;
 
 	INSERT INTO oms."EventDefDO"(id, description) VALUES

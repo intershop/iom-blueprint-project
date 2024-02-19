@@ -3,6 +3,7 @@ package com.intershop.oms.enums.expand;
 import bakery.persistence.annotation.PersistedEnumerationTable;
 import bakery.persistence.dataobject.configuration.connections.ExecutionBeanKeyDefDO;
 import bakery.persistence.dataobject.configuration.connections.ParameterTypeDefDO;
+import bakery.persistence.dataobject.configuration.connections.ExecutionBeanKeyDefDO.Flag;
 import bakery.persistence.expand.ExecutionBeanKeyDefDOEnumInterface;
 
 @PersistedEnumerationTable(ExecutionBeanKeyDefDO.class)
@@ -16,7 +17,9 @@ public enum ExpandedExecutionBeanKeyDefDO implements ExecutionBeanKeyDefDOEnumIn
      */
 
 	// CUSTOM_WISH(-9999, ExpandedExecutionBeanDefDO.CUSTOM_ORDER_MESSAGE_TRANSMITTER.getId(), "customWish", ParameterTypeDefDO.UNSPECIFIED, false, null );
-    // EXAMPLE_SHOPCUSTOMERMAILSENDERBEAN_SHOP_EMAIL_ADDRESS(Integer.valueOf(10001), ExpandedExecutionBeanDefDO.CUSTOM_ORDER_MESSAGE_TRANSMITTER.getId(), "shopEmailAddress", ParameterTypeDefDO.EMAIL, ExecutionBeanKeyDefDO.Flag.OPTIONAL, null);
+    MIME_TYPE(10001, ExpandedExecutionBeanDefDO.CUSTOM_MAIL_TRANSMITTER.getId(), "mimeType", ParameterTypeDefDO.MIMETYPE, true, "text/plain"),
+    SHOPCUSTOMERMAILSENDERBEAN_SHOP_EMAIL_ADDRESS(10002, ExpandedExecutionBeanDefDO.CUSTOM_MAIL_TRANSMITTER.getId(), "shopEmailAddress", ParameterTypeDefDO.EMAIL, Flag.MANDATORY, null),
+    SHOPCUSTOMERMAILSENDERBEAN_SHOP_EMAIL_SENDERNAME(10003, ExpandedExecutionBeanDefDO.CUSTOM_MAIL_TRANSMITTER.getId(), "shopEmailSenderName", ParameterTypeDefDO.STRING, Flag.OPTIONAL, null)
     ;
 
     private Integer id;
