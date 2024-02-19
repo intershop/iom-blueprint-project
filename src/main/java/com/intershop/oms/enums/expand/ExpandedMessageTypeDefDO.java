@@ -7,14 +7,12 @@ import bakery.persistence.expand.MessageTypeDefDOEnumInterface;
 @ExpandedEnum(MessageTypeDefDO.class)
 public enum ExpandedMessageTypeDefDO implements MessageTypeDefDOEnumInterface
 {
-
     /**
      * Start with 10000 to avoid conflict with MessageTypeDefDO.
      * The name must be unique across both classes.
      * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
-    EXAMPLE_SEND_CUSTOMER_MAIL_ORDER( -9999, "Send customer mail - order" )
-    ;
+    APPROVAL_NOTIFICATION (10000, "Approval notification");
 
     private Integer id;
     private String description;

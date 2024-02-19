@@ -1,4 +1,4 @@
-package com.intershop.oms.enums.expand;
+package com.intershop.oms.enums.expand; 
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,8 @@ public enum ExpandedExecutionBeanDefDO implements ExecutionBeanDefDOEnumInterfac
      * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
     SHOP_MESSAGE_TRANSMITTER(Integer.valueOf(10000), "java:global/iom-blueprint-project/ShopMessageTransmitterBean!bakery.logic.service.transmission.MessageTransmitter", null),
-    SUPPLIER_MESSAGE_TRANSMITTER(Integer.valueOf(20000), "java:global/iom-blueprint-project/SupplierMessageTransmitterBean!bakery.logic.service.transmission.MessageTransmitter", null)
+    SUPPLIER_MESSAGE_TRANSMITTER(Integer.valueOf(20000), "java:global/iom-blueprint-project/SupplierMessageTransmitterBean!bakery.logic.service.transmission.MessageTransmitter", null),
+    CUSTOM_MAIL_TRANSMITTER(Integer.valueOf(30000), "java:global/iom-blueprint-project/AnotherMailTransmitterBean!bakery.logic.service.transmission.MessageTransmitter", null),
     ;
 
     private Integer id;
