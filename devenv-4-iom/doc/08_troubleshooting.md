@@ -270,4 +270,4 @@ When trying a `docker login` from a Linux-like terminal on Windows such as _Git 
     winpty docker login docker.tools.intershop.com
 
 ---
-[< Log Messages](06_log_messages.md) | [^ Index](../README.md)
+[< Metrics](07_metrics.md) | [^ Index](../README.md)

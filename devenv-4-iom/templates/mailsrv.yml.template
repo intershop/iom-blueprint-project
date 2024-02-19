@@ -1,0 +1,30 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: mailsrv
+  labels:
+    app: mailsrv
+spec:
+  containers:
+  - name: mailsrv
+    image: ${MAILSRV_IMAGE}
+    imagePullPolicy: Always
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: mailsrv-service
+spec:
+  selector:
+    app: mailsrv
+  ports:
+    - port: ${PORT_MAILSRV_UI_SERVICE}
+      targetPort: ${PORT_MAILSRV_UI}
+      nodePort: ${PORT_MAILSRV_UI_PUBLIC}
+      name: ui
+    - port: ${PORT_MAILSRV_SMTP_SERVICE}
+      targetPort: ${PORT_MAILSRV_SMTP}
+      nodePort: ${PORT_MAILSRV_SMTP_PUBLIC}
+      name: soap
+  type: LoadBalancer
+  

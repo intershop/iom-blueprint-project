@@ -58,6 +58,13 @@ EOF
 }
 
 #-------------------------------------------------------------------------------
+version() {
+    cat <<EOF
+devenv-4-iom version ${DEVENV4IOM_VERSION}.
+EOF
+}
+
+#-------------------------------------------------------------------------------
 help() {
     ME=$(basename "$0")
     cat <<EOF
@@ -66,6 +73,9 @@ $ME
 
 SYNOPSIS
     $ME [CONFIG-FILE] COMMAND
+
+OPTIONS
+    -v, --version      Print version information and quit.
 
 CONFIG-FILE
 $(msg_config_file 4)
@@ -291,7 +301,7 @@ CONFIG-FILE
 $(msg_config_file 4)
 
 CONFIG
-    MAILHOG_IMAGE - defines the image of the mailserver to be used
+    MAILSRV_IMAGE - defines the image of the mailserver to be used
     IMAGE_PULL_POLICY - defines when to pull the image from origin
     ID - the namespace to be used is derived from ID
 
@@ -301,7 +311,7 @@ SEE
 
 BACKGROUND
     "$DEVENV_DIR/bin/template_engine.sh" \\
-      --template="$DEVENV_DIR/templates/mailhog.yml.template" \\
+      --template="$DEVENV_DIR/templates/mailsrv.yml.template" \\
       --config="$CONFIG_FILES" \\
       --project-dir="$PROJECT_DIR" |
       kubectl apply --namespace $EnvId --context="$KUBERNETES_CONTEXT"  -f -
@@ -526,7 +536,7 @@ SEE
 
 BACKGROUND
     "$DEVENV_DIR/bin/template_engine.sh" \\
-        --template="$DEVENV_DIR/templates/mailhog.yml.template" \\
+        --template="$DEVENV_DIR/templates/mailsrv.yml.template" \\
         --config="$CONFIG_FILES" \\
         --project-dir="$PROJECT_DIR" |
       kubectl delete --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f -
@@ -655,6 +665,7 @@ RESOURCE
     sql-config|sql-c*  apply custom SQL config
     json-config|j*     apply custom JSON config
     dbmigrate|db*      apply custom DB migration
+    cache-reset|c*     apply a reset of configuration cache
 
 Run '$ME [CONFIG-FILE] apply RESOURCE --help|-h' for more information on a command.
 EOF
@@ -707,11 +718,11 @@ SEE
 BACKGROUND
     # redeploy omt selectively
     POD_NAME=\$(kubectl get pods --namespace $EnvId --context="$KUBERNETES_CONTEXT" -l app=iom -o jsonpath="{.items[0].metadata.name}")
-    kubectl exec \$POD_NAME --namespace $EnvId --context="$KUBERNETES_CONTEXT" -- bash -ic redeploy omt
+    kubectl exec \$POD_NAME --namespace $EnvId --context="$KUBERNETES_CONTEXT" -c iom -- bash -ic redeploy omt
 
     # redeploy all
     POD_NAME=\$(kubectl get pods --namespace $EnvId --context="$KUBERNETES_CONTEXT" -l app=iom -o jsonpath="{.items[0].metadata.name}")
-    kubectl exec \$POD_NAME --namespace $EnvId --context="$KUBERNETES_CONTEXT" -- bash -ic redeploy
+    kubectl exec \$POD_NAME --namespace $EnvId --context="$KUBERNETES_CONTEXT" -c iom -- bash -ic redeploy
 EOF
 }
 
@@ -753,7 +764,7 @@ SEE
 
 BACKGROUND
     POD_NAME=\$(kubectl get pods --namespace $EnvId --context="$KUBERNETES_CONTEXT" -l app=iom -o jsonpath="{.items[0].metadata.name}")
-    kubectl exec \$POD_NAME --namespace $EnvId --context="$KUBERNETES_CONTEXT" -- bash -ic apply-templates
+    kubectl exec \$POD_NAME --namespace $EnvId --context="$KUBERNETES_CONTEXT" -c iom -- bash -ic apply-templates
 EOF
 }
 
@@ -794,7 +805,7 @@ SEE
 
 BACKGROUND
     POD_NAME=\$(kubectl get pods --namespace $EnvId --context="$KUBERNETES_CONTEXT" -l app=iom -o jsonpath="{.items[0].metadata.name}")
-    kubectl exec \$POD_NAME --namespace $EnvId --context="$KUBERNETES_CONTEXT" -- bash -ic apply-xslt
+    kubectl exec \$POD_NAME --namespace $EnvId --context="$KUBERNETES_CONTEXT" -c iom -- bash -ic apply-xslt
 EOF
 }
 
@@ -821,7 +832,8 @@ OVERVIEW
 
     If a directory is passed to the job, all SQL files found in this directory
     are processed in numerical order, starting with the smallest one.
-    Sub-directories are not scanned for SQL files.
+    When using IOM version >= 4.4.0, sub-directories are scanned recursively for
+    SQL files. Older versions of IOM do not scan sub-directories for SQL files.
 
     If a file is passed to the job, only this file will be executed.
 
@@ -1061,6 +1073,36 @@ BACKGROUND
         --config="$CONFIG_FILES" \\
         --project-dir="$PROJECT_DIR" |
       kubectl delete --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f -
+EOF
+}
+
+#-------------------------------------------------------------------------------
+help-apply-cache-reset() {
+    ME=$(basename "$0")
+    cat <<EOF
+applies a reset of the configuration-cache to the system
+
+SYNOPSIS
+    $ME [CONFIG-FILE] apply cache-reset
+
+OVERVIEW
+    IOM holds the content of configuration tables in memory, hence any changes
+    to these these tables will not be recogniced until the configuration cache
+    is reseted.
+    devenv4iom is reseting the configuration automatically in following cases:
+    - apply deployment
+    - apply sql-config
+    - apply sql-scripts
+    - apply json-config
+    If you are changing configurations directly within the database, you have to
+    reset the configuration cache manually by calling "apply cache-reset".
+
+CONFIG-FILE
+$(msg_config_file 4)
+
+BACKGROUND
+    # see "apply sql-scripts" and apply the file 
+    # "$DEVENV_DIR/bin/reset-confg-cache.sql"
 EOF
 }
 
@@ -1688,7 +1730,7 @@ kube_job_wait() (
 
 #-------------------------------------------------------------------------------
 # wait for pod to be in phase running
-# $1: app name (iom|postgres|mailhog)
+# $1: app name (iom|postgres|mailsrv)
 # $2: timeout [s]
 # ->: true - if pod is running before timeout
 #     false - if timeout is reached before pod is running
@@ -1874,7 +1916,8 @@ $ID
 --------------------------------------------------------------------------------
 Links:
 ======
-OMT:                        http://$HostIom:$PORT_IOM_SERVICE/omt/
+Back Office:                http://$HostIom:$PORT_IOM_SERVICE/omt/
+REST+SOAP Documentation:    http://$HostIom:$PORT_IOM_SERVICE/doc/
 DBDoc (latest version):     https://intershop.github.io/iom-dbdoc/
 Wildfly (admin:admin):      http://$HostIom:$PORT_WILDFLY_SERVICE/console/
 --------------------------------------------------------------------------------
@@ -2045,30 +2088,30 @@ $ID
 --------------------------------------------------------------------------------
 Links:
 ======
-Web-UI:                     http://$HostIom:$PORT_MAILHOG_UI_SERVICE
-REST:                       http://$HostIom:$PORT_MAILHOG_UI_SERVICE/api/v2/messages
+Web-UI:                     http://$HostIom:$PORT_MAILSRV_UI_SERVICE
+REST:                       http://$HostIom:$PORT_MAILSRV_UI_SERVICE/api/v1
 --------------------------------------------------------------------------------
 Docker:
 =======
-MAILHOG_IMAGE:              $MAILHOG_IMAGE
+MAILSRV_IMAGE:              $MAILSRV_IMAGE
 IMAGE_PULL_POLICY           $IMAGE_PULL_POLICY
 --------------------------------------------------------------------------------
 EOF
-        POD="$(kube_get_pod mailhog)"
+        POD="$(kube_get_pod mailsrv)"
         if [ ! -z "$POD" ]; then
             cat <<EOF
 Kubernetes:
 ===========
 namespace:                  $EnvId
 
-$(kubectl get pods --namespace=$EnvId --context="$KUBERNETES_CONTEXT" -l app=mailhog)
+$(kubectl get pods --namespace=$EnvId --context="$KUBERNETES_CONTEXT" -l app=mailsrv)
 
-$(kubectl get service --namespace=$EnvId --context="$KUBERNETES_CONTEXT" mailhog-service 2> /dev/null)
+$(kubectl get service --namespace=$EnvId --context="$KUBERNETES_CONTEXT" mailsrv-service 2> /dev/null)
 --------------------------------------------------------------------------------
 Usefull commands:
 =================
 Login into Pod:             kubectl exec --namespace $EnvId --context="$KUBERNETES_CONTEXT" $POD -it -- sh
-Currently used yaml:        kubectl get pod -l app=mailhog -o yaml --namespace=$EnvId --context="$KUBERNETES_CONTEXT"
+Currently used yaml:        kubectl get pod -l app=mailsrv -o yaml --namespace=$EnvId --context="$KUBERNETES_CONTEXT"
 --------------------------------------------------------------------------------
 EOF
         fi
@@ -2246,9 +2289,9 @@ create-mailserver() {
     if [ -z "$CONFIG_FILES" ]; then
         log_msg ERROR "create-mailserver: no config-file given!" < /dev/null
         SUCCESS=false
-    elif ! kube_pod_started mailhog; then
+    elif ! kube_pod_started mailsrv; then
         "$DEVENV_DIR/bin/template_engine.sh" \
-            --template="$DEVENV_DIR/templates/mailhog.yml.template" \
+            --template="$DEVENV_DIR/templates/mailsrv.yml.template" \
             --config="$CONFIG_FILES" \
             --project-dir="$PROJECT_DIR" | kubectl apply --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f - 2> "$TMP_ERR" > "$TMP_OUT"
         if [ $? -ne 0 ]; then
@@ -2452,9 +2495,9 @@ delete-mailserver() {
     if [ -z "$CONFIG_FILES" ]; then
         log_msg ERROR "delete-mailserver: no config-file given!" < /dev/null
         SUCCESS=false
-    elif kube_resource_exists pods mailhog || kube_resource_exists services mailhog-service; then
+    elif kube_resource_exists pods mailsrv || kube_resource_exists services mailsrv-service; then
         "$DEVENV_DIR/bin/template_engine.sh" \
-            --template="$DEVENV_DIR/templates/mailhog.yml.template" \
+            --template="$DEVENV_DIR/templates/mailsrv.yml.template" \
             --config="$CONFIG_FILES" \
             --project-dir="$PROJECT_DIR" | kubectl delete --namespace $EnvId --context="$KUBERNETES_CONTEXT" -f - 2> "$TMP_ERR" > "$TMP_OUT"
         if [ $? -ne 0 ]; then
@@ -2577,18 +2620,25 @@ apply-deployment() {
             SUCCESS=false
         else
             if [ -z "$PATTERN" ]; then
-                kubectl exec $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT" -- bash -ic redeploy 2> "$TMP_ERR" > "$TMP_OUT"
+                kubectl exec $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT" -c iom -- bash -ic redeploy 2> "$TMP_ERR" > "$TMP_OUT"
             else
-                # TODO no messages visible, if script ended with error!
-                kubectl exec $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT" -- bash -ic "/opt/oms/bin/forced-redeploy.sh --pattern=$PATTERN || true" 2> "$TMP_ERR" > "$TMP_OUT"
+                kubectl exec $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT" -c iom -- bash -ic "/opt/oms/bin/forced-redeploy.sh --pattern=$PATTERN" 2> "$TMP_ERR" > "$TMP_OUT"
             fi
             if [ $? -ne 0 ]; then
+                # output is already in json format
+                cat "$TMP_OUT"
                 log_msg ERROR "apply-deployment: error applying deployments" < "$TMP_ERR"
                 SUCCESS=false
             else
                 # output is already in json format
                 cat "$TMP_OUT"
                 log_msg INFO "apply-deployment: successfully applied deployments" < /dev/null
+            fi
+            
+            if [ "$SUCCESS" = 'true' ]; then
+                if ! apply-cache-reset; then
+                    SUCCESS=false
+                fi
             fi
         fi
     else
@@ -2614,7 +2664,7 @@ apply-mail-templates() {
             log_msg ERROR "apply-mail-templates: error getting pod name" < "$TMP_ERR"
             SUCCESS=false
         else
-            kubectl exec $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT" -- bash -ic apply-templates 2> "$TMP_ERR" > "$TMP_OUT"
+            kubectl exec $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT" -c iom -- bash -ic apply-templates 2> "$TMP_ERR" > "$TMP_OUT"
             if [ $? -ne 0 ]; then
                 log_msg ERROR "apply-mail-templates: error applying mail templates" < "$TMP_ERR"
                 SUCCESS=false
@@ -2645,7 +2695,7 @@ apply-xsl-templates() {
             log_msg ERROR "apply-xsl-templates: error getting pod name" < "$TMP_ERR"
             SUCCESS=false
         else
-            kubectl exec $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT" -- bash -ic apply-xslt 2> "$TMP_ERR" > "$TMP_OUT"
+            kubectl exec $POD --namespace $EnvId --context="$KUBERNETES_CONTEXT" -c iom -- bash -ic apply-xslt 2> "$TMP_ERR" > "$TMP_OUT"
             if [ $? -ne 0 ]; then
                 log_msg ERROR "apply-xsl-templates: error applying xsl templates" < "$TMP_ERR"
                 SUCCESS=false
@@ -2663,12 +2713,18 @@ apply-xsl-templates() {
 #-------------------------------------------------------------------------------
 # apply sql scripts
 # $1: sql-directory
-# $2: timeout
+# $2: timeout (number of seconds, default: 60)
+# $3: reset-cache (true|false, default: true)
 # -> true|false indicating success
 #-------------------------------------------------------------------------------
 apply-sql-scripts() {
     SUCCESS=true
 
+    RESET_CACHE='true'
+    if [ ! -z "$3" -a "$3" != 'true' ]; then
+        RESET_CACHE='false'
+    fi
+    
     if [ -z "$CONFIG_FILES" ]; then
         log_msg ERROR "apply-sql-scripts: no config-file given!" < /dev/null
         SUCCESS=false
@@ -2678,13 +2734,7 @@ apply-sql-scripts() {
             log_msg ERROR "apply-sql-scripts: '$1' is nor a file or directory" < /dev/null
             SUCCESS=false
         else
-            case "$1" in
-                /*)
-                    SQL_SRC="$1"
-                    ;;
-                *)
-                    SQL_SRC="$(pwd)/$1"
-            esac
+            SQL_SRC="$(realpath "$1")"
         fi
 
         # check and set timeout
@@ -2749,6 +2799,12 @@ apply-sql-scripts() {
                 # is giving this information
                 if [ "$SUCCESS" != 'true' ]; then
                     log_msg ERROR "apply-sql-scripts: job ended with ERROR" < /dev/null
+                fi
+                
+                if [ "$SUCCESS" = 'true' -a "$RESET_CACHE" = 'true' ]; then
+                    if ! apply-cache-reset; then
+                        SUCCESS=false
+                    fi
                 fi
             fi
         fi
@@ -2830,6 +2886,12 @@ apply-sql-config() {
                 # is giving this information
                 if [ "$SUCCESS" != 'true' ]; then
                     log_msg ERROR "apply-sql-config: job ended with ERROR" < /dev/null
+                fi
+                
+                if [ "$SUCCESS" = 'true' ]; then
+                    if ! apply-cache-reset; then
+                        SUCCESS=false
+                    fi
                 fi
             fi
         else
@@ -3005,6 +3067,20 @@ apply-dbmigrate() {
     fi
     rm -f "$TMP_ERR" "$TMP_OUT"
     [ "$SUCCESS" = 'true' ]
+}
+
+#-------------------------------------------------------------------------------
+# reset configuration cache
+# -> true|false indicating success
+#-------------------------------------------------------------------------------
+apply-cache-reset() {
+    # there are different possiblities to reset the cache:
+    # * stored procedure
+    # * REST API
+    # REST API was not used, since it adds an additional dependency to the
+    # developers machine (curl). Unfortunately curl is also not included in the
+    # IOM image.
+    apply-sql-scripts "$DEVENV_DIR/bin/reset-config-cache.sql" 60 false
 }
 
 ################################################################################
@@ -3799,7 +3875,10 @@ LEVEL0=$(isCommand "$1" i  info   ||
          isCommand "$1" du dump   ||
          isCommand "$1" g  get    ||
          isCommand "$1" l  log)   ||
-    if [ "$1" = '--help' -o "$1" = '-h' ]; then
+    if [ "$1" = '--version' -o "$1" = '-v' ]; then
+        version
+        exit 0
+    elif [ "$1" = '--help' -o "$1" = '-h' ]; then
         help
         exit 0
     else
@@ -3861,7 +3940,8 @@ elif [ "$LEVEL0" = "apply" ]; then
              isCommand "$1" sql-s sql-scripts    ||
              isCommand "$1" sql-c sql-config     ||
              isCommand "$1" j     json-config    ||
-             isCommand "$1" db    dbmigrate)     ||
+             isCommand "$1" db    dbmigrate      ||
+             isCommand "$1" c     cache-reset)   ||
         if [ "$1" = '--help' -o "$1" = '-h' ]; then
             help-apply
             exit 0
