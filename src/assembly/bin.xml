@@ -1,57 +1,66 @@
 <assembly
-	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.3"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.3 http://maven.apache.org/xsd/assembly-1.1.3.xsd">
-	<id>iom-blueprint-project_full_assembly</id>
-	<formats>
-		<format>tgz</format>
-	</formats>
-	<includeBaseDirectory>false</includeBaseDirectory>
-	<!--
+    xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.3"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.3 http://maven.apache.org/xsd/assembly-1.1.3.xsd">
+    <id>iom-blueprint-project_full_assembly</id>
+    <formats>
+        <format>tgz</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <!--
 
-	//	WARNING
-	//	Please make a distinction between binary and text files when using the lineEnding switch.
-	//	The plugin will also filter binary data and may break binaries, images etc.
+        //      WARNING
+        //      Please make a distinction between binary and text files when using the lineEnding switch.
+        //      The plugin will also filter binary data and may break binaries, images etc.
 
-	 -->
-	<fileSets>
-		<fileSet>
-			<directory>${basedir}/target</directory>
-			<outputDirectory>customization/artifacts</outputDirectory>
-			<includes>
-				<include>*.war</include>
-			</includes>
-		</fileSet>
-		<fileSet>
-			<directory>src/deployment</directory>
-			<outputDirectory>customization</outputDirectory>
-			<includes>
-				<include>deployment.*.properties</include>
-			</includes>
-			<filtered>true</filtered>
-			<lineEnding>unix</lineEnding>
-		</fileSet>
-		<fileSet>
-			<directory>src/etc</directory>
-			<outputDirectory>etc</outputDirectory>
-			<includes>
-				<include>**/*</include>
-			</includes>
-			<filtered>false</filtered>
-			<lineEnding>unix</lineEnding>
-		</fileSet>
+    -->
+    <fileSets>
+        <fileSet>
+            <directory>${basedir}/target</directory>
+            <outputDirectory>customization/artifacts</outputDirectory>
+            <includes>
+                <include>*.war</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>src/deployment</directory>
+            <outputDirectory>customization</outputDirectory>
+            <includes>
+                <include>deployment.*.properties</include>
+            </includes>
+            <filtered>true</filtered>
+            <lineEnding>unix</lineEnding>
+        </fileSet>
+        <fileSet>
+            <directory>src/etc</directory>
+            <outputDirectory>etc</outputDirectory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+            <filtered>false</filtered>
+            <lineEnding>unix</lineEnding>
+        </fileSet>
+        <!-- test-data - text data -->
         <fileSet>
             <directory>src/test-data</directory>
             <outputDirectory>test-data</outputDirectory>
             <includes>
-                <include>**/*</include>
+                <include>**/*.csv</include>
             </includes>
-            <excludes>
-            	<exclude>env/dev/zip_10020/*.zip</exclude>
-            </excludes>
             <filtered>false</filtered>
             <lineEnding>unix</lineEnding>
         </fileSet>
+        <!-- test-data - binary data -->
+        <!--
+        <fileSet>
+            <directory>src/test-data</directory>
+            <outputDirectory>test-data</outputDirectory>
+            <includes>
+                <include>**/*.zip</include>
+            </includes>
+            <filtered>false</filtered>
+        </fileSet>
+        -->
         <!-- velocity - text data only -->
         <fileSet>
             <directory>src/mail-templates</directory>
@@ -69,6 +78,7 @@
             <includes>
                 <include>**/*.xslt</include>
                 <include>**/*.xml</include>
+                <include>**/*.svg</include>
             </includes>
             <lineEnding>unix</lineEnding>
         </fileSet>
@@ -80,6 +90,7 @@
                 <include>**/*.png</include>
                 <include>**/*.ttf</include>
                 <include>**/*.pdf</include>
+                <include>**/*.jpg</include>
             </includes>
         </fileSet>
         <!-- sql - text data (all but *.sh) -->
@@ -100,6 +111,6 @@
             <lineEnding>unix</lineEnding>
             <fileMode>0600</fileMode>
         </fileSet>
-	</fileSets>
+    </fileSets>
 
 </assembly>
