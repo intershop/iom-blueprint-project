@@ -13,7 +13,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <platform.version>4.7.0</platform.version>
+        <platform.version>5.0.0</platform.version>
         <intershop.docker.repo>docker.tools.intershop.com/iom/intershophub/</intershop.docker.repo>
         <image.base.name>iom-blueprint-project</image.base.name>
         <image.version.suffix></image.version.suffix>
@@ -21,12 +21,12 @@
         <image.docker.opts>--docker-opts="--no-cache"</image.docker.opts>
         <ubuntu.mirror.x64>http://azure.archive.ubuntu.com/ubuntu/</ubuntu.mirror.x64>
         <maven.javadoc.skip>true</maven.javadoc.skip>
-        <wildfly.version>27.0.1.Final</wildfly.version>
+        <wildfly.version>30.0.1.Final</wildfly.version>
         <org.junit.version>5.7.2</org.junit.version>
         <org.mockito.version>4.6.1</org.mockito.version>
         <net.bytebuddy.version>1.12.10</net.bytebuddy.version>
         <org.apache.commons-lang.version>3.12.0</org.apache.commons-lang.version>
-        <testframework.version>6.0.0</testframework.version>
+        <testframework.version>7.1.0</testframework.version>
     </properties>
 
     <repositories>
@@ -134,6 +134,11 @@
             <scope>provided</scope>
             <version>${platform.version}</version>
         </dependency>
+        <dependency>
+      		<groupId>oms.rolemgmt</groupId>
+      		<artifactId>oms.rolemgmt-api</artifactId>
+      		<version>${platform.version}</version>
+    	</dependency>
 
         <!-- TEST dependencies -->
         <dependency>
