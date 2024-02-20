@@ -164,7 +164,7 @@ public class OpenTransDispatchTransformer implements Transformer
                         new MissingConfigurationException("The (mandatory) filename regex is not configured"));
     }
 
-    public static <T> T unmarshallAndValidateFile(File xmlFile, URL xsdFile, Class<T> returnType)
+    private <T> T unmarshallAndValidateFile(File xmlFile, URL xsdFile, Class<T> returnType)
                     throws JAXBException, SAXException, IOException
     {
         SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
