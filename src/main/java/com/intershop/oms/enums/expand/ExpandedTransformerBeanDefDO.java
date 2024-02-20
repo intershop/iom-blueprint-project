@@ -21,7 +21,7 @@ public enum ExpandedTransformerBeanDefDO implements EnumInterface
      * Values with negative id are meant as syntax example and are ignored (won't
      * get persisted within the database).
      */
-
+     
     BLUEPRINT_ICM_TRANSFORMER(Integer.valueOf(10000), "java:global/iom-blueprint-project/BlueprintIcmTransformer"),
     OPENTRANS_DISPATCH_TRANSFORMER(Integer.valueOf(10200),
             "java:global/iom-blueprint-project/OpenTransDispatchTransformer!bakery.logic.job.transformation.Transformer");

@@ -20,7 +20,7 @@ public enum ExpandedExecutionBeanKeyDefDO implements ExecutionBeanKeyDefDOEnumIn
      * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
 
-	// CUSTOM_WISH(-9999, ExpandedExecutionBeanDefDO.CUSTOM_ORDER_MESSAGE_TRANSMITTER.getId(), "customWish", ParameterTypeDefDO.UNSPECIFIED, false, null );
+	  // CUSTOM_WISH(-9999, ExpandedExecutionBeanDefDO.CUSTOM_ORDER_MESSAGE_TRANSMITTER.getId(), "customWish", ParameterTypeDefDO.UNSPECIFIED, false, null );
     MIME_TYPE(10001, ExpandedExecutionBeanDefDO.CUSTOM_MAIL_TRANSMITTER.getId(), "mimeType", ParameterTypeDefDO.MIMETYPE, true, "text/plain"),
     SHOPCUSTOMERMAILSENDERBEAN_SHOP_EMAIL_ADDRESS(10002, ExpandedExecutionBeanDefDO.CUSTOM_MAIL_TRANSMITTER.getId(), "shopEmailAddress", ParameterTypeDefDO.EMAIL, Flag.MANDATORY, null),
     SHOPCUSTOMERMAILSENDERBEAN_SHOP_EMAIL_SENDERNAME(10003, ExpandedExecutionBeanDefDO.CUSTOM_MAIL_TRANSMITTER.getId(), "shopEmailSenderName", ParameterTypeDefDO.STRING, Flag.OPTIONAL, null)

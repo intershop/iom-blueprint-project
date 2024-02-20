@@ -66,6 +66,14 @@ BEGIN
 
 
 
+	--TRANSFORMER BEANS
+	INSERT INTO oms."TransformerBeanDefDO"(id, name) VALUES
+		(10000, 'BlueprintIcmTransformer'),
+		(10200, 'OpenTransDispatchTransformer')
+	ON CONFLICT (id) DO NOTHING;
+
+
+
 --further examples
 
 /*
@@ -77,6 +85,7 @@ BEGIN
 	INSERT INTO oms."ExecutionBeanDefDO"(id, "decisionBeanDefRef", description) VALUES
 		(10000, null, 'Example')
 	ON CONFLICT (id) DO NOTHING;
+  
 	INSERT INTO oms."JobDefDO"(id, name, description) VALUES
 		(10000, 'Example', 'Example')
 	ON CONFLICT (id) DO NOTHING;

@@ -165,7 +165,7 @@ public class OpenTransDispatchTransformer implements Transformer
     }
 
     private <T> T unmarshallAndValidateFile(File xmlFile, URL xsdFile, Class<T> returnType)
-                    throws JAXBException, SAXException, IOException
+        throws JAXBException, SAXException, IOException
     {
         SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         sf.setFeature("http://apache.org/xml/features/honour-all-schemaLocations", true);

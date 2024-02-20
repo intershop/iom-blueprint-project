@@ -28,7 +28,7 @@ public enum ExpandedExecutionBeanDefDO implements ExecutionBeanDefDOEnumInterfac
     
     SHOP_MESSAGE_TRANSMITTER(Integer.valueOf(10000), "java:global/iom-blueprint-project/ShopMessageTransmitterBean!bakery.logic.service.transmission.MessageTransmitter", null),
     SUPPLIER_MESSAGE_TRANSMITTER(Integer.valueOf(20000), "java:global/iom-blueprint-project/SupplierMessageTransmitterBean!bakery.logic.service.transmission.MessageTransmitter", null),
-    CUSTOM_MAIL_TRANSMITTER(Integer.valueOf(30000), "java:global/iom-blueprint-project/AnotherMailTransmitterBean!bakery.logic.service.transmission.MessageTransmitter", null),
+    CUSTOM_MAIL_TRANSMITTER(Integer.valueOf(30000), "java:global/iom-blueprint-project/AnotherMailTransmitterBean!bakery.logic.service.transmission.MessageTransmitter", null)
     ;
 
     private Integer id;

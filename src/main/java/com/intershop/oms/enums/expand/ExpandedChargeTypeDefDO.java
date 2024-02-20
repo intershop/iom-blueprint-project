@@ -15,6 +15,7 @@ public enum ExpandedChargeTypeDefDO implements ChargeTypeDefDOEnumInterface
      * The name must be unique across both classes.
      * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
+     
     CONTAINER_SERVICE_CHARGE(Integer.valueOf(10000), "Container Service Charge", "Container Charge", "Container Service Charges");
 
     private Integer id;
