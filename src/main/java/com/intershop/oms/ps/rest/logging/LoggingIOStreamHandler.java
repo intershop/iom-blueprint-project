@@ -46,9 +46,7 @@ public class LoggingIOStreamHandler
                 }
 
                 responseContent = bosUncompressed.toString("UTF-8");
-
             }
-
         }
         else
         {
@@ -117,7 +115,6 @@ public class LoggingIOStreamHandler
         requestContext.setEntityStream(new ByteArrayInputStream(responseContent.getBytes()));
 
         return responseContent;
-
     }
 
     public static String readEntity(WriterInterceptorContext writerInterceptorContext) throws IOException
@@ -136,7 +133,6 @@ public class LoggingIOStreamHandler
         String payloadBody = new String(byteArray);
 
         return payloadBody;
-
     }
 
 }

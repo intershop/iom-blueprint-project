@@ -142,7 +142,7 @@
 						<tr>
 							<th style="background-color:#f7f7f7">
 								<h3 style="display: block; font-size: 16px; font-weight: normal; margin: 5px; font-family:$font_family;">
-									Delivery Address
+									Delivery Addresses
 								</h3>
 							</th>
 						</tr>
@@ -152,13 +152,10 @@
 									<tr>
 										<td align="left">
 											<p style="padding: 0; margin: 0; font-size: 14px; line-height: 20px; font-family:$font_family;">
-												$customerDeliverySalutation <br/>
-												$customerDeliveryName <br/>
-												#if($customerDeliveryCompanyName && $customerDeliveryCompanyName!='')$customerDeliveryCompanyName<br/>#end
-												#if($customerDeliveryAddressAddition && $customerDeliveryAddressAddition!='')$customerDeliveryAddressAddition<br/>#end
-												$customerDeliveryStreet <br/>
-												$customerDeliveryCity, $customerDeliveryPostCode <br/><br/>
-												$userMailLO.getCustomerAddressLO().getCountry()
+											
+												#foreach($address in $userMailLO.getShippingAddresses())
+													<p>$escape.html($address.getFullAddress())</p>
+												#end
 											</p>
 										</td>
 									</tr>
