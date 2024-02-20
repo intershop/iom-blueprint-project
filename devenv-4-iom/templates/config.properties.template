@@ -8,6 +8,8 @@
 # has to be updated. Only the settings are taken over during this process. All
 # additional comments you may have added to the file will be lost.
 #
+# File was generated with version ${DEVENV4IOM_VERSION} of devenv-4-iom.
+#
 ################################################################################
 
 # This ID has to be defined before using this configuration the first time. All
@@ -51,9 +53,9 @@ IMAGE_PULL_SECRET=${IMAGE_PULL_SECRET}
 # example:                  postgres:11
 DOCKER_DB_IMAGE=${DOCKER_DB_IMAGE}
 
-# mailhog image (name:tag)
-# example:                  mailhog/mailhog
-MAILHOG_IMAGE=${MAILHOG_IMAGE}
+# mail-server image (name:tag)
+# example:                  axllent/mailpit
+MAILSRV_IMAGE=${MAILSRV_IMAGE}
 
 # iom dbaccount image (name:tag)
 # examples:
@@ -168,7 +170,17 @@ SSO_ENABLED="${SSO_ENABLED}"
 SSO_TYPE="${SSO_TYPE}"
 # Set a JSON structure similar to oidc.json,
 # see: https://docs.wildfly.org/26/Admin_Guide.html#Elytron_OIDC_Client
-SSO_OIDC_CONFIG="${SSO_OIDC_CONFIG}"
+SSO_OIDC_CONFIG='${SSO_OIDC_CONFIG}'
+
+# IOM 5 and newer sends metrics data of Wildfly and IOM to an endpoint, which
+# has to be compatible with OpenTelemetry format. This endpoint is defined by
+# the OTEL_COLLECTOR property.
+# Example:
+# OTEL_COLLECTOR="http://MyMacPro:4318/v1/metrics"
+# If the property is empty, metrics data are not sent it all.
+# For more information, please read
+# https://github.com/intershop/devenv-4-iom/blob/main/doc/07_metrics.md
+OTEL_COLLECTOR="${OTEL_COLLECTOR}"
 
 ################################################################################
 # Database settings (not applied to external database)

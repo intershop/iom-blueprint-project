@@ -31,9 +31,9 @@ The _Wildfly Admin Console_ has to be opened in a web browser. The according URL
     --------------------------------------------------------------------------------
     Links:
     ======
-    OMT:                        http://computername.local:8080/omt/
-    Online help:                http://computername.local:8080/omt-help/
-    DBDoc:                      http://computername.local:8080/dbdoc/
+    Back office:                http://computername.local:8080/omt/
+    REST+SOAP Documentation:    http://computername.local:8080/doc/
+    DBDoc (latest version):     https://intershop.github.io/iom-dbdoc/
     Wildfly (admin:admin):      http://computername.local:9990/console/
     --------------------------------------------------------------------------------
     ...
@@ -204,37 +204,126 @@ If `CUSTOM_DUMP_DIR` is configured, the latest custom dump is loaded when IOM is
 _You must not set `CUSTOM_DUMPS_DIR` to a directory that does not contain a dump when starting IOM with an uninitialized database. In this case, the initialization of the database would fail since no dump to be loaded can be found. Just set `CUSTOM_DUMPS_DIR` right before creating the dump and not before starting IOM._
 - - -
 
+## Access the Back Office Web GUI
+
+The Back Office of IOM can be simply explored in a web-browser. The according url is provided by the `info iom` command of *devenv-4-iom*:
+
+    devenv-cli.sh info iom
+    ...
+    Links:
+    ======
+    Back Office:                http://UsersMacPro:8080/omt/
+    ...
+
+
+## Access Documentation of REST- and SOAP-APIs
+
+The specifications of IOMs REST- and SOAP-APIs are part of the IOM Docker image. They can be simply explored by a web-browser. The `info iom` command of *devenv-4-iom* provides the according url:
+
+    devenv-cli.sh info iom
+    ...
+    Links:
+    ======
+    ...
+    REST+SOAP Documentation:    http://UsersMacPro:8080/doc/
+    ...
+
+## Access PostgreSQL Database
+
+If you are using a GUI-tool to access the IOM database, you need to configure this tool with the right credentials and connection information. The `info postgres` command of *devenv-4-iom* provides the required information:
+
+    devenv-cli.sh info postgres
+    ...
+    Access to database:
+    ===================
+    Host:                       UsersMacPro
+    Port:                       5442
+    OMS_DB_USER:                oms_user2
+    OMS_DB_PASS:                oms_pw2
+    OMS_DB_NAME:                oms_db2
+    ...
+
+If you don't have any tool to access the database, you can still access it by using the `psql` command line tool, which is part of the *postgres* container. The corresponding command lines are provided by `info postgres` too:
+
+    devenv-cli.sh info postgres
+    ...
+    Useful commands:
+    =================
+    ...
+    psql into root-db:          kubectl exec --namespace iomdevelop --context="docker-desktop" postgres -it -- bash -c "PGUSER=postgres PGDATABASE=postgres psql"
+    psql into IOM-db:           kubectl exec --namespace iomdevelop --context="docker-desktop" postgres -it -- bash -c "PGUSER=oms_user2 PGDATABASE=oms_db2 psql"
+    ...
+
+- - -
+**Note**
+
+Both ways of accessing the IOM database require the usage of *devenv-4-iom*'s internal PostgreSQL database server. If you use *devenv-4-iom* with an external database server, you must use the connection information and credentials as defined in the *devenv-4-iom* configuration.
+- - -
+
 ## Access E-Mails
 
-To develop e-mail templates, to test whether e-mails are successfully sent by business processes and in other use cases, it is necessary to access the e-mails. The information about links to mail server UI and REST interface is given by the command `info mailserver`, provided by the command line interface.
+To develop e-mail templates, to test whether e-mails are successfully sent by business processes and in other use cases, access to the e-mails is required. To get links to the mail server UI and the REST interface, use the `info mailserver` command provided by the command line interface:
+
+
 
     devenv-cli.sh info mailserver
 
 ## Access PDF Documents
 
-PDF documents are stored within the shared file system of IOM. To get easy access to the content of the shared file system, you have to:
+PDF documents are stored within the shared file system of IOM. To get easy access to the content of the shared file system:
 
-* Set the variable `CUSTOM_SHARE_DIR` in your configuration file and make sure that the [directory is shared in _Docker_ Desktop](https://blogs.msdn.microsoft.com/stevelasker/2016/06/14/configuring-docker-for-windows-volumes/).
-* After changing `CUSTOM_SHARE_DIR`, the IOM application server has to be restarted:
-  1. [Delete IOM](03_operations.md#delete_iom)
-  1. [Create IOM](03_operations.md#create_iom)
+1. Set the variable `CUSTOM_SHARE_DIR` in your configuration file and make sure that the [directory is shared in _Docker_ Desktop](https://blogs.msdn.microsoft.com/stevelasker/2016/06/14/configuring-docker-for-windows-volumes/).
+2. Restart the IOM application server:
+    1. [Delete IOM](03_operations.md#delete_iom)
+    2. [Create IOM](03_operations.md#create_iom)
 
-After that, you will have direct access to IOMs shared file system through the directory you have set for `CUSTOM_SHARE_DIR`.
+You now have direct access to the IOM's shared file system through the directory you have set for `CUSTOM_SHARE_DIR`.
+
+## Apply Custom Configurations
+
+There are some configurations, that are not handled by *devenv-4-iom*. In detail these are *cluster.properties*, *project.cluster.properties*, *quartz-jobs-custom.xml* and *initSystem.project.cluster.cli*. For details on these configurations, refer to *Custom Properties* in [Directory Structure of IOM Projects](https://github.com/intershop/iom-project-archetype/wiki/Directory-Structure-of-IOM-Projects#custom-properties).
+
+To apply changes you have made locally to any of the configuration files listed above, you must build the IOM project image locally and restart IOM within *devenv-4-iom*. Building the IOM project image is a [developer task](https://github.com/intershop/iom-project-archetype#usage-typical-developer-tasks) of projects derived from [IOM Project Archetype](https://github.com/intershop/iom-project-archetype).
+
+When building the IOM project image locally, *devenv-4-iom* has to be configured to use the locally built image. To do so, make sure the `IOM_IMAGE` variable of *devenv-4-iom* contains image-name and -tag only. If you don't specify any further repository, the image will be looked up locally. Additionally, it's required to set the variable `IMAGE_PULL_POLICY` to *IfNotPresent*.
+
+Finally the following commands have to be executed to apply changes to the configuration files listed above:
+
+    # build the IOM project image locally
+    mvn package -Pdocker
+
+    # delete IOM
+    devenv-cli.sh delete iom
+
+    # and create IOM again
+    devenv-cli.sh create iom
+
+## Apply Project Files
+
+Project files are any kind of files that have to be added to the IOM project image. More information about such files can be found in chapter *Project Files* of documentation of [Directory Structure of IOM Projects](https://github.com/intershop/iom-project-archetype/wiki/Directory-Structure-of-IOM-Projects#project-files).
+
+*devenv-4-iom* does not provide a process to roll out such files into a running IOM. Instead, you have to build the IOM project image locally and restart IOM within *devenv-4-iom* exactly the same way as described in the previous chapter [Applying Custom Configurations](#apply-custom-configurations). For `IOM_IMAGE` and `IMAGE_PULL_POLICY` the same preconditions as already mentioned [above](#apply-custom-configurations) apply.
+
+## Apply Test Data
+
+IOM projects may contain test data, see chapter *Test Data* in [Directory Structure of IOM Projects](https://github.com/intershop/iom-project-archetype/wiki/Directory-Structure-of-IOM-Projects#test-data).
+
+If you want to apply new or changed test data to IOM running in *devenv-4-iom*, you need to have access to the shared file system of IOM. To be able to access the shared file system, the configuration variable `CUSTOM_SHARE_DIR` of *devenv-4-iom* must not be empty. The shared file system contains a sub-directory *importarticle/in*, which is observed by IOM. If you copy the test-data files to this directory, IOM will process them and import the corresponding articles. If a file is imported successfully, it is moved to *importarticle/done*. In case of an error, the file is moved to *importarticle/error*.
 
 ## Testing in Context of IOM Project Development
 
-Projects, that are based on [IOM Project Archetype](https://github.com/intershop/iom-project-archetype), are providing a very good intergration of [IOM Test-Framework](https://github.com/intershop/iom-test-framework). This test-framework provides automatic testing of REST APIs.
+Projects based on [IOM Project Archetype](https://github.com/intershop/iom-project-archetype) provide a strong integration of the [IOM Test Framework](https://github.com/intershop/iom-test-framework). This test framework enables automatic testing of REST APIs.
 
-In order to pass all required information for [IOM Test-Framework](https://github.com/intershop/iom-test-framework), _devenv-4-iom_ creates a file _testframework-config.user.yaml_ whenever the IOM application server is started (`create iom`). This configuration file provides information how to connect the IOM application server and the according PostgreSQL database. 
+To pass all required information for the [IOM Test Framework](https://github.com/intershop/iom-test-framework), _devenv-4-iom_ creates a file _testframework-config.user.yaml_ whenever the IOM application server is started (`create iom`). This configuration file contains information about the connection between the IOM application server and the corresponding PostgreSQL database.
 
 ## Testing in Context of IOM Product Development
 
-The processes described in this section are specific for IOM product development. Nevertheless, the concept can be adapted in context of projects as well. The tasks of _devenv-4-iom_ in context of testing are very simple:
+The processes described in this section are specific for IOM product development. Nevertheless, the concept can be adapted in context of projects as well. The tasks of _devenv-4-iom_ related to testing are very simple:
 
-* Execute SQL scripts to prepare test data or the test environment.
+* Execute SQL scripts to prepare test data or the test environment,
 * Provide property files, containing information on how to access the database and the web GUI of IOM.
 
-The tests and the test framework (in case of IOM this is _[Geb](https://gebish.org/) / [Spock](http://spockframework.org/)_) are part of the IOM product sources. In context of projects, this has to be handled the same way. Tests and according framework have to be defined by the project. The tests can then use the property-files provided by _devenv-4-iom_ to access the IOM developer installation.
+The tests and the test framework (in case of IOM this is _[Geb](https://gebish.org/) / [Spock](http://spockframework.org/)_) are part of the IOM product sources. In context of projects, this has to be handled the same way. Tests and the corresponding framework have to be defined by the project. The tests can then use the property files provided by _devenv-4-iom_ to access the IOM developer installation.
 
 ### Apply Test-specific Stored Procedures
 
@@ -245,7 +334,7 @@ To apply stored procedures, simply use the command [`apply sql-scripts`](#apply
 
 ### Run Single Geb Test or a Group of Geb Tests
 
-To run a single test, use the feature name or a substring of it. E.g:
+To run a single test, use the feature name or a substring of it. For example:
 
     # Make sure that geb.properties reflects the latest version of configuration
     devenv-cli.sh get geb-props > geb.properties
@@ -262,7 +351,7 @@ To run a single test, use the feature name or a substring of it. E.g:
 
 ### Run Single ws Tests or a Group of ws Tests
 
-To run a single test, use the the feature name or a substring of it. E.g:
+To run a single test, use the the feature name or a substring of it. For example:
 
     # Make sure that ws.properties reflects the latest version of configuration
     devenv-cli.sh get ws-props > ws.properties
@@ -279,7 +368,7 @@ To run a single test, use the the feature name or a substring of it. E.g:
 
 ### Run all All Tests of a Specification
 
-To run all tests of a specification, use the name of the specification. E.g:
+To run all tests of a specification, use the name of the specification. For example:
 
     # Go to the oms.tests directory in your oms source directory
     # PATH_TO_IOM_SOURCES, PATH_TO_GEB_PROPERTIES and PATH_TO_WS_PROPERTIES have to be replaced by real values.
@@ -293,7 +382,7 @@ To run all tests of a specification, use the name of the specification. E.g:
 
 ### Run All Tests of a Group of Specifications (e.g. User Management, Role Management)
 
-To run all tests of a group of specifications, just use the name of the used package. E.g:
+To run all tests of a group of specifications, just use the name of the used package. For example:
 
     # Go to the oms.tests directory in your oms source directory
     # PATH_TO_IOM_SOURCES and PATH_TO_GEB_PROPERTIES have to be replaced by real values.

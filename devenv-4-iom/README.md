@@ -10,7 +10,8 @@ The following chapters provide a detailed insight into various aspects of instal
 - [Operations](doc/04_operations.md)
 - [Development process](doc/05_development_process.md)
 - [Log messages](doc/06_log_messages.md)
-- [Troubleshooting](doc/07_troubleshooting.md)
+- [Metrics](doc/07_metrics.md)
+- [Troubleshooting](doc/08_troubleshooting.md)
 
 If _devenv-4-iom_ is already installed and you are looking for a short overview about features, please use the integrated help. To do so, call `devenv-cli.sh` with parameter `-h` or `--help`:
 
@@ -25,6 +26,45 @@ you are currently using. To do so, please update _devenv-4-iom_ as often as poss
 
 There exists no backward compatibility the other way around. There is no information available, which version of _devenv-4-iom_ is required by
 a certain version of IOM.
+
+# Release information 2.6.0
+
+### Access to Documentation of SOAP- and REST-APIs <!-- #92163 -->
+
+The `info iom` command was extended to provide the url, that gives access to the documentation of IOMs SOAP- and REST-APIs. An according section
+was added to the document, describing the [Development process](doc/05_development_process.md).
+
+# Release information 2.5.0
+
+## New Features
+
+### Implementation of mail-server was replaced <!-- #93089 -->
+
+The oudated mail-server _mailhog_ was replaced by [_mailpit_](https://mailpit.axllent.org). The _devenv.project.properties_ file, belonging to your project, has to be migrated according to the
+[documentation](doc/02_configuration.md#migrate-a-configuration-after-updating-devenv-4-iom).
+
+### Support for sending Metrics to an _OpenTelemetry Collector_ compatible endpoint <!-- 93088 -->
+
+The new property *OTEL_COLLECTOR* was added. A new [documentation chapter](doc/07_metrics.md) explains the usage.
+
+### Support for version information <!-- 80982 -->
+
+The new command line switch _-v_ provides now the version of _devenv-4-iom_.
+
+### Support for Cache-Reset <!-- 81950 -->
+
+The new command *apply cache-reset* allows to trigger a reset of IOMs configuration cache. This cache reset
+is now also applied automatically after deployment or configuration changes, executed by _devenv-4-iom_.
+
+### Improved documentation
+
+* Added documentation how to [access the PostgreSQL database](doc/05_development_process.md#access-postgresql-database) <!-- 81066 -->
+* Added documentation about how to [handle custom configurations](doc/05_development_process.md#apply-custom-configurations) that are not directly supported by _devenv-4-iom_. <!-- 81066 -->
+
+## Fixed Bugs
+
+* _deploy <pattern>_ succeeds if the pattern has not matched any deployment artifact. <!-- 79162 -->
+* commands executed by _devenv-4-iom_ inside the IOM pod are now running interactively, in order to make sure that ~/.bashrc inside the container is read. <!-- 84293 -->
 
 # Release information 2.4.0
 
@@ -71,9 +111,9 @@ The Docker repository that is used by the default value of DB_ACCOUNT_IMAGE has 
 
 _devenv-4-iom_ now supports bash completion. In order to use this new feature, the according completion script has to be installed, see [documentation of installation](doc/00_installation.md).
 
-### Support for IOM Test-Framework <!-- 75996 -->
+### Support for IOM Test Framework <!-- 75996 -->
 
-When starting the IOM application server (`create iom`), a file _testframework-config.user.yaml_ is created within the project root directory, containing all necessary information to run local tests based on [IOM Test-Framework](https://github.com/intershop/iom-test-framework). Along with support for this file, one new configuration property has been added: _CREATE_TEST_CONFIG_, which controls the creation of the configuration file.
+When starting the IOM application server (`create iom`), a file _testframework-config.user.yaml_ is created within the project root directory, containing all necessary information to run local tests based on [IOM Test Framework](https://github.com/intershop/iom-test-framework). Along with support for this file, one new configuration property has been added: _CREATE_TEST_CONFIG_, which controls the creation of the configuration file.
 
 # Release Information 2.0.5
 

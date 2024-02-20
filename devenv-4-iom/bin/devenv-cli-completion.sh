@@ -99,7 +99,8 @@ _devenv_cli() {
                           _devenv_is_command $sub_cmd sql-s sql-scripts      ||
                           _devenv_is_command $sub_cmd sql-c sql-config       ||
                           _devenv_is_command $sub_cmd j     json-config      ||
-                          _devenv_is_command $sub_cmd db    dbmigrate)
+                          _devenv_is_command $sub_cmd db    dbmigrate        ||
+                          _devenv_is_command $sub_cmd c     cache-reset)
                 ;;
             dump)
                 sub_cmd=$(_devenv_is_command $sub_cmd c     create           ||
@@ -126,15 +127,15 @@ _devenv_cli() {
     # provide COMPREPLY for current input
     #---------------------------------------------------------------------------
     
-    # First argument might be the name of a property file or the top-level command
+    # First argument might be the name of a property file, an option or the top-level command
     if [ "$COMP_CWORD" -eq 1 ]; then
-        COMPREPLY=( $(compgen -W "info create delete apply dump get log -h --help" -G "$cur*.properties" -- $cur) )
+        COMPREPLY=( $(compgen -W "info create delete apply dump get log -h --help -v --version" -G "$cur*.properties" -- $cur) )
 
         
     # If the first argument is the name of a property file, the second argument has to
-    # be the top-level command.
+    # be the top-level command or an option.
     elif [ "$COMP_CWORD" -eq 2 -a ! -z "$property_file" ]; then
-        COMPREPLY=( $(compgen -W "info create delete apply dump get log -h --help" -- $cur) )
+        COMPREPLY=( $(compgen -W "info create delete apply dump get log -h --help -v --version" -- $cur) )
 
         
     # If no property file was passed, sub-cmd is expected on second position.
@@ -156,7 +157,7 @@ _devenv_cli() {
                 COMPREPLY=( $(compgen -W 'storage namespace mailserver postgres iom cluster -h --help' -- $cur) )
                 ;;
             apply)
-                COMPREPLY=( $(compgen -W 'deployment mail-templates xsl-templates sql-scripts sql-config json-config dbmigrate -h --help' -- $cur) )
+                COMPREPLY=( $(compgen -W 'deployment mail-templates xsl-templates sql-scripts sql-config json-config dbmigrate cache-reset -h --help' -- $cur) )
                 ;;
             dump)
                 COMPREPLY=( $(compgen -W 'create load -h --help' -- $cur) )

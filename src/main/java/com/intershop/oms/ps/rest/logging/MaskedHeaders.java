@@ -8,6 +8,7 @@ import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Header;
 
 public class MaskedHeaders<K, V> extends MultivaluedHashMap<K, V>
 {
@@ -75,4 +76,18 @@ public class MaskedHeaders<K, V> extends MultivaluedHashMap<K, V>
         return mv;
     }
 
+    public static MaskedHeaders<String, String> of(Header[] headers)
+    {
+        MaskedHeaders<String, String> mv = new MaskedHeaders<>();
+        if(headers != null) 
+        {
+            for (int i = 0; i < headers.length; i++)
+            {
+                Header header = headers[i];
+                mv.add(header.getName(), header.getValue());
+            }
+        }
+        
+        return mv;
+    }
 }

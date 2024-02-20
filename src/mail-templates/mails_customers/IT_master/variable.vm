@@ -15,7 +15,7 @@
 
 
 
-## set billing and delivery address
+## set billing and delivery addresses--
 ## --------------------------------
 #if( $userMailLO.getBillingAddressLO().getSalutation() )
 	#set($customerBillingSalutation = $escape.html($userMailLO.getBillingAddressLO().getSalutation() ) )
@@ -38,28 +38,10 @@
 #set($customerBillingPostCode = $escape.html($userMailLO.getBillingAddressLO().getPostCode()))
 #set($customerBillingDistrict = $escape.html($userMailLO.getBillingAddressLO().getDistrict()))
 #set($customerBillingCountryCode = $escape.html($userMailLO.getBillingAddressLO().getCountryCode()))
-#if( $userMailLO.getCustomerAddressLO().getSalutation() )
-	#set($customerDeliverySalutation = $escape.html($userMailLO.getCustomerAddressLO().getSalutation() ) )
-#else
-	#set($customerDeliverySalutation = '')
-#end
-#set($customerDeliveryName = $escape.html("${userMailLO.getCustomerAddressLO().getFirstName()} $userMailLO.getCustomerAddressLO().getLastName()"))
-#set($customerDeliveryCompanyName = $escape.html($userMailLO.getCustomerAddressLO().getCompanyName()))
-#if( $userMailLO.getBillingAddressLO().getAddressAddition() )
-	#set($customerDeliveryAddressAddition = $escape.html( $userMailLO.getCustomerAddressLO().getAddressAddition().replace('null', '') ) )	
-#else
-	#set($customerDeliveryAddressAddition = $escape.html($userMailLO.getCustomerAddressLO().getAddressAddition() ) )
-#end
-#if($userMailLO.getCustomerAddressLO().getStreet())
-	#set($customerDeliveryStreet = $escape.html($userMailLO.getCustomerAddressLO().getStreet()))
-#else
-	#set($customerDeliveryStreet = '')
-#end
-#set($customerDeliveryCity = $escape.html($userMailLO.getCustomerAddressLO().getCity()))
-#set($customerDeliveryPostCode = $escape.html($userMailLO.getCustomerAddressLO().getPostCode()))
-#set($customerDeliveryDistrict = $escape.html($userMailLO.getCustomerAddressLO().getDistrict()))
-#set($customerDeliveryCountryCode = $escape.html($userMailLO.getCustomerAddressLO().getCountryCode()))
 
+##foreach($address in $userMailLO.getShippingAddresses())
+##	<p>$escape.html($address.getFullAddress())</p>
+##end
 
 
 ## ---

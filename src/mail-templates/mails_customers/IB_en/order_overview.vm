@@ -121,9 +121,7 @@
 									<tr>
 										<td align="left">
 											<p style="padding: 0; margin: 0; font-size: 14px; line-height: 20px; font-family:$font_family;">
-												#if ($customerDeliverySalutation.length() > 0)
-													$customerDeliverySalutation <br/>
-												#end
+										
 												$customerBillingName <br/>
 												#if($customerBillingCompanyName && $customerBillingCompanyName.length() > 0)$customerBillingCompanyName<br/>#end
 												#if($customerBillingAddressAddition && $customerBillingAddressAddition.length() > 0)$customerBillingAddressAddition<br/>#end
@@ -151,7 +149,7 @@
 						<tr>
 							<th style="background-color:#f7f7f7">
 								<h3 style="display: block; font-size: 16px; font-weight: normal; margin: 5px; font-family:$font_family;">
-									Delivery Address
+									Delivery Addresses
 								</h3>
 							</th>
 						</tr>
@@ -161,16 +159,9 @@
 									<tr>
 										<td align="left">
 											<p style="padding: 0; margin: 0; font-size: 14px; line-height: 20px; font-family:$font_family;">
-												#if ($customerBillingSalutation.length() > 0)
-													$customerBillingSalutation <br/>
-												#end
-												$customerDeliveryName <br/>
-												#if($customerDeliveryCompanyName && $customerDeliveryCompanyName.length() > 0)$customerDeliveryCompanyName<br/>#end
-												#if($customerDeliveryAddressAddition && $customerDeliveryAddressAddition.length() > 0)$customerDeliveryAddressAddition<br/>#end
-												$customerDeliveryStreet <br/><br/>
-												$customerDeliveryCity, $customerDeliveryPostCode <br/>
-												$localeUtil.getCountryDisplayNameForLocaleID($customerDeliveryCountryCode , 'en')
-											</p>
+												#foreach($address in $userMailLO.getShippingAddresses())
+													<p>$escape.html($address.getFullAddress())</p>
+												#end</p>
 										</td>
 									</tr>
 								</table>

@@ -46,7 +46,7 @@ Open the newly created config-file _devenv.project.properties_ and use the value
 
     # pull images from registry
     docker pull postgres:12
-    docker pull mailhog/mailhog
+    docker pull axllent/mailpit
     docker pull docker.tools.intershop.com/iom/intershophub/iom-dbaccount:1.5.0
     docker pull docker.tools.intershop.com/iom/intershophub/iom:4.1.0
 
@@ -75,7 +75,7 @@ Due to the quite complex configuration of _devenv-4-iom_, see [Configuration | G
     IMAGE_PULL_POLICY=IfNotPresent
     IMAGE_PULL_SECRET=
     DOCKER_DB_IMAGE=postgres:12
-    MAILHOG_IMAGE=mailhog/mailhog
+    MAILSRV_IMAGE=axllent/mailpit
     IOM_DBACCOUNT_IMAGE=docker.tools.intershop.com/iom/intershophub/iom-dbaccount:1.5.0
     IOM_CONFIG_IMAGE=
     IOM_APP_IMAGE=
@@ -154,18 +154,18 @@ Once IOM is running, we can access its GUI. The `info iom` command provides the 
     --------------------------------------------------------------------------------
     Links:
     ======
-    OMT:                        http://computername.local:8080/omt/
-    Online help:                http://computername.local:8080/omt-help/
-    DBDoc:                      http://computername.local:8080/dbdoc/
+    Back Office:                http://computername.local:8080/omt/
+    REST+SOAP Documentation:    http://computername.local:8080/doc/
+    DBDoc (latest version):     https://intershop.github.io/iom-dbdoc/
     Wildfly (admin:admin):      http://computername.local:9990/console/
     --------------------------------------------------------------------------------
     ...
 
-Just copy the _OMT_ link into your browser and open the page. You should now see the login screen. The combination `admin:!InterShop00!` should give you access to OMT.
+Just copy the _Back Office_ link into your browser and open the page. You should now see the login screen. The combination `admin:!InterShop00!` should give you access to the *Back Office*.
 
 ## View Access Logs
 
-IOM is now running and we are able to use it in the browser. It is time to learn how to access some log messages. Since we can browse OMT, the access-log messages will serve as a good example. The following command prints access-log entries and also waits for new entries.
+IOM is now running and we are able to use it in the browser. It is time to learn how to access some log messages. Since we can browse the *Back Office*, the access-log messages will serve as a good example. The following command prints access-log entries and also waits for new entries.
 
     # press ^C to stop printing logs
     devenv-cli.sh log access all -f
@@ -263,7 +263,7 @@ As you can see, the method shown above is not intended to show the results of yo
 
     devenv-cli.sh info postgres
     ...
-    Usefull commands:
+    Useful commands:
     =================
     Login into Pod:             kubectl exec --namespace firststeps --context="docker-desktop" postgres -it -- bash
     psql into root-db:          kubectl exec --namespace firststeps --context="docker-desktop" postgres -it -- bash -c "PGUSER=postgres PGDATABASE=postgres psql"
