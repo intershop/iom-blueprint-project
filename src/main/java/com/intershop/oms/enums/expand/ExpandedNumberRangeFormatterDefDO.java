@@ -1,8 +1,15 @@
 package com.intershop.oms.enums.expand;
 
+import java.util.EnumSet;
+
 import bakery.persistence.annotation.ExpandedEnum;
 import bakery.persistence.dataobject.configuration.common.NumberRangeFormatterDefDO;
 import bakery.persistence.expand.NumberRangeFormatterEnumInterface;
+import bakery.util.DeploymentConfig;
+import bakery.util.StringUtils;
+import jakarta.persistence.Column;
+import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
 
 @ExpandedEnum(NumberRangeFormatterDefDO.class)
 public enum ExpandedNumberRangeFormatterDefDO implements NumberRangeFormatterEnumInterface
@@ -21,35 +28,59 @@ public enum ExpandedNumberRangeFormatterDefDO implements NumberRangeFormatterEnu
     private String jndiName;
     private String description;
 
-    private ExpandedNumberRangeFormatterDefDO(int id, String description, String jndiName)
+    private ExpandedNumberRangeFormatterDefDO(Integer id, String description, String jndiName)
     {
         this.id = id;
         this.description = description;
-        this.jndiName = jndiName;
+        this.jndiName = String.format(jndiName, DeploymentConfig.APP_VERSION);
     }
 
     @Override
+    @Id
     public Integer getId()
     {
         return id;
     }
 
     @Override
+    @Transient
     public String getName()
     {
-        return this.getJndiName();
+        return StringUtils.constantToHungarianNotation(name(), false);
     }
 
     @Override
-    public String getJndiName()
-    {
-        return jndiName;
-    }
-
-    @Override
+    @Column(name = "description")
     public String getDescription()
     {
         return description;
     }
 
+    @Override
+    @Transient
+    public String getJndiName()
+    {
+        return jndiName;
+    }
+
+    /**
+     * get list of expanded enums
+     * @return
+     */
+    @Transient
+    public final EnumSet<ExpandedNumberRangeFormatterDefDO> getExpandedEnums()
+    {
+        return EnumSet.allOf(ExpandedNumberRangeFormatterDefDO.class);
+    }
+
+    /**
+     * get list of all enums
+     * @return
+     */
+    @Transient
+    public final EnumSet<NumberRangeFormatterDefDO> getAllEnums()
+    {
+        return EnumSet.allOf(NumberRangeFormatterDefDO.class);
+    }
+    
 }

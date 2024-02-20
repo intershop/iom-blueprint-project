@@ -3,6 +3,9 @@ package com.intershop.oms.enums.expand;
 import bakery.persistence.annotation.ExpandedEnum;
 import bakery.persistence.dataobject.configuration.event.EventDefDO;
 import bakery.persistence.expand.EventDefDOEnumInterface;
+import jakarta.persistence.Column;
+import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
 
 @ExpandedEnum(EventDefDO.class)
 public enum ExpandedEventDefDO implements EventDefDOEnumInterface
@@ -27,24 +30,44 @@ public enum ExpandedEventDefDO implements EventDefDOEnumInterface
     }
 
     @Override
+    @Id
     public Integer getId()
     {
         return id;
     }
 
+    protected void setId(Integer id)
+    {
+        this.id = id;
+    }
+
     @Override
+    @Column(name = "`description`")
     public String getDescription()
     {
-        return this.description;
+        return description;
+    }
+
+    public void setDescription(String description)
+    {
+        this.description = description;
     }
 
     /**
-     * @return the JNDI-name of the event
+     * @return the JNDI-name of the event.
      */
     @Override
+    @Transient
     public String getName()
     {
-        return String.format(this.jndiName, bakery.util.DeploymentConfig.APP_VERSION);
+        return this.getJndiName();
     }
 
+    @Transient
+    public String getJndiName()
+    {
+        return String.format(jndiName, bakery.util.DeploymentConfig.APP_VERSION);
+    }
+    
 }
+

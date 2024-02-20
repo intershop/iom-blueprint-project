@@ -1,35 +1,33 @@
-package com.intershop.oms.enums.expand; 
+package com.intershop.oms.enums.expand;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Set;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Transient;
-
 import bakery.persistence.annotation.ExpandedEnum;
 import bakery.persistence.dataobject.configuration.common.RoleDefDO;
-import bakery.persistence.dataobject.configuration.connections.MessageTypeDefDO;
 import bakery.persistence.dataobject.configuration.connections.TransmissionTypeDefDO;
 import bakery.persistence.dataobject.mail.ShopCustomerMailTransmissionDO;
 import bakery.persistence.dataobject.order.AbstractTransmission;
-import bakery.persistence.dataobject.order.OrderTransmissionDO;
 import bakery.persistence.expand.MessageTypeDefDOEnumInterface;
 import bakery.persistence.expand.TransmissionTypeDefDOEnumInterface;
+import jakarta.persistence.Column;
+import jakarta.persistence.Transient;
 
-@ExpandedEnum( TransmissionTypeDefDO.class )
-public enum ExpandedTransmissionTypeDefDO implements TransmissionTypeDefDOEnumInterface
-{
+@ExpandedEnum(TransmissionTypeDefDO.class)
+public enum ExpandedTransmissionTypeDefDO implements TransmissionTypeDefDOEnumInterface {
     /**
      * Start with 10000 to avoid conflict with TransmissionTypeDefDO.
      * The name must be unique across both classes.
-     * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
+     * Values with negative id are meant as syntax example and are ignored (won't
+     * get persisted within the database).
      */
 
     // e-mails to customers of a shop
-    // EXAMPLE(Integer.valueOf(-9999), "whateverValue", RoleDefDO.BAKERY, MessageTypeDefDO.SEND_ORDER, "some description", OrderTransmissionDO.class),
-    APPROVAL_NOTIFICATION(Integer.valueOf(10000), "E-mail approval notification", RoleDefDO.BAKERY, ExpandedMessageTypeDefDO.APPROVAL_NOTIFICATION, "Approval notification e-mail.", ShopCustomerMailTransmissionDO.class);
+    APPROVAL_NOTIFICATION(Integer.valueOf(10000), "E-mail approval notification", RoleDefDO.BAKERY,
+            ExpandedMessageTypeDefDO.APPROVAL_NOTIFICATION, "Approval notification e-mail.",
+            ShopCustomerMailTransmissionDO.class);
 
     private Integer id;
     private String name;
@@ -42,18 +40,17 @@ public enum ExpandedTransmissionTypeDefDO implements TransmissionTypeDefDOEnumIn
     private Collection<Class<? extends AbstractTransmission>> transmissionTypeGroups = new ArrayList<>();
 
     private ExpandedTransmissionTypeDefDO(int id, String name, RoleDefDO roleDefDO,
-                    MessageTypeDefDOEnumInterface messageTypeDefDO, String description,
-                    Class<? extends AbstractTransmission> transmissionTypeGroup)
+            MessageTypeDefDOEnumInterface messageTypeDefDO, String description,
+            Class<? extends AbstractTransmission> transmissionTypeGroup)
     {
         this.name = name;
-        this.id = Integer.valueOf( id );
+        this.id = Integer.valueOf(id);
         this.description = description;
-        this.setRoleDefDO( roleDefDO );
+        this.setRoleDefDO(roleDefDO);
         this.messageTypeDefDO = messageTypeDefDO;
         this.messageTypeName = messageTypeDefDO.getName();
         transmissionTypeGroups.add(transmissionTypeGroup);
     }
-
 
     @Override
     public Integer getId()
@@ -62,7 +59,7 @@ public enum ExpandedTransmissionTypeDefDO implements TransmissionTypeDefDOEnumIn
     }
 
     @Override
-    @Column( name = "name", length = 100, nullable = false )
+    @Column(name = "name", length = 100, nullable = false)
     public String getName()
     {
         return this.name;
@@ -77,7 +74,7 @@ public enum ExpandedTransmissionTypeDefDO implements TransmissionTypeDefDOEnumIn
 
     protected void setDescription(String description)
     {
-        //dummy setter for the needs of hibernate
+        // dummy setter for the needs of hibernate
     }
 
     @Override
@@ -87,26 +84,24 @@ public enum ExpandedTransmissionTypeDefDO implements TransmissionTypeDefDOEnumIn
     }
 
     @Override
-    @Column( name = "`roleDefRef`", nullable = false )
+    @Column(name = "`roleDefRef`", nullable = false)
     public Integer getRoleDefRef()
     {
         return this.roleDefRef;
     }
 
-
-    protected void setRoleDefRef( Integer roleDefRef )
+    protected void setRoleDefRef(Integer roleDefRef)
     {
         this.roleDefRef = roleDefRef;
-        this.roleDefDO = RoleDefDO.valueOf( roleDefRef );
+        this.roleDefDO = RoleDefDO.valueOf(roleDefRef);
     }
 
     @Deprecated
-    public void setRoleDefDO( RoleDefDO roleDefDO )
+    public void setRoleDefDO(RoleDefDO roleDefDO)
     {
         this.roleDefRef = roleDefDO.getId();
-        this.roleDefDO = RoleDefDO.valueOf( this.roleDefRef );
+        this.roleDefDO = RoleDefDO.valueOf(this.roleDefRef);
     }
-
 
     @Override
     public MessageTypeDefDOEnumInterface getMessageTypeDefDO()
@@ -122,9 +117,8 @@ public enum ExpandedTransmissionTypeDefDO implements TransmissionTypeDefDOEnumIn
     }
 
     // used to persist a reference to the related enum within the database
-    @Column ( name = "`messageTypeName`")
-    private String  getMessageTypeName()
-    {
+    @Column(name = "`messageTypeName`")
+    private String getMessageTypeName() {
         return this.messageTypeDefDO.getName();
     }
 

@@ -1,5 +1,7 @@
 package com.intershop.oms.enums.expand;
 
+import java.util.EnumSet;
+
 import bakery.persistence.annotation.ExpandedEnum;
 import bakery.persistence.dataobject.configuration.process.ProcessTaskDefDO;
 import bakery.persistence.dataobject.transformer.EnumInterface;
@@ -8,6 +10,7 @@ import bakery.util.DeploymentConfig;
 @ExpandedEnum(ProcessTaskDefDO.class)
 public enum ExpandedProcessTaskDefDO implements EnumInterface
 {
+
     /**
      * Start with 10000 to avoid conflict with ProcessTaskDefDO. The name must
      * be unique across both classes. Values with negative id are meant as
@@ -22,6 +25,7 @@ public enum ExpandedProcessTaskDefDO implements EnumInterface
 
     private ExpandedProcessTaskDefDO(Integer id, String name, String jndiName)
     {
+
         this.id = id;
         this.name = name;
         this.jndiName = String.format(jndiName, DeploymentConfig.APP_VERSION);
@@ -44,6 +48,26 @@ public enum ExpandedProcessTaskDefDO implements EnumInterface
     public String getJndiName()
     {
         return this.jndiName;
+    }
+
+    /**
+     * get list of expanded enums
+     * 
+     * @return
+     */
+    public final EnumSet<ExpandedProcessTaskDefDO> getExpandedEnums()
+    {
+        return EnumSet.allOf(ExpandedProcessTaskDefDO.class);
+    }
+
+    /**
+     * get list of all enums
+     * 
+     * @return
+     */
+    public final EnumSet<ProcessTaskDefDO> getAllEnums()
+    {
+        return EnumSet.allOf(ProcessTaskDefDO.class);
     }
 
 }

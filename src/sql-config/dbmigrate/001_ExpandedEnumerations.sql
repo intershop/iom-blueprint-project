@@ -6,8 +6,6 @@ BEGIN
 		(10000, 'ValidateCustomOrderPropertiesPTBean', 1000, false, 'Validation fails if custom order level property group|key|value = order|validation|fail is given.')
 	ON CONFLICT (id) DO NOTHING;
 
-
-
 	--DECISION BEANS
 	INSERT INTO oms."DecisionBeanDefDO"(id, description) values
 		(10001, 'invoicingDecisionBean'),
@@ -18,8 +16,6 @@ BEGIN
 		(41000, 'supplierTransmissionDecisionBean'),
 		(50000, 'sendEmailDecisionBean')
 	ON CONFLICT (id) DO NOTHING;
-
-
 
 	--EXECUTION BEANS
 	INSERT INTO oms."ExecutionBeanDefDO"(id, "decisionBeanDefRef", description) values
@@ -43,14 +39,10 @@ BEGIN
 		(10200, 'OpenTransDispatchTransformer')
 	ON CONFLICT (id) DO NOTHING;
 
-
-
 	--ROUTING RULES
 	INSERT INTO oms."OrderSupplierEvaluationRuleDefDO"(id, "name", "description", "rank", "mandatory") values
 		(10000, 'SupplierHasStockCheckPTBean', 'Filters for suppliers that have stock to deliver.', 50, false)
 	ON CONFLICT (id) DO NOTHING;
-
-
 
 	--APPROVAL TYPES
 	INSERT INTO oms."ApprovalTypeDefDO"(id, "name", "ObjectTypeName") values
@@ -62,9 +54,16 @@ BEGIN
 		(10000, 'Approval notification', 'Approval notification')
 	ON CONFLICT (id) DO NOTHING;
 
+	--TRANSMISSION TYPES
 	INSERT INTO oms."TransmissionTypeDefDO"(id, name, "roleDefRef", description, "messageTypeName") VALUES
 		(10000, 'E-mail approval notification', 2 /* BAKERY|OMS */, 'Approval notification e-mail.', 'example ShopCustomerMailTransmissionDO.class')
 	ON CONFLICT (id) DO NOTHING;
+
+	--CHARGE TYPES
+	INSERT INTO oms."ChargeTypeDefDO"(id, name, description, "chargeType") VALUES
+		(10000, 'Container Service Charge', 'Container Service Charge', 'Container Service Charge')
+	ON CONFLICT (id) DO NOTHING;
+
 
 
 --further examples
@@ -89,6 +88,7 @@ BEGIN
 	INSERT INTO oms."EventDefDO"(id, description) VALUES
 		(10000, 'EXAMPLE_EVENT_MANAGER_BEAN')
 	ON CONFLICT (id) DO NOTHING;
+
 */
 
 END;

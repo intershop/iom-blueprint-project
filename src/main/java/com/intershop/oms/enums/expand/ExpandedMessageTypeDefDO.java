@@ -1,8 +1,13 @@
 package com.intershop.oms.enums.expand;
 
+import java.util.EnumSet;
+import java.util.Set;
+
 import bakery.persistence.annotation.ExpandedEnum;
 import bakery.persistence.dataobject.configuration.connections.MessageTypeDefDO;
 import bakery.persistence.expand.MessageTypeDefDOEnumInterface;
+import jakarta.persistence.Column;
+import jakarta.persistence.Transient;
 
 @ExpandedEnum(MessageTypeDefDO.class)
 public enum ExpandedMessageTypeDefDO implements MessageTypeDefDOEnumInterface
@@ -15,30 +20,56 @@ public enum ExpandedMessageTypeDefDO implements MessageTypeDefDOEnumInterface
     APPROVAL_NOTIFICATION (10000, "Approval notification");
 
     private Integer id;
+    private String name;
     private String description;
 
-    private ExpandedMessageTypeDefDO(Integer id, String description)
+    private ExpandedMessageTypeDefDO(int id, String description)
     {
-        this.id = id;
+        this.id = Integer.valueOf(id);
+        this.name = this.name();
         this.description = description;
     }
 
     @Override
     public Integer getId()
     {
-        return id;
+        return this.id;
     }
 
     @Override
+    @Column( name = "name")
     public String getName()
     {
-        return name();
+        return this.name;
     }
 
     @Override
+    @Column( name = "description" )
     public String getDescription()
     {
-        return description;
+        return this.description;
+    }
+
+    /**
+     * get list of expanded enums
+     * 
+     * @return
+     */
+    @Transient
+    public final Set<ExpandedMessageTypeDefDO> getExpandedEnums()
+    {
+        return EnumSet.allOf(ExpandedMessageTypeDefDO.class);
+    }
+    
+    /**
+     * get list of all enums
+     * 
+     * @return
+     */
+    @Transient
+    public final Set<MessageTypeDefDO> getAllEnums()
+    {
+        return EnumSet.allOf(MessageTypeDefDO.class);
     }
 
 }

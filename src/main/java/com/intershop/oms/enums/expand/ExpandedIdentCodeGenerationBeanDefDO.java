@@ -1,9 +1,15 @@
 package com.intershop.oms.enums.expand;
 
+import java.util.EnumSet;
+
 import bakery.persistence.annotation.ExpandedEnum;
 import bakery.persistence.dataobject.configuration.common.IdentCodeGenerationBeanDefDO;
 import bakery.persistence.dataobject.transformer.EnumInterface;
+import bakery.util.DeploymentConfig;
 import bakery.util.StringUtils;
+import jakarta.persistence.Column;
+import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
 
 @ExpandedEnum(IdentCodeGenerationBeanDefDO.class)
 public enum ExpandedIdentCodeGenerationBeanDefDO implements EnumInterface
@@ -24,25 +30,48 @@ public enum ExpandedIdentCodeGenerationBeanDefDO implements EnumInterface
     private ExpandedIdentCodeGenerationBeanDefDO(Integer id, String jndiName)
     {
         this.id = id;
-        this.jndiName = jndiName;
+        this.jndiName = String.format(jndiName, DeploymentConfig.APP_VERSION);
     }
 
     @Override
+    @Id
     public Integer getId()
     {
-        return this.id;
+        return id;
     }
 
     @Override
+    @Column(name = "\"name\"")
     public String getName()
     {
-        return StringUtils.constantToHungarianNotation(this.name(), StringUtils.FLAG_FIRST_LOWER);
+        return StringUtils.constantToHungarianNotation(name(), StringUtils.FLAG_FIRST_LOWER);
     }
 
     @Override
+    @Transient
     public String getJndiName()
     {
-        return this.jndiName;
+        return jndiName;
     }
 
+    /**
+     * get list of expanded enums
+     * @return
+     */
+    @Transient
+    public final EnumSet<ExpandedIdentCodeGenerationBeanDefDO> getExpandedEnums()
+    {
+        return EnumSet.allOf(ExpandedIdentCodeGenerationBeanDefDO.class);
+    }
+
+    /**
+     * get list of all enums
+     * @return
+     */
+    @Transient
+    public final EnumSet<IdentCodeGenerationBeanDefDO> getAllEnums()
+    {
+        return EnumSet.allOf(IdentCodeGenerationBeanDefDO.class);
+    }
+    
 }

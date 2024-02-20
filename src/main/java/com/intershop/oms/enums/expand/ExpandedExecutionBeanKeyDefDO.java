@@ -1,10 +1,15 @@
 package com.intershop.oms.enums.expand;
 
+import java.util.EnumSet;
+
 import bakery.persistence.annotation.PersistedEnumerationTable;
 import bakery.persistence.dataobject.configuration.connections.ExecutionBeanKeyDefDO;
 import bakery.persistence.dataobject.configuration.connections.ParameterTypeDefDO;
 import bakery.persistence.dataobject.configuration.connections.ExecutionBeanKeyDefDO.Flag;
 import bakery.persistence.expand.ExecutionBeanKeyDefDOEnumInterface;
+import jakarta.persistence.Column;
+import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
 
 @PersistedEnumerationTable(ExecutionBeanKeyDefDO.class)
 public enum ExpandedExecutionBeanKeyDefDO implements ExecutionBeanKeyDefDOEnumInterface
@@ -29,61 +34,118 @@ public enum ExpandedExecutionBeanKeyDefDO implements ExecutionBeanKeyDefDOEnumIn
     private String defaultValue;
 
     private ExpandedExecutionBeanKeyDefDO(int id, Integer executionBeanDefRef, String parameterKey,
-                    ParameterTypeDefDO parameterTypeDefDO, boolean mandatory, String defaultValue)
-    {
+            ParameterTypeDefDO parameterTypeDefDO, boolean mandatory, String defaultValue) {
         this.id = Integer.valueOf(id);
         this.executionBeanDefRef = executionBeanDefRef;
         this.parameterKey = parameterKey;
-        this.parameterTypeDefDO = parameterTypeDefDO;
+        this.setParameterTypeDefDO(parameterTypeDefDO);
         this.mandatory = Boolean.valueOf(mandatory);
         this.defaultValue = defaultValue;
     }
 
     @Override
+    @Id
     public Integer getId()
     {
-        return this.id;
+        return id;
     }
 
+    protected void setId(Integer id)
+    {
+        this.id = id;
+    }
 
     @Override
+    @Column(name = "`executionBeanDefRef`")
     public Integer getExecutionBeanDefRef()
     {
-        return this.executionBeanDefRef;
+        return executionBeanDefRef;
+    }
+
+    protected void setExecutionBeanDefRef(Integer executionBeanDefRef)
+    {
+        this.executionBeanDefRef = executionBeanDefRef;
     }
 
     @Override
+    @Column(name = "`parameterKey`", length = ExecutionBeanKeyDefDO.KEY_LENGTH)
     public String getParameterKey()
     {
-        return this.parameterKey;
+        return parameterKey;
+    }
+
+    protected void setParameterKey( String parameterKey )
+    {
+        this.parameterKey = parameterKey;
     }
 
     @Override
+    @Column(name = "`parameterTypeDefRef`")
     public Integer getParameterTypeDefRef()
     {
-        return this.parameterTypeDefDO.getId();
+        return parameterTypeDefDO.getId();
+    }
+
+    protected void setParameterTypeDefRef(Integer paramterTypeDefRef)
+    {
+        parameterTypeDefDO = ParameterTypeDefDO.valueOf(paramterTypeDefRef);
     }
 
     @Override
+    @Transient
     public ParameterTypeDefDO getParameterTypeDefDO()
     {
-        return this.parameterTypeDefDO;
+        return parameterTypeDefDO;
+    }
+
+    protected void setParameterTypeDefDO(ParameterTypeDefDO parameterTypeDefDO)
+    {
+        this.parameterTypeDefDO = parameterTypeDefDO;
     }
 
     @Override
+    @Column(name = "`mandatory`")
     public Boolean getMandatory()
     {
-        return this.mandatory;
+        return mandatory;
+    }
+
+    protected void setMandatory( Boolean mandatory )
+    {
+        this.mandatory = mandatory;
+    }
+
+    @Override
+    @Column(name = "`defaultValue`", length = ExecutionBeanKeyDefDO.VALUE_LENGTH)
+    public String getDefaultValue()
+    {
+        return defaultValue;
+    }
+
+    protected void setDefaultValue(String defaultValue)
+    {
+        this.defaultValue = defaultValue;
     }
 
     /**
-     * Default parameter value of parameterKey.
-     * Max accepted length {@value ExecutionBeanKeyDefDO#VALUE_LENGTH}.
+     * get list of expanded enums
+     * @return
      */
-    @Override
-    public String getDefaultValue()
+    @Transient
+    public final EnumSet<ExpandedExecutionBeanKeyDefDO> getExpandedEnums()
     {
-        return this.defaultValue;
+        return EnumSet.allOf(ExpandedExecutionBeanKeyDefDO.class);
+    }
+
+    /**
+     * get list of all enums
+     * @return
+     */
+    @Transient
+    public final EnumSet<ExpandedExecutionBeanKeyDefDO> getAllEnums()
+    {
+        return EnumSet.allOf(ExpandedExecutionBeanKeyDefDO.class);
     }
 
 }
+
