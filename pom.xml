@@ -6,7 +6,7 @@
 
     <groupId>com.intershop.oms.blueprint</groupId>
     <artifactId>iom-blueprint-project</artifactId>
-    <version>1.6.0</version>
+    <version>1.7.0-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>IOM iom-blueprint-project APPLICATION</name>
     <description>IOM blueprint-project</description>
