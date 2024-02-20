@@ -13,6 +13,10 @@ import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.ext.WriterInterceptorContext;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.entity.EntityBuilder;
+import org.apache.http.entity.ContentType;
 
 public class LoggingIOStreamHandler
 {
@@ -52,6 +56,46 @@ public class LoggingIOStreamHandler
         }
 
         responseContext.setEntityStream(new ByteArrayInputStream(bos.toByteArray()));
+        return responseContent;
+    }
+
+    public static String readEntity(HttpResponse response) throws IOException
+    {
+        InputStream inputStream = response.getEntity().getContent();
+        
+        byte[] bytes = new byte[1024];
+
+        int read = -1;
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        while((read = inputStream.read(bytes)) != -1)
+        {
+            bos.write(bytes, 0, read);
+        }
+        
+        String responseContent;
+        
+        Header encodingHeader = response.getFirstHeader(HttpHeaders.CONTENT_ENCODING);
+        
+        if (encodingHeader != null && StringUtils.equals("gzip", encodingHeader.getValue()))
+        {
+            try (InputStream isCompressed = new GZIPInputStream(new ByteArrayInputStream(bos.toByteArray())))
+            {
+                ByteArrayOutputStream bosUncompressed = new ByteArrayOutputStream();
+                while((read = isCompressed.read(bytes)) != -1)
+                {
+                    bosUncompressed.write(bytes, 0, read);
+                }
+                responseContent = bosUncompressed.toString("UTF-8");
+            }
+        }
+        else
+        {
+            responseContent = bos.toString("UTF-8");
+        }
+
+        response.setEntity(EntityBuilder.create().setStream(new ByteArrayInputStream(bos.toByteArray()))
+                        .setContentType(ContentType.get(response.getEntity())).build());
+        
         return responseContent;
     }
 
