@@ -2330,7 +2330,7 @@ create-postgres() {
                 log_msg INFO "create-postgres: successfully linked docker volume to database storage" < "$TMP_OUT"
             fi
         else
-            log_msg INFO "create-postges: no need to link docker volume to dabase storage" < /dev/null
+            log_msg INFO "create-postgres: no need to link docker volume to database storage" < /dev/null
         fi
         if [ "$SUCCESS" = 'true' ]; then
             if ! kube_pod_started postgres; then
