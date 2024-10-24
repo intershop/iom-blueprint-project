@@ -43,5 +43,5 @@ spec:
       volumes:
       - name: sql-dir-volume
         hostPath:
-          path: "${sqlDir}"
+          path: "${MOUNT_PREFIX}${sqlDirAbs}"
   backoffLimit: 0

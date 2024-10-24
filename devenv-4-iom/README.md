@@ -27,6 +27,12 @@ you are currently using. To do so, please update _devenv-4-iom_ as often as poss
 There exists no backward compatibility the other way around. There is no information available, which version of _devenv-4-iom_ is required by
 a certain version of IOM.
 
+# Release information 2.6.1
+
+## Fixed Bugs
+
+* _apply sql-scripts_ failed on Windows. <!-- #94870 -->
+
 # Release information 2.6.0
 
 ### Access to Documentation of SOAP- and REST-APIs <!-- #92163 -->

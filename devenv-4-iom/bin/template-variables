@@ -1,4 +1,4 @@
-DEVENV4IOM_VERSION=2.6.0
+DEVENV4IOM_VERSION=2.6.1
 
 ################################################################################
 # Defaults
@@ -393,11 +393,17 @@ fi
 # A file or directory can be passed. It's necessary to split SQL_SRC into directory-
 # and file-part, as these variables are required inside the job-template.
 SQL_SRC="${SQL_SRC}"
-if [ -d "$SQL_SRC" ]; then
-    sqlDir="$SQL_SRC"
-else
-    sqlFile=$(basename "$SQL_SRC")
-    sqlDir=$(dirname "$SQL_SRC")
+# define variable containing the according absolute path
+sqlDirAbs=
+if [ ! -z "$SQL_SRC" ]; then
+    if echo "$SQL_SRC" | grep -q '^/'; then
+        sqlDirAbs="$(realpath "$(dirname "$SQL_SRC")")"
+    else
+        sqlDirAbs="$(realpath "$(dirname "$PROJECT_DIR/$SQL_SRC")")"
+    fi
+    if [ -f "$SQL_SRC" ]; then
+       sqlFile=$(basename "$SQL_SRC")
+    fi
 fi
 
 OMS_LOGLEVEL_CONSOLE=${OMS_LOGLEVEL_CONSOLE:-WARN}
