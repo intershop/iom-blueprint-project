@@ -15,7 +15,7 @@ resources:
       type: github
       endpoint: INTERSHOP_GITHUB
       name: intershop/iom-partner-devops
-      ref: main
+      ref: stable/v1
 
 # Define, when the pipeline should be triggered.
 # See https://docs.microsoft.com/en-us/azure/devops/pipelines/repos/azure-repos-git?view=azure-devops&tabs=yaml#ci-triggers
@@ -46,6 +46,7 @@ stages:
         dockerRepoIOM:                      $(INTERSHOP_REPO_PATH)
         acrServiceConnection:               $(REPO_SERVICE_CONNECTION)
         acr:                                $(REPO_PATH)
+        lockImages:                         false
 
     # The following block shows a very simple example, how to extend the DevOps pipeline by a custom
     # job. Alternatively one or more stages could be added, see:
