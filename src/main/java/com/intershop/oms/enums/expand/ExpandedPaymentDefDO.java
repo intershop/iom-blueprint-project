@@ -2,6 +2,7 @@ package com.intershop.oms.enums.expand;
 
 import java.util.EnumSet;
 
+import bakery.payment.v1.EnumPayment;
 import bakery.persistence.annotation.ExpandedEnum;
 import bakery.persistence.dataobject.common.PaymentDefDO;
 import bakery.persistence.expand.PaymentDefDOEnumInterface;
@@ -19,7 +20,7 @@ public enum ExpandedPaymentDefDO implements PaymentDefDOEnumInterface
      * Values with negative id are meant as syntax example and are ignored (won't get persisted within the database).
      */
 
-    TEST(-9999, "AfterPay", "AfterPay", null, "AfterPay")
+    TEST(-9999, "whateverName", "whateverDescription", null, EnumPayment.NO_PAYMENT)
     ;
 
     private Integer id;
