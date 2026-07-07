@@ -22,9 +22,9 @@
         <ubuntu.mirror.x64>http://azure.archive.ubuntu.com/ubuntu/</ubuntu.mirror.x64>
         <maven.javadoc.skip>true</maven.javadoc.skip>
         <wildfly.version>40.0.0.Final</wildfly.version>
-        <org.junit.version>5.9.2</org.junit.version>
-        <org.mockito.version>4.6.1</org.mockito.version>
-        <net.bytebuddy.version>1.12.10</net.bytebuddy.version>
+        <org.junit.version>6.1.0</org.junit.version>
+        <org.mockito.version>4.11.0</org.mockito.version>
+        <net.bytebuddy.version>1.18.8</net.bytebuddy.version>
         <testframework.version>8.0.0</testframework.version>
     </properties>
 
