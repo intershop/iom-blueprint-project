@@ -49,7 +49,6 @@ Before searching for a problem, the status of the Postgres database should be ch
     Kubernetes:
     ===========
     namespace:                  test
-    KEEP_DATABASE_DATA:         true
     NAME       READY   STATUS    RESTARTS   AGE
     postgres   1/1     Running   0          74m
     --------------------------------------------------------------------------------
@@ -270,4 +269,4 @@ When trying a `docker login` from a Linux-like terminal on Windows such as _Git 
     winpty docker login docker.tools.intershop.com
 
 ---
-[< Metrics](07_metrics.md) | [^ Index](../README.md)
+[< Metrics](07_metrics.md) | [^ Index](../README.md) | [Docker Desktop >](09_docker_desktop.md)

@@ -1,0 +1,59 @@
+################################################################################
+#
+# IMPORTANT INFORMATION
+#
+# This file is not intended to make any changes on it.
+#
+# This file is generated from a template. With each update of devenv-4-iom it
+# has to be updated. During this process the file is recreated using the
+# information found in config.properties. Any changes you had made before to
+# this file, will be lost.
+#
+# Individual properties can be overridden on the Gradle command line without
+# editing this file, e.g.:
+#
+#   ./gradlew playwrightTest -Pplaywright.propFile=playwright.properties \
+#     -Dplaywright.headless=false --tests="*RoleManagement*"
+#
+################################################################################
+
+# web app
+is.oms.app.host       = ${HostIom}
+is.oms.app.http.port  = ${PORT_IOM_SERVICE}
+is.oms.app.https.port = 443
+
+# Protocol used to connect to the IOM instance. Default: http
+is.oms.app.protocol = http
+
+# db
+is.oms.db.hostlist       = ${PgHostExtern}:${PgPortExtern}
+is.oms.db.name           = ${OMS_DB_NAME}
+is.oms.db.user           = ${OMS_DB_USER}${PGUSER_CONNECTION_SUFFIX}
+is.oms.db.pass           = ${OMS_DB_PASS}
+is.oms.db.serverTimezone = UTC
+
+# standalone application or not
+is.oms.app.standalone = true
+
+# Playwright browser to use. Supported values: firefox, chromium, webkit. Default: firefox
+playwright.browser = firefox
+
+# Run browser in headless mode. Set to false to watch tests run in a visible browser window. Default: true
+playwright.headless = true
+
+# Default timeout in milliseconds for Playwright actions and assertions. Default: 12000
+playwright.timeout = 12000
+
+# Optional: force SSL for the IOM OMT connection. Uncomment to enable.
+# is.oms.omt.forceSsl = true
+
+# Optional: force SSL for the database connection. Uncomment to enable.
+# is.oms.db.forceSsl = true
+
+# Optional: minimum number of imported BCG files expected by tests. Uncomment if required by your test suite.
+# is.oms.db.minimumImportedBCGFiles =
+
+# Optional: path to a custom data registry for test data. Uncomment if your tests require it.
+# is.oms.customisation.dataRegistry =
+
+is.oms.customisation.excludes =

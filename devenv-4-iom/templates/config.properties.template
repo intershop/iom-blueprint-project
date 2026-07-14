@@ -33,12 +33,11 @@ KUBERNETES_CONTEXT="${KUBERNETES_CONTEXT}"
 # Docker Image Settings
 ################################################################################
 
-# The image pull policy defines when to pull docker images.
-# If left empty, it defaults to "Always", which makes development easy, as
-# always the newest version of the requested Docker image will be used. It can
-# be set to any value allowed by ImagePullPolicy.
-# See https://kubernetes.io/docs/concepts/configuration/overview/#container-images
-IMAGE_PULL_POLICY=${IMAGE_PULL_POLICY}
+# Per-image pull policies. Leave empty to use the built-in default of
+# IfNotPresent (postgres, mail server) or Always (IOM).
+IMAGE_PULL_POLICY_IOM=${IMAGE_PULL_POLICY_IOM}
+IMAGE_PULL_POLICY_POSTGRES=${IMAGE_PULL_POLICY_POSTGRES}
+IMAGE_PULL_POLICY_MAILSRV=${IMAGE_PULL_POLICY_MAILSRV}
 
 # Name of Kubernetes secret to be used, if authentication at a private Docker
 # registry is required. The secret has to be created manually in default
@@ -50,8 +49,16 @@ IMAGE_PULL_POLICY=${IMAGE_PULL_POLICY}
 IMAGE_PULL_SECRET=${IMAGE_PULL_SECRET}
 
 # postgres image (name:tag)
-# example:                  postgres:11
-DOCKER_DB_IMAGE=${DOCKER_DB_IMAGE}
+# The tag must start with the major version number so that devenv-4-iom can
+# determine the correct data directory layout (changed in postgres 18).
+# examples: postgres:17  postgres:18  postgres:17-alpine  postgres:18-bookworm
+#
+# WARNING: switching from postgres 17 (or earlier) to postgres 18 (or later)
+# requires an empty POSTGRES_DATA_DIR. The data directory layout changed in
+# postgres 18 and the old data cannot be read without running pg_upgrade first,
+# which is not supported by devenv-4-iom. Delete the contents of
+# POSTGRES_DATA_DIR before switching and let IOM reinitialise the database.
+POSTGRES_IMAGE=${POSTGRES_IMAGE}
 
 # mail-server image (name:tag)
 # example:                  axllent/mailpit
@@ -63,31 +70,27 @@ MAILSRV_IMAGE=${MAILSRV_IMAGE}
 # release from ISH Docker registry: docker.tools.intershop.com/iom/intershophub/iom-dbaccount:1.5.0
 IOM_DBACCOUNT_IMAGE=${IOM_DBACCOUNT_IMAGE}
 
-# iom config image (name:tag)
-# examples:
-# local image:                      iom-config:3.7.0.0
-# locally built project image:      prj-iom-config:3.7.0.0-1.2.0.0-SNAPSHOT
-# IOM release from ISH registry:    docker.tools.intershop.com/iom/intershophub/iom-config:3.7.0.0
-IOM_CONFIG_IMAGE=${IOM_CONFIG_IMAGE}
-
-# iom app image (name:tag)
-# examples:
-# local image:                      iom-app:3.7.0.0
-# locally built project image:      prj-iom-app:3.7.0.0-1.2.0.0-SNAPSHOT
-# IOM release from ISH registry:    docker.tools.intershop.com/iom/intershophub/iom-app:3.7.0.0
-IOM_APP_IMAGE=${IOM_APP_IMAGE}
-
 # iom image (name:tag)
-# beginning with IOM 4 the distribution model of IOM was changed from two to one
-# docker image. devenv-4-iom can be used with both types of IOM, double and
-# single image distribution.
-# If IOM_IMAGE is set, the properties IOM_CONFIG_IMAGE and IOM_APP_IMAGE will
-# be ignored.
 # examples:
 # local image:                      iom:4.1.0
 # locally built project image:      prj-iom:1.2.0-SNAPSHOT
 # IOM release from ISH registry:    docker.tools.intershop.com/iom/intershophub/iom:4.1.0
 IOM_IMAGE=${IOM_IMAGE}
+
+################################################################################
+# Mail Server Configuration
+################################################################################
+
+# Connection to external mail server
+# Fill the following variables, if you want to use an external mail server.
+# If SMTP_HOST is left empty, the mail server is managed internally. Any
+# settings are known in this case and do not need to be configured otherwise.
+SMTP_HOST=${SMTP_HOST}
+SMTP_PORT=${SMTP_PORT}
+SMTP_USER=${SMTP_USER}
+SMTP_PASSWORD='${SMTP_PASSWORD}'
+# allowed values are 'auto', 'ssl', 'startTls'
+SMTP_ENCRYPTION=${SMTP_ENCRYPTION}
 
 ################################################################################
 # Database Configuration
@@ -189,9 +192,13 @@ OTEL_COLLECTOR="${OTEL_COLLECTOR}"
 # Postgres arguments
 POSTGRES_ARGS=( ${PostgresArgsShell} )
 
-# If you want to keep database data even after a Kubernetes restart, you have to set
-# KEEP_DATABASE_DATA to true, otherwise false.
-KEEP_DATABASE_DATA=${KEEP_DATABASE_DATA}
+# To persist database data across cluster restarts, set POSTGRES_DATA_DIR to a
+# directory on the host. Absolute or relative paths are supported. A relative
+# path is resolved against the directory of devenv.project.properties, or the
+# current working directory if no project-specific configuration file exists.
+# Leave empty to run postgres without persistent storage.
+# Example: POSTGRES_DATA_DIR=~/.devenv-4-iom/${ID}/pgdata
+POSTGRES_DATA_DIR=${POSTGRES_DATA_DIR}
 
 ################################################################################
 # Log seetings
@@ -220,14 +227,31 @@ OMS_LOGLEVEL_DEVENV=${OMS_LOGLEVEL_DEVENV}
 OMS_LOG_REST_IDS=${OMS_LOG_REST_IDS}
 
 ################################################################################
-# Windows subsystem for Linux settings
+# Windows path prefix settings
 ################################################################################
 
-# Depending on the current version of Windows subsystem for Linux it might be
-# necessary to define a MOUNT_PREFIX, that is used when mounting file-systems
-# to Docker containers.
-# In case of WSL2 (and only in this particular case), MOUNT_PREFIX has to be
-# set to /run/desktop/mnt/host. In any other case, it must remain empty.
+# MOUNT_PREFIX is prepended to every hostPath volume that devenv-4-iom
+# constructs. It is only needed when the path format used in this config file
+# does not match the path format expected inside the Kubernetes node.
+#
+# Windows — Git Bash:
+#   Git Bash represents paths as /c/Users/... The Kubernetes node expects a
+#   different prefix depending on the platform:
+#     Rancher Desktop: MOUNT_PREFIX=/mnt
+#       (/c/Users/... → node sees /mnt/c/Users/...)
+#     Docker Desktop:  MOUNT_PREFIX=/run/desktop/mnt/host
+#       (/c/Users/... → node sees /run/desktop/mnt/host/c/Users/...)
+#
+# Windows — WSL2 shell (bash inside WSL2, not Git Bash):
+#   Project files in the Windows home directory appear as /mnt/c/Users/...
+#   inside WSL2. Rancher Desktop's node sees the same paths — leave
+#   MOUNT_PREFIX empty.
+#   Docker Desktop cannot handle this case (MOUNT_PREFIX only prepends,
+#   it cannot remap /mnt/c/... to /run/desktop/mnt/host/c/...).
+#   Use Rancher Desktop for WSL2 shell with Windows home directories.
+#
+# macOS and Linux:
+#   Leave MOUNT_PREFIX empty.
 
 MOUNT_PREFIX="${MOUNT_PREFIX}"
 

@@ -1,4 +1,4 @@
-DEVENV4IOM_VERSION=2.6.1
+DEVENV4IOM_VERSION=3.0.0
 
 ################################################################################
 # Defaults
@@ -8,27 +8,13 @@ DEVENV4IOM_VERSION=2.6.1
 ################################################################################
 
 # Kubernetes context must never be empty.
-KUBERNETES_CONTEXT="${KUBERNETES_CONTEXT:-docker-desktop}"
+KUBERNETES_CONTEXT="${KUBERNETES_CONTEXT:-rancher-desktop}"
 
 # used for calculation of automatic port forwarding
 INDEX="${INDEX:-0}"
 PORT_OFFSET="${PORT_OFFSET:-10}"
 
-# environment specific configuration defaults to 'ci'
-# TODO remove if-block after deprecation period
-if [ -z "$PROJECT_ENV_NAME" -a ! -z "$CAAS_ENV_NAME" ]; then
-    PROJECT_ENV_NAME="$CAAS_ENV_NAME"
-fi
 PROJECT_ENV_NAME="${PROJECT_ENV_NAME:-ci}"
-
-# import of test-data
-# TODO remove if-blocks after deprecation period
-if [ -z "$PROJECT_IMPORT_TEST_DATA" -a ! -z "$CAAS_IMPORT_TEST_DATA" ]; then
-    PROJECT_IMPORT_TEST_DATA="$CAAS_IMPORT_TEST_DATA"
-fi
-if [ -z "$PROJECT_IMPORT_TEST_DATA_TIMEOUT" -a ! -z "$CAAS_IMPORT_TEST_DATA_TIMEOUT" ]; then
-    PROJECT_IMPORT_TEST_DATA_TIMEOUT="$CAAS_IMPORT_TEST_DATA_TIMEOUT"
-fi
 PROJECT_IMPORT_TEST_DATA="${PROJECT_IMPORT_TEST_DATA:-true}"
 PROJECT_IMPORT_TEST_DATA_TIMEOUT="${PROJECT_IMPORT_TEST_DATA_TIMEOUT:-300}"
 
@@ -50,9 +36,21 @@ SSO_OIDC_CONFIG="${SSO_OIDC_CONFIG}"
 
 OTEL_COLLECTOR="${OTEL_COLLECTOR}"
 
-# pull policy defaults to Always, which makes it easy for developers get always
-# the newest image
-IMAGE_PULL_POLICY="${IMAGE_PULL_POLICY:-Always}"
+# DEPRECATED: IMAGE_PULL_POLICY is superseded by IMAGE_PULL_POLICY_IOM.
+# To remove in a future version: delete this block.
+if [ -n "${IMAGE_PULL_POLICY+set}" ]; then
+    if [ -n "${IMAGE_PULL_POLICY_IOM+set}" ]; then
+        type log_msg > /dev/null 2>&1 && log_msg WARN "IMAGE_PULL_POLICY is deprecated and ignored because IMAGE_PULL_POLICY_IOM is set. Remove IMAGE_PULL_POLICY from your configuration." < /dev/null
+    else
+        type log_msg > /dev/null 2>&1 && log_msg WARN "IMAGE_PULL_POLICY is deprecated. Use IMAGE_PULL_POLICY_IOM instead. IMAGE_PULL_POLICY_IOM has been set to the value of IMAGE_PULL_POLICY." < /dev/null
+        IMAGE_PULL_POLICY_IOM="${IMAGE_PULL_POLICY}"
+    fi
+fi
+
+# Per-image pull policies.
+IMAGE_PULL_POLICY_IOM="${IMAGE_PULL_POLICY_IOM:-Always}"
+IMAGE_PULL_POLICY_POSTGRES="${IMAGE_PULL_POLICY_POSTGRES:-IfNotPresent}"
+IMAGE_PULL_POLICY_MAILSRV="${IMAGE_PULL_POLICY_MAILSRV:-IfNotPresent}"
 
 # IMAGE_PULL_SECRET may contain a comma separated list of pull secrets, which are expanded
 # in variable ImagePullSecrets 
@@ -79,14 +77,37 @@ PostgresArgsShell=$(COUNTER=0; \
                         COUNTER=$(expr $COUNTER + 1); \
                     done)
 
-# Add volumes / mounts if the user wants to keep databse data or not.
-KEEP_DATABASE_DATA="${KEEP_DATABASE_DATA:-true}"
-if [ "$KEEP_DATABASE_DATA" = true ] ; then
+# POSTGRES_DATA_DIR can be defined with an absolute or relative path. If a
+# relative path is configured, the according absolute path is determined at
+# runtime. If a project specific configuration file exists
+# (devenv.project.properties), the directory holding this configuration file
+# will be used as base directory for the relative path.
+# If no project specific configuration file exists at all, a relative path
+# will be expanded relative to the current working directory.
+# Leave empty to run postgres without persistent storage (data lost on pod restart).
+# The directory is created automatically if it does not exist.
+POSTGRES_DATA_DIR="${POSTGRES_DATA_DIR}"
+# define variable containing the according absolute path
+PostgresDataDirAbs=
+if [ -n "$POSTGRES_DATA_DIR" ]; then
+    if echo "$POSTGRES_DATA_DIR" | grep -q '^/'; then
+        PostgresDataDirAbs="$POSTGRES_DATA_DIR"
+    else
+        PostgresDataDirAbs="$PROJECT_DIR/$POSTGRES_DATA_DIR"
+    fi
+fi
+# realpath can only be used if the directory exists — create it first
+if [ -n "$PostgresDataDirAbs" -a ! -d "$PostgresDataDirAbs" ]; then
+    mkdir -p "$PostgresDataDirAbs" > /dev/null || exit 1
+fi
+# finally use realpath to normalise the path (remove dots, symlinks)
+if [ -n "$PostgresDataDirAbs" ]; then
+    PostgresDataDirAbs="$(realpath "$PostgresDataDirAbs")"
+fi
+if [ -n "$POSTGRES_DATA_DIR" ]; then
     KeepDatabaseYml=''
-    KeepDatabaseSh=''
 else
     KeepDatabaseYml='#'
-    KeepDatabaseSh='#'
 fi
 
 # remove trailing slash
@@ -314,6 +335,33 @@ PORT_WILDFLY_PUBLIC=$(($PUBLIC_NODEPORT_BASE + 3 + ($INDEX * $PORT_OFFSET)))
 PORT_MAILSRV_UI_PUBLIC=$(($PUBLIC_NODEPORT_BASE + 4 + ($INDEX * $PORT_OFFSET)))
 PORT_MAILSRV_SMTP_PUBLIC=$(($PUBLIC_NODEPORT_BASE + 5 + ($INDEX * $PORT_OFFSET)))
 
+# external mail server connection. Variables are empty, if mail server should be
+# managed internally. (with one exception: if SMTP_HOST is set to 'mailsrv-service',
+# it's treated like beeing empty too.
+SMTP_HOST="${SMTP_HOST}"
+SMTP_PORT="${SMTP_PORT}"
+SMTP_USER="${SMTP_USER}"
+SMTP_PASSWORD="${SMTP_PASSWORD}"
+SMTP_ENCRYPTION="${SMTP_ENCRYPTION:-auto}"
+
+if [ "$SMTP_HOST" = 'mailsrv-service' ]; then
+    SMTP_HOST=
+fi
+
+if [ -z "$SMTP_HOST" ]; then
+    OmsSmtpHost='mailsrv-service'
+    OmsSmtpPort="${PORT_MAILSRV_SMTP_SERVICE}"
+    OmsSmtpUser=''
+    OmsSmtpPass=''
+    OmsSmtpEncryption='auto'
+else
+    OmsSmtpHost="$SMTP_HOST"
+    OmsSmtpPort="$SMTP_PORT"
+    OmsSmtpUser="$SMTP_USER"
+    OmsSmtpPass="$SMTP_PASSWORD"
+    OmsSmtpEncryption="$SMTP_ENCRYPTION"
+fi
+
 # external database connection. Variables are empty, if postgres should be
 # managed internally. (with one exception: if set to 'postgres-service', it's
 # treated like beeing empty too.
@@ -363,31 +411,47 @@ OMS_DB_SQLHASH="${OMS_DB_SQLHASH:-false}"
 TIMEZONE="${TIMEZONE:-Europe/Berlin}"
 
 # images
-DOCKER_DB_IMAGE="${DOCKER_DB_IMAGE:-postgres:12}"
+# DEPRECATED: DOCKER_DB_IMAGE is superseded by POSTGRES_IMAGE.
+# To remove in a future version: delete this block.
+if [ -n "${DOCKER_DB_IMAGE+set}" ]; then
+    if [ -n "${POSTGRES_IMAGE+set}" ]; then
+        type log_msg > /dev/null 2>&1 && log_msg WARN "DOCKER_DB_IMAGE is deprecated and ignored because POSTGRES_IMAGE is set. Remove DOCKER_DB_IMAGE from your configuration." < /dev/null
+    else
+        type log_msg > /dev/null 2>&1 && log_msg WARN "DOCKER_DB_IMAGE is deprecated. Use POSTGRES_IMAGE instead. POSTGRES_IMAGE has been set to the value of DOCKER_DB_IMAGE." < /dev/null
+        POSTGRES_IMAGE="${DOCKER_DB_IMAGE}"
+    fi
+fi
+POSTGRES_IMAGE="${POSTGRES_IMAGE:-postgres:18}"
+
+# postgres 18+ requires the mount at /var/lib/postgresql (it places data in a
+# versioned subdirectory underneath). Earlier versions write directly into
+# /var/lib/postgresql/data and expect the mount there.
+# The major version must be determinable from the image tag (e.g. postgres:17,
+# postgres:18-alpine). Non-numeric alias tags like "latest" or "bookworm" are
+# not supported because the required mount path cannot be determined.
+_pg_tag="${POSTGRES_IMAGE##*:}"
+_pg_major="${_pg_tag%%[^0-9]*}"
+if [ -z "$_pg_major" ]; then
+    echo "ERROR: cannot determine PostgreSQL major version from POSTGRES_IMAGE='${POSTGRES_IMAGE}'." \
+         "Use a tag that starts with the major version number (e.g. postgres:17, postgres:18-alpine)." >&2
+    exit 1
+elif [ "$_pg_major" -ge 18 ] 2>/dev/null; then
+    PostgresMountPath=/var/lib/postgresql
+else
+    PostgresMountPath=/var/lib/postgresql/data
+fi
+unset _pg_tag _pg_major
+
 MAILSRV_IMAGE="${MAILSRV_IMAGE:-axllent/mailpit}"
 IOM_DBACCOUNT_IMAGE="${IOM_DBACCOUNT_IMAGE:-docker.tools.intershop.com/iom/intershophub/iom-dbaccount:1.5.0}"
-IOM_CONFIG_IMAGE="${IOM_CONFIG_IMAGE}"
-IOM_APP_IMAGE="${IOM_APP_IMAGE}"
 IOM_IMAGE="${IOM_IMAGE}"
 
-# job image differs, depending on IOM version (single/double image distribution)
-# iom template differs, depending on IOM version (singe/double image distribution)
-# directory structure has changed, for files/directories that were moved into the app image
-if [ -z "$IOM_IMAGE" ]; then
-    IomJobImage="$IOM_CONFIG_IMAGE"
-    IomTemplate="iom.yml.template"
-    ConfigBinDir=/opt
-    ConfigBaseDir=/opt
-    ConfigCustomDir=caas-config
-    IsIomSingleDist='false'
-else
-    IomJobImage="$IOM_IMAGE"
-    IomTemplate="iom-single.yml.template"
-    ConfigBinDir=/opt/oms/bin
-    ConfigBaseDir=/opt/oms
-    ConfigCustomDir=project-config
-    IsIomSingleDist='true'
-fi
+IomJobImage="$IOM_IMAGE"
+IomTemplate="iom.yml.template"
+ConfigBinDir=/opt/oms/bin
+ConfigBaseDir=/opt/oms
+ConfigCustomDir=project-config
+IsIomSingleDist='true'
 
 # this variable is used to pass information to the apply-sql-job.
 # A file or directory can be passed. It's necessary to split SQL_SRC into directory-

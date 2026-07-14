@@ -12,6 +12,8 @@ The following chapters provide a detailed insight into various aspects of instal
 - [Log messages](doc/06_log_messages.md)
 - [Metrics](doc/07_metrics.md)
 - [Troubleshooting](doc/08_troubleshooting.md)
+- [Docker Desktop](doc/09_docker_desktop.md)
+- [Rancher Desktop](doc/10_rancher_desktop.md)
 
 If _devenv-4-iom_ is already installed and you are looking for a short overview about features, please use the integrated help. To do so, call `devenv-cli.sh` with parameter `-h` or `--help`:
 
@@ -21,11 +23,103 @@ If _devenv-4-iom_ is already installed and you are looking for a short overview 
 # Compatibility
 
 The latest versions of _devenv-4-iom_ and IOM are always compatible with each other. As long as not noted otherwise, _devenv-4-iom_ is backward
-compatible with all versions of IOM >= 3.0. For best experience, always use the latest version of _devenv-4-iom_, regardless of the IOM version
+compatible with all versions of IOM >= 4.0. For best experience, always use the latest version of _devenv-4-iom_, regardless of the IOM version
 you are currently using. To do so, please update _devenv-4-iom_ as often as possible.
 
 There exists no backward compatibility the other way around. There is no information available, which version of _devenv-4-iom_ is required by
 a certain version of IOM.
+
+# Release information 3.0.0
+
+## New Features
+
+### Rancher Desktop Support <!-- #117544 -->
+
+[Rancher Desktop](https://rancherdesktop.io/) is now the recommended Kubernetes platform for _devenv-4-iom_. It is open-source and free for commercial use. See [Rancher Desktop setup](doc/10_rancher_desktop.md) for installation and setup instructions.
+
+Docker Desktop continues to be supported. See [Docker Desktop](doc/09_docker_desktop.md) for details on the kubeadm and kind engines.
+
+The default value of `KUBERNETES_CONTEXT` has changed from `docker-desktop` to `rancher-desktop`.
+
+**Migration:** If you are using Docker Desktop and have not set `KUBERNETES_CONTEXT` explicitly in your configuration file, add `KUBERNETES_CONTEXT=docker-desktop` to preserve the previous behaviour.
+
+### Persistent Database Storage via `POSTGRES_DATA_DIR` <!-- #117544 -->
+
+The previous `KEEP_DATABASE_DATA` flag and Docker-volume-based storage have been replaced by the `POSTGRES_DATA_DIR` property. Set it to a host directory path to persist PostgreSQL data across cluster restarts. Absolute and relative paths are supported; relative paths are resolved against the directory of `devenv.project.properties`, or the current working directory if no project-specific configuration exists. Leave it empty (the default) to run PostgreSQL without persistent storage.
+
+**Migration:** Follow the standard procedure to update to the current template: [Migrate a Configuration After Updating _devenv-4-iom_](doc/02_configuration.md#migrate-a-configuration-after-updating-devenv-4-iom). Afterwards, set `POSTGRES_DATA_DIR` to a path of your choice, or leave it empty to run without persistent storage. Note that there is no migration path for existing database content — let IOM reinitialise the database on next start.
+
+### Updated Default PostgreSQL Version
+
+The default PostgreSQL image has been updated from `postgres:12` (end-of-life since October 2023) to `postgres:18`.
+
+**Migration:** Since the database persistence mechanism has also changed (Docker volumes replaced by `POSTGRES_DATA_DIR`), existing data from previous installations is no longer accessible regardless of the PostgreSQL version. Delete any old Docker volumes and let IOM reinitialise the database on next start.
+
+### Per-Image Pull Policies
+
+Three new configuration variables replace the single `IMAGE_PULL_POLICY` property, allowing the pull policy to be set independently for each image group:
+
+| Variable | Default | Applies to |
+|---|---|---|
+| `IMAGE_PULL_POLICY_IOM` | value of `IMAGE_PULL_POLICY` | IOM app, dbaccount, and all IOM job images |
+| `IMAGE_PULL_POLICY_POSTGRES` | `IfNotPresent` | PostgreSQL image |
+| `IMAGE_PULL_POLICY_MAILSRV` | `IfNotPresent` | Mail server image |
+
+`IMAGE_PULL_POLICY` is deprecated. It still works as a fallback default for `IMAGE_PULL_POLICY_IOM` and will produce a warning when set. It will be removed in a future version. Replace it with `IMAGE_PULL_POLICY_IOM` in your configuration files.
+
+**Migration:** Follow the standard procedure to update to the current template: [Migrate a Configuration After Updating _devenv-4-iom_](doc/02_configuration.md#migrate-a-configuration-after-updating-devenv-4-iom). The migration will automatically carry the value of `IMAGE_PULL_POLICY` over to `IMAGE_PULL_POLICY_IOM`.
+
+### Renamed PostgreSQL Image Property
+
+`DOCKER_DB_IMAGE` has been renamed to `POSTGRES_IMAGE`. The old name is deprecated, still works as a fallback, and will produce a warning when set. It will be removed in a future version.
+
+**Migration:** Follow the standard procedure to update to the current template: [Migrate a Configuration After Updating _devenv-4-iom_](doc/02_configuration.md#migrate-a-configuration-after-updating-devenv-4-iom). The migration will automatically carry the value of `DOCKER_DB_IMAGE` over to `POSTGRES_IMAGE`.
+
+### Playwright Test Support
+
+The new command `get playwright-props` generates a `playwright.properties` file for running Playwright-based tests against the local IOM instance, mirroring the existing `get geb-props` command. See [Development Process](doc/05_development_process.md) for usage.
+
+### Remote Debugging via `kubectl port-forward`
+
+The JDWP debug port is no longer exposed through the IOM LoadBalancer service. Exposing it caused k3s's built-in ServiceLB to repeatedly probe the port with plain TCP connections, producing `Debugger failed to attach` noise in the IOM logs. Use `kubectl port-forward` to access the debug port on demand instead:
+
+```bash
+kubectl port-forward \
+  --namespace <namespace> \
+  --context="<context>" \
+  pod/<iom-pod-name> \
+  8787:${PORT_DEBUG}
+```
+
+See [Development Process](doc/05_development_process.md) for details.
+
+## Breaking Changes
+
+### Storage Commands Removed <!-- #117544 -->
+
+The commands `create storage`, `delete storage`, and `info storage`, which managed a Docker volume for PostgreSQL data persistence, have been removed. Persistent storage is now configured via `POSTGRES_DATA_DIR` (see above).
+
+### Support for IOM Prior Version 4.0 Dropped <!-- #117544 -->
+
+The dual-image distribution of IOM (separate `IOM_CONFIG_IMAGE` and `IOM_APP_IMAGE`) that was used before IOM 4.0 is no longer supported. The configuration variables `IOM_CONFIG_IMAGE` and `IOM_APP_IMAGE` have been removed. Use `IOM_IMAGE` to define the IOM image.
+
+### `CAAS_*` Configuration Variables Removed
+
+The `CAAS_ENV_NAME`, `CAAS_IMPORT_TEST_DATA`, and `CAAS_IMPORT_TEST_DATA_TIMEOUT` configuration variables, deprecated since version 2.0.5, have been removed. Use `PROJECT_ENV_NAME`, `PROJECT_IMPORT_TEST_DATA`, and `PROJECT_IMPORT_TEST_DATA_TIMEOUT` instead.
+
+# Release information 2.7.0
+
+## New Features
+
+### Support for External Mail-Server <!-- 94998 -->
+
+It's now possible to use an external mail-server instead of the integrated one. A set of new configuration variables was
+added, all beeing prefixed with *SMTP_*. The most important one is *SMTP_HOST*, as it decides whether the internal or an external
+mail-server will be used.
+
+The *devenv.project.properties* file, belonging to your project, has to be migrated according to the
+[documentation](doc/02_configuration.md#migrate-a-configuration-after-updating-devenv-4-iom). After the migration the
+new configuation variables will appear within the configuration file along with a description.
 
 # Release information 2.6.1
 
@@ -129,9 +223,7 @@ When starting the IOM application server (`create iom`), a file _testframework-c
 
 IOM 4.0 has changed the distribution model. Instead of providing IOM in form of two _Docker_ images (_iom-app_, _iom-config_), IOM 4.0 now consists of a single image only (plus the _iom-dbaccount_ image, which is not directly part of the IOM release).
 
-To define the (single) IOM image to be used, the new configuration variable `IOM_IMAGE` has been added. The two configuration variables `IOM_CONFIG_IMAGE` and `IOM_APP_IMAGE` still exist and must be used when using _devenv-4-iom_ with IOM prior version 4.
-
-If `IOM_IMAGE` contains a value, the content of `IOM_CONFIG_IMAGE` and `IOM_APP_IMAGE` will be ignored.
+To define the (single) IOM image to be used, the new configuration variable `IOM_IMAGE` has been added. The two configuration variables `IOM_CONFIG_IMAGE` and `IOM_APP_IMAGE` were introduced at the same time for backward compatibility with IOM prior version 4.0, but have been removed in _devenv-4-iom_ 3.0.0.
 
 ### Configuration Concept Has Changed for Easier Integration Into Projects <!-- 70641 -->
 
