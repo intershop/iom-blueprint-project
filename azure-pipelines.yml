@@ -48,6 +48,18 @@ stages:
         acr:                                $(REPO_PATH)
         lockImages:                         false
 
+    - template: ci-job-template.yml@iom-partner-devops
+      parameters:
+        projectEnvName:                     dev
+        agentPool:                          $(BUILD_AGENT_POOL)
+        artifactsFeed:                      iom-maven-artifacts
+        dockerRepoIOMServiceConnection:     $(INTERSHOP_REPO_SERVICE_CONNECTION)
+        dockerRepoIOM:                      $(INTERSHOP_REPO_PATH)
+        acrServiceConnection:               $(REPO_SERVICE_CONNECTION)
+        acr:                                $(REPO_PATH)
+        lockImages:                         false
+        DBACCOUNT_IMAGE_TAG:                2.1.0
+
     # The following block shows a very simple example, how to extend the DevOps pipeline by a custom
     # job. Alternatively one or more stages could be added, see:
     # https://docs.microsoft.com/en-us/azure/devops/pipelines/process/stages?view=azure-devops
