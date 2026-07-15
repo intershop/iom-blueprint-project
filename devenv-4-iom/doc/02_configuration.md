@@ -115,13 +115,13 @@ After updating _devenv-4-iom_, the content of the current configuration file has
 
 ## <a name="delete_config">Delete a Configuration</a>
 
-Before deleting a configuration file, you must ensure that all associated _Kubernetes_ and _Docker_ resources are deleted as well. You will not be able to delete them using _devenv-cli.sh_ afterwards. Executing `delete cluster` and `delete storage` will remove all resources assigned to a configuration. Additionally, it is recommended to delete unused _Docker_ images as well.
+Before deleting a configuration file, you must ensure that all associated _Kubernetes_ resources are deleted as well. You will not be able to delete them using _devenv-cli.sh_ afterwards. Executing `delete cluster` will remove all Kubernetes resources assigned to a configuration. If you have set `POSTGRES_DATA_DIR`, you can remove that directory manually afterwards. Additionally, it is recommended to delete unused _Docker_ images as well.
 
     # Delete IOM cluster
     devenv-cli.sh delete cluster
 
-    # Delete storage
-    devenv-cli.sh delete storage
+    # Optionally remove persistent database data (if POSTGRES_DATA_DIR was set)
+    rm -rf /path/to/POSTGRES_DATA_DIR
 
     # Now the configuration files can be deleted
     rm devenv.project.properties devenv.user.properties

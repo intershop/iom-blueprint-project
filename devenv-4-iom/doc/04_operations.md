@@ -25,7 +25,6 @@ _Cluster_ in context of _devenv-4-iom_ does not mean a scalable and high availab
 
 The creation of an entire IOM cluster consists of these steps:
 
-1. [Create local _Docker_ volume](#create_storage) (not required if `KEEP_DATABASE_DATA` is set to false)
 1. [Create namespace](#create_namespace)
 1. [Create mailserver](#create_mailserver)
 1. [Create postgres database](#create_postgres) (not required if an external database is used, which is the case if `PGHOST` is set)
@@ -48,7 +47,7 @@ Deleting an entire IOM development environment consists of several steps. These 
 
 All these steps are provided as single commands by _devenv-cli.sh_. The command line client also provides the shortcut `delete cluster`, which performs all these operations at once.
 
-Please note that persistent storage will never be deleted by the `delete cluster` command. The storage has to be [deleted separately](#delete_storage).
+Data in `POSTGRES_DATA_DIR` on the host is not affected by `delete cluster`.
 
     devenv-cli.sh delete cluster
 
@@ -75,18 +74,6 @@ The following command creates a mail server which is used to receive mails from 
 The following command deletes the mail server:
 
     devenv-cli.sh delete mailserver
-
-## <a name="create_storage">Create Local _Docker_ Volume</a>
-
-The following command creates a local _Docker_ volume to be used to keep database data. This command is only effective if `KEEP_DATABASE_DATA` is set to `true`.
-
-    devenv-cli.sh create storage
-
-## <a name="delete_storage">Delete Local _Docker_ Volume</a>
-
-To remove the database data, you just have to remove the persistent database data volume using the following command. This command is only effective if a local _Docker_ volume was created before (`KEEP_DATABASE_DATA` is set to `true`).
-
-    devenv-cli.sh delete storage
 
 ## <a name="create_postgres">Create Postgres Database</a>
 
@@ -116,7 +103,7 @@ The following command deletes the IOM application server.
 
 ## Get Information About Components
 
-Each component (IOM, Postgres, mail server, storage, configuration) has a lot of information to provide, e.g.:
+Each component (IOM, Postgres, mail server, configuration) has a lot of information to provide, e.g.:
 
 * Links to access services
 * Public ports
@@ -133,9 +120,6 @@ The _devenv-cli.sh_ provides a very simple interface to get these information:
 
     # Get information about PostgreSQL
     devenv-cli.sh info postgres
-
-    # Get information about storage
-    devenv-cli.sh info storage
 
     # Get information about configuration
     devenv-cli.sh info config

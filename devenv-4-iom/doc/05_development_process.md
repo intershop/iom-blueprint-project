@@ -7,9 +7,7 @@ It's possible to set the according absolute path for each `CUSTOM_*_DIR`.
 
 However, it's even better to define the `CUSTOM_*_DIR` properties in _devenv.project.properties_ which is maintained centrally along with the project code. In this case, absolute paths cannot be used, since every developer has an individual local environment. `CUSTOM_*_DIR` properties have to hold relative paths instead, which are expanded at runtime to absolute paths. The base directory for the relative paths is the directory where _devenv.propject.properties_ is located.
 
-Any directory, that is referenced by a `CUSTOM_*_DIR` property has to be [shared with _Docker_ Desktop](https://blogs.msdn.microsoft.com/stevelasker/2016/06/14/configuring-docker-for-windows-volumes/).
-
-Depending on the version of Windows Subsystem for Linux (WSL), the property `MOUNT_PREFIX` might come into play. When using WSL2 (and only in this particular case), `MOUNT_PREFIX` has to be set to `/run/desktop/mnt/host`. In any other case, it must remain empty.
+Any directory that is referenced by a `CUSTOM_*_DIR` property has to be accessible inside the Kubernetes node. On macOS and Linux this works automatically. On Windows with Git Bash, `MOUNT_PREFIX` must be set to bridge the Git Bash path format to the path format expected by the Kubernetes node — see [Rancher Desktop — Configuration](10_rancher_desktop.md#configuration) or [Docker Desktop — Configuration](09_docker_desktop.md#configuration) for the correct value. When running from a WSL2 shell, `MOUNT_PREFIX` can be left empty.
 
 ## Add a New Custom Built Artifact
 
@@ -134,7 +132,7 @@ You should have an eye on the logs created by the configuration process. These l
 
     devenv-cli.sh apply sql-config
 
-If `CUSTOM_SQLCONFIG_DIR` is configured, the custom SQL configuration is also applied when starting IOM.
+If `CUSTOM_SQLCONF_DIR` is configured, the custom SQL configuration is also applied when starting IOM.
 
 ## Execute Custom _Wildfly-CLI_ Scripts
 
@@ -176,8 +174,6 @@ When starting IOM and the connected database is empty, the IOM pod loads the ini
 * The custom dump can only be loaded if the database is empty. The `dump load` command of the command line client executes all the necessary steps to restart IOM with an empty database.
   1. [Delete IOM](03_operations.md#delete_iom)
   1. [Delete Postgres database](03_operations.md#delete_postgres)
-  1. [Delete Local _Docker_ Volume](03_operations.md#delete_storage), required only if `KEEP_DATABASE_DATA` is set to `true`
-  1. [Create Local _Docker_ Volume](03_operations.md#create_storage), required only if `KEEP_DATABASE_DATA` is set to `true`
   1. [Create Postgres Database](03_operations.md#create_postgres)
   1. [Create IOM](03_operations.md#create_iom)
 * The custom dump can only be loaded if the database is empty. When you are using an external database (`PGHOST` is set), the steps listed above will not have any effect. You must take care of purging the external database and recreating the IOM installation yourself.
@@ -203,6 +199,26 @@ If `CUSTOM_DUMP_DIR` is configured, the latest custom dump is loaded when IOM is
 
 _You must not set `CUSTOM_DUMPS_DIR` to a directory that does not contain a dump when starting IOM with an uninitialized database. In this case, the initialization of the database would fail since no dump to be loaded can be found. Just set `CUSTOM_DUMPS_DIR` right before creating the dump and not before starting IOM._
 - - -
+
+## Remote Debugging
+
+The IOM application server starts with the Java debug agent (JDWP) listening on port `${PORT_DEBUG}` (default: `8787`). This port is **not** exposed through the LoadBalancer service — doing so would cause k3s's built-in ServiceLB to probe the JDWP port with plain TCP connections, which the JVM logs as spurious "Debugger failed to attach" warnings.
+
+To attach a debugger, use `kubectl port-forward` on demand:
+
+    # Forward the JDWP port to localhost for the duration of the debug session.
+    # Replace the pod name with the actual name shown by 'devenv-cli.sh info iom'.
+    kubectl port-forward \
+      --namespace iomdevelop \
+      --context="rancher-desktop" \
+      pod/<iom-pod-name> \
+      8787:${PORT_DEBUG}
+
+Then configure your IDE to connect to `localhost:8787` using a standard remote JVM debug configuration. The port-forward stays active until you terminate it with Ctrl-C.
+
+The actual pod name and the correct `kubectl` invocation are shown by:
+
+    devenv-cli.sh info iom
 
 ## Access the Back Office Web GUI
 
@@ -285,7 +301,7 @@ There are some configurations, that are not handled by *devenv-4-iom*. In detail
 
 To apply changes you have made locally to any of the configuration files listed above, you must build the IOM project image locally and restart IOM within *devenv-4-iom*. Building the IOM project image is a [developer task](https://github.com/intershop/iom-project-archetype#usage-typical-developer-tasks) of projects derived from [IOM Project Archetype](https://github.com/intershop/iom-project-archetype).
 
-When building the IOM project image locally, *devenv-4-iom* has to be configured to use the locally built image. To do so, make sure the `IOM_IMAGE` variable of *devenv-4-iom* contains image-name and -tag only. If you don't specify any further repository, the image will be looked up locally. Additionally, it's required to set the variable `IMAGE_PULL_POLICY` to *IfNotPresent*.
+When building the IOM project image locally, *devenv-4-iom* has to be configured to use the locally built image. To do so, make sure the `IOM_IMAGE` variable of *devenv-4-iom* contains image-name and -tag only. If you don't specify any further repository, the image will be looked up locally. Additionally, it's required to set the variable `IMAGE_PULL_POLICY_IOM` to *IfNotPresent*.
 
 Finally the following commands have to be executed to apply changes to the configuration files listed above:
 
@@ -302,7 +318,7 @@ Finally the following commands have to be executed to apply changes to the confi
 
 Project files are any kind of files that have to be added to the IOM project image. More information about such files can be found in chapter *Project Files* of documentation of [Directory Structure of IOM Projects](https://github.com/intershop/iom-project-archetype/wiki/Directory-Structure-of-IOM-Projects#project-files).
 
-*devenv-4-iom* does not provide a process to roll out such files into a running IOM. Instead, you have to build the IOM project image locally and restart IOM within *devenv-4-iom* exactly the same way as described in the previous chapter [Applying Custom Configurations](#apply-custom-configurations). For `IOM_IMAGE` and `IMAGE_PULL_POLICY` the same preconditions as already mentioned [above](#apply-custom-configurations) apply.
+*devenv-4-iom* does not provide a process to roll out such files into a running IOM. Instead, you have to build the IOM project image locally and restart IOM within *devenv-4-iom* exactly the same way as described in the previous chapter [Applying Custom Configurations](#apply-custom-configurations). For `IOM_IMAGE` and `IMAGE_PULL_POLICY_IOM` the same preconditions as already mentioned [above](#apply-custom-configurations) apply.
 
 ## Apply Test Data
 
@@ -348,6 +364,23 @@ To run a single test, use the feature name or a substring of it. For example:
 
     # Run a group of Geb tests
     ./gradlew gebTest -Pgeb.propFile=${PATH_TO_GEB_PROPERTIES}/geb.properties --tests="*admin_Oms_1 lists users for role-assignment*"
+
+### Run Playwright Tests
+
+To run Playwright tests, use the property file provided by _devenv-4-iom_:
+
+    # Make sure that playwright.properties reflects the latest version of configuration
+    devenv-cli.sh get playwright-props > playwright.properties
+
+    # Go to the oms.tests directory in your oms source directory
+    # PATH_TO_IOM_SOURCES and PATH_TO_PLAYWRIGHT_PROPERTIES have to be replaced by real values.
+    cd ${PATH_TO_IOM_SOURCES}/oms.tests
+
+    # Run a single Playwright test
+    ./gradlew playwrightTest -Pplaywright.propFile=${PATH_TO_PLAYWRIGHT_PROPERTIES}/playwright.properties --tests="IOM: Role Assignment Management: admin_Oms_1 lists users for role-assignment"
+
+    # Run a group of Playwright tests
+    ./gradlew playwrightTest -Pplaywright.propFile=${PATH_TO_PLAYWRIGHT_PROPERTIES}/playwright.properties --tests="*admin_Oms_1 lists users for role-assignment*"
 
 ### Run Single ws Tests or a Group of ws Tests
 

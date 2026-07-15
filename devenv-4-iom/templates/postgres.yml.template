@@ -7,13 +7,13 @@ metadata:
 spec:
   volumes:
 ${KeepDatabaseYml}  - name: db-data
-${KeepDatabaseYml}    persistentVolumeClaim:
-${KeepDatabaseYml}      claimName: postgres-pvc
+${KeepDatabaseYml}    hostPath:
+${KeepDatabaseYml}      path: "${MOUNT_PREFIX}${PostgresDataDirAbs}"
   containers:
   - name: postgres
-    image: ${DOCKER_DB_IMAGE}
+    image: ${POSTGRES_IMAGE}
     args: [ ${PostgresArgsYml} ]
-    imagePullPolicy: Always
+    imagePullPolicy: ${IMAGE_PULL_POLICY_POSTGRES}
     env:
     - name: POSTGRES_DB
       value: ${PGDATABASE}
@@ -23,7 +23,7 @@ ${KeepDatabaseYml}      claimName: postgres-pvc
       value: ${PGPASSWORD}
     volumeMounts:
 ${KeepDatabaseYml}    - name: db-data
-${KeepDatabaseYml}      mountPath: /var/lib/postgresql/data
+${KeepDatabaseYml}      mountPath: ${PostgresMountPath}
 ---
 kind: Service
 apiVersion: v1
@@ -37,4 +37,3 @@ spec:
       targetPort: ${PORT_DB}
       name: postgres
   type: LoadBalancer
-  

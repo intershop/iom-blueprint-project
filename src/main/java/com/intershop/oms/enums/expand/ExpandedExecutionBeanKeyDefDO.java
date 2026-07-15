@@ -2,7 +2,7 @@ package com.intershop.oms.enums.expand;
 
 import java.util.EnumSet;
 
-import bakery.persistence.annotation.PersistedEnumerationTable;
+import bakery.persistence.annotation.ExpandedEnum;
 import bakery.persistence.dataobject.configuration.connections.ExecutionBeanKeyDefDO;
 import bakery.persistence.dataobject.configuration.connections.ParameterTypeDefDO;
 import bakery.persistence.dataobject.configuration.connections.ExecutionBeanKeyDefDO.Flag;
@@ -11,7 +11,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import jakarta.persistence.Transient;
 
-@PersistedEnumerationTable(ExecutionBeanKeyDefDO.class)
+@ExpandedEnum(ExecutionBeanKeyDefDO.class)
 public enum ExpandedExecutionBeanKeyDefDO implements ExecutionBeanKeyDefDOEnumInterface
 {
     /**

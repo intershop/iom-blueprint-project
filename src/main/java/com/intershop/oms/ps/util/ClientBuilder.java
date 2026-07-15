@@ -15,7 +15,7 @@ import com.intershop.oms.ps.rest.filter.ClientCorrelationIdFilter;
 import com.intershop.oms.ps.rest.logging.database.DatabaseClientLoggingHandler;
 import com.intershop.oms.ps.rest.logging.database.DatabaseWriterInterceptor.DatabaseClientWriterIntercepter;
 import com.intershop.oms.ps.rest.logging.sl4j.SLF4JClientLoggingHandler;
-import com.intershop.oms.ps.rest.logging.sl4j.SLF4JWriterInterceptor;
+import com.intershop.oms.rest.logging.LoggingWriterInterceptor;
 
 import bakery.logic.communication.messagelog.MessageLogContext;
 import bakery.persistence.expand.MessageTypeDefDOEnumInterface;
@@ -131,7 +131,7 @@ public class ClientBuilder
         if (logToConsole)
         {
             webClient.register(SLF4JClientLoggingHandler.class);
-            webClient.register(SLF4JWriterInterceptor.class);
+            webClient.register(LoggingWriterInterceptor.class);
         }
 
         if (logToDatabase)
