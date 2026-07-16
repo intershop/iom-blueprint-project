@@ -1,4 +1,4 @@
-IOM_IMAGE=iom-blueprint-project-iom:1.8.0-SNAPSHOT
+IOM_IMAGE=iom-blueprint-project-iom:1.8.0
 IMAGE_PULL_POLICY_IOM=Always
 IMAGE_PULL_POLICY_POSTGRES=Never
 IMAGE_PULL_POLICY_MAILSRV=Never
