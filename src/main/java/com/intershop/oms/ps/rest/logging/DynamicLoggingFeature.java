@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
 
 import com.intershop.oms.ps.rest.logging.database.DatabaseContainerLoggingHandler;
 import com.intershop.oms.ps.rest.logging.database.DatabaseWriterInterceptor.DatabaseServerWriterIntercepter;
-import com.intershop.oms.ps.rest.logging.sl4j.SLF4JContainerLoggingHandler;
-import com.intershop.oms.ps.rest.logging.sl4j.SLF4JWriterInterceptor;
+import com.intershop.oms.rest.logging.LoggingHandler;
+import com.intershop.oms.rest.logging.LoggingWriterInterceptor;
 
 @Provider
 public class DynamicLoggingFeature implements DynamicFeature
@@ -42,8 +42,8 @@ public class DynamicLoggingFeature implements DynamicFeature
 
         log.debug("adding log file logger to all classes / methods");
 
-        context.register(SLF4JContainerLoggingHandler.class);
-        context.register(SLF4JWriterInterceptor.class);
+        context.register(LoggingHandler.class);
+        context.register(LoggingWriterInterceptor.class);
 
         if (writeToDatabase(resourceInfo))
         {

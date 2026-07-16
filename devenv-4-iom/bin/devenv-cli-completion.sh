@@ -72,21 +72,18 @@ _devenv_cli() {
                 sub_cmd=$(_devenv_is_command $sub_cmd i     iom              ||
                           _devenv_is_command $sub_cmd p     postgres         ||
                           _devenv_is_command $sub_cmd m     mailserver       ||
-                          _devenv_is_command $sub_cmd s     storage          ||
                           _devenv_is_command $sub_cmd cl    cluster          ||
                           _devenv_is_command $sub_cmd co    config)
                 ;;
             create)
-                sub_cmd=$(_devenv_is_command $sub_cmd s     storage          ||
-                          _devenv_is_command $sub_cmd n     namespace        ||
+                sub_cmd=$(_devenv_is_command $sub_cmd n     namespace        ||
                           _devenv_is_command $sub_cmd m     mailserver       ||
                           _devenv_is_command $sub_cmd p     postgres         ||
                           _devenv_is_command $sub_cmd i     iom              ||
                           _devenv_is_command $sub_cmd c     cluster)
                 ;;
             delete)
-                sub_cmd=$(_devenv_is_command $sub_cmd s     storage          ||
-                          _devenv_is_command $sub_cmd n     namespace        ||
+                sub_cmd=$(_devenv_is_command $sub_cmd n     namespace        ||
                           _devenv_is_command $sub_cmd m     mailserver       ||
                           _devenv_is_command $sub_cmd p     postgres         ||
                           _devenv_is_command $sub_cmd i     iom              ||
@@ -109,9 +106,10 @@ _devenv_cli() {
             get)
                 sub_cmd=$(_devenv_is_command $sub_cmd c     config           ||
                           _devenv_is_command $sub_cmd g     geb-props        ||
+                          _devenv_is_command $sub_cmd p     playwright-props ||
                           _devenv_is_command $sub_cmd w     ws-props         ||
                           _devenv_is_command $sub_cmd s     soap-props       ||
-                          _devenv_is_command $sub_cmd b     bash-completion) 
+                          _devenv_is_command $sub_cmd b     bash-completion)
                 ;;
             log)
                 sub_cmd=$(_devenv_is_command $sub_cmd d     dbaccount        ||
@@ -145,16 +143,16 @@ _devenv_cli() {
            \( "$COMP_CWORD" -eq 3 -a ! -z "$property_file" \) ]; then
         case "$cmd" in
             get)
-                COMPREPLY=( $(compgen -W 'config geb-probs ws-probs soap-probs bash-completion -h --help' -- $cur) )
+                COMPREPLY=( $(compgen -W 'config geb-props playwright-props ws-props soap-props bash-completion -h --help' -- $cur) )
                 ;;
             info)
-                COMPREPLY=( $(compgen -W 'iom postgres mailserver storage cluster config -h --help' -- $cur) )
+                COMPREPLY=( $(compgen -W 'iom postgres mailserver cluster config -h --help' -- $cur) )
                 ;;
             create)
-                COMPREPLY=( $(compgen -W 'storage namespace mailserver postgres iom cluster -h --help' -- $cur) )
+                COMPREPLY=( $(compgen -W 'namespace mailserver postgres iom cluster -h --help' -- $cur) )
                 ;;
             delete)
-                COMPREPLY=( $(compgen -W 'storage namespace mailserver postgres iom cluster -h --help' -- $cur) )
+                COMPREPLY=( $(compgen -W 'namespace mailserver postgres iom cluster -h --help' -- $cur) )
                 ;;
             apply)
                 COMPREPLY=( $(compgen -W 'deployment mail-templates xsl-templates sql-scripts sql-config json-config dbmigrate cache-reset -h --help' -- $cur) )

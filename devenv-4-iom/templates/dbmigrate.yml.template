@@ -11,7 +11,7 @@ spec:
       containers:
       - name: dbmigrate
         image: ${IomJobImage}
-        imagePullPolicy: ${IMAGE_PULL_POLICY}
+        imagePullPolicy: ${IMAGE_PULL_POLICY_IOM}
         env:
           - name: TENANT
             value: Intershop

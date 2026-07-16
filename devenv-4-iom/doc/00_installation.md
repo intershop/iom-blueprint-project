@@ -17,16 +17,13 @@ If you are not able to locate `settings.json`, see [User and Workspace Settings]
 
 Bash is part of Mac OS X, there is nothing to do. It's not required that bash is your default shell.
 
-### Docker-Desktop
-Using _Docker-Desktop_ is recommended. It provides a _Docker_ environment and also _Kubernetes_ functionality, which is required to use _devenv-4-iom_. Other _Docker/Kubernetes_ implementations can be used along with _devenv-4-iom_ too, but all of them have restrictions that make their usage much more complicated.
+### Rancher Desktop
 
-> **Caution:** While installing _Docker-Desktop_ on **Windows** you will be signed-out and your PC will probably be restarted. So save everything before installing.
+[Rancher Desktop](https://rancherdesktop.io/) is the recommended Kubernetes platform for _devenv-4-iom_. It is open-source and free for commercial use. For installation and platform-specific setup instructions (including the Windows path format requirement), see [Rancher Desktop setup](10_rancher_desktop.md).
 
-1. Install [WSL2] (https://docs.microsoft.com/en-us/windows/wsl/install)
-1. Download and install [Docker-Desktop](https://www.docker.com/products/docker-desktop).
-1. Enable _Kubernetes in Docker Desktop_.
-    - _Docker Icon > Preferences > Kubernetes > Enable Kubernetes_.
-1. Optional: Docker provides a link with information on how to set resource usage (Settings > Resources).
+### Docker Desktop (alternative)
+
+Docker Desktop can be used as an alternative. Only the **kubeadm** engine is supported — the **kind** engine (the new default since Docker Desktop 4.40) cannot be used with _devenv-4-iom_. For installation and setup instructions, see [Docker Desktop setup](09_docker_desktop.md).
 
 ### jq - Command-Line JSON Processor
 _jq_ is a command-line tool that allows to work with JSON messages. Since all messages created by IOM are JSON messages, it is a very useful tool.
@@ -52,10 +49,17 @@ _jq_ is not included in _devenv-4-iom_ and _devenv-4-iom_ does not depend on it 
 
 **Mac OS X**
 
-_jq_ is not part of a standard distribution of Mac OS X. To install additional tools like _jq_, it is recommended to use one of the open source package management systems. Intershop recommends using [_Mac Ports_](https://www.macports.org/). Please follow the [installation instruction](https://www.macports.org/install.php) to set up _Mac Ports_. Once _Mac Ports_ is installed, the installation of _jq_ can be done by using the following command:
-```sh
-sudo port install jq
-```
+_jq_ is not part of a standard macOS distribution. Install it using a package manager of your choice:
+
+- [Homebrew](https://brew.sh/): `brew install jq`
+- [MacPorts](https://www.macports.org/): `sudo port install jq`
+
+**Linux**
+
+Install _jq_ using your distribution's package manager, for example:
+
+- Debian/Ubuntu: `sudo apt-get install jq`
+- Fedora/RHEL: `sudo dnf install jq`
 
 ## <a name="setup_devenv"/>Setup _devenv-4-iom_
 To use _devenv-4-iom_, you need a local copy of it on your computer. This copy can be created simply by cloning the sources. The _main_ branch always contains the latest release-version.
